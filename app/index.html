@@ -33,595 +33,107 @@
     overflow-x: hidden;
   }
 
-  /* --- NAV BAR --- */
   .nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    background: rgba(10, 14, 26, 0.95);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 24px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(10, 14, 26, 0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border); padding: 0 24px; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
   }
+  .nav-title { font-size: 0.9rem; font-weight: 600; color: var(--green); font-family: 'Space Mono', monospace; }
+  .nav-progress { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted); font-family: 'Space Mono', monospace; }
+  .nav-progress-bar { width: 120px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .nav-progress-fill { height: 100%; background: var(--green); border-radius: 2px; transition: width 0.5s ease; }
 
-  .nav-title {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--green);
-    font-family: 'Space Mono', monospace;
-  }
+  .main { max-width: 720px; margin: 0 auto; padding: 80px 24px 120px; }
 
-  .nav-progress {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    font-family: 'Space Mono', monospace;
-  }
+  .hero { text-align: center; padding: 60px 0 40px; }
+  .hero h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: 16px; background: linear-gradient(135deg, var(--green), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero p { font-size: 1.1rem; color: var(--text-secondary); max-width: 500px; margin: 0 auto 32px; }
 
-  .nav-progress-bar {
-    width: 120px;
-    height: 4px;
-    background: var(--border);
-    border-radius: 2px;
-    overflow: hidden;
-  }
+  .start-btn { display: inline-block; padding: 14px 36px; background: var(--green); color: var(--bg); font-weight: 600; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Space Grotesk', sans-serif; }
+  .start-btn:hover { background: #00ff99; box-shadow: 0 0 24px rgba(0, 255, 136, 0.3); transform: translateY(-1px); }
 
-  .nav-progress-fill {
-    height: 100%;
-    background: var(--green);
-    border-radius: 2px;
-    transition: width 0.5s ease;
-  }
+  .chapter-dots { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 50; }
+  .chapter-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.3s; border: none; position: relative; }
+  .chapter-dot.active { background: var(--green); box-shadow: 0 0 8px rgba(123, 237, 159, 0.5); }
+  .chapter-dot.completed { background: var(--green); opacity: 0.5; }
+  .chapter-dot .tooltip { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); background: var(--card); border: 1px solid var(--border); color: var(--text-secondary); padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .chapter-dot:hover .tooltip { opacity: 1; }
+  @media (max-width: 900px) { .chapter-dots { display: none; } }
 
-  /* --- MAIN CONTENT --- */
-  .main {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 80px 24px 120px;
-  }
+  .chapter { display: none; animation: fadeIn 0.4s ease; }
+  .chapter.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
-  /* --- HERO --- */
-  .hero {
-    text-align: center;
-    padding: 60px 0 40px;
-  }
+  .chapter-header { margin-bottom: 40px; }
+  .chapter-number { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--green); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .chapter-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; }
+  .chapter-subtitle { font-size: 1rem; color: var(--text-secondary); }
 
-  .hero h1 {
-    font-size: 2.4rem;
-    font-weight: 700;
-    line-height: 1.2;
-    margin-bottom: 16px;
-    background: linear-gradient(135deg, var(--green), var(--blue));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  .content-block { margin-bottom: 36px; }
+  .content-block h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 12px; color: var(--text); }
+  .content-block p { color: var(--text-secondary); margin-bottom: 14px; font-size: 0.95rem; }
+  .content-block ol { padding-left: 20px; margin: 12px 0; }
+  .content-block li { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px; }
 
-  .hero p {
-    font-size: 1.1rem;
-    color: var(--text-secondary);
-    max-width: 500px;
-    margin: 0 auto 32px;
-  }
+  .metaphor { background: linear-gradient(135deg, rgba(123, 237, 159, 0.08), rgba(30, 144, 255, 0.08)); border: 1px solid rgba(123, 237, 159, 0.2); border-radius: 12px; padding: 24px; margin: 24px 0; }
+  .metaphor-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--green); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .metaphor-label::before { content: '💡'; font-size: 0.9rem; }
+  .metaphor h4 { font-size: 1.05rem; margin-bottom: 8px; color: var(--text); }
+  .metaphor p { color: var(--text-secondary); font-size: 0.9rem; }
 
-  .start-btn {
-    display: inline-block;
-    padding: 14px 36px;
-    background: var(--green);
-    color: var(--bg);
-    font-weight: 600;
-    font-size: 1rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Space Grotesk', sans-serif;
-  }
+  .story { background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 8px; padding: 24px; margin: 24px 0; }
+  .story-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .story-label::before { content: '📖'; font-size: 0.9rem; }
+  .story p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px; }
+  .story p:last-child { margin-bottom: 0; }
+  .story .lesson { color: var(--green); font-weight: 500; margin-top: 8px; font-size: 0.85rem; }
 
-  .start-btn:hover {
-    background: #00ff99;
-    box-shadow: 0 0 24px rgba(0, 255, 136, 0.3);
-    transform: translateY(-1px);
-  }
-
-  /* --- CHAPTER NAV (sidebar dots) --- */
-  .chapter-dots {
-    position: fixed;
-    right: 24px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    z-index: 50;
-  }
-
-  .chapter-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--border);
-    cursor: pointer;
-    transition: all 0.3s;
-    border: none;
-    position: relative;
-  }
-
-  .chapter-dot.active {
-    background: var(--green);
-    box-shadow: 0 0 8px rgba(123, 237, 159, 0.5);
-  }
-
-  .chapter-dot.completed {
-    background: var(--green);
-    opacity: 0.5;
-  }
-
-  .chapter-dot .tooltip {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.7rem;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-  }
-
-  .chapter-dot:hover .tooltip {
-    opacity: 1;
-  }
-
-  @media (max-width: 900px) {
-    .chapter-dots { display: none; }
-  }
-
-  /* --- CHAPTER --- */
-  .chapter {
-    display: none;
-    animation: fadeIn 0.4s ease;
-  }
-
-  .chapter.active {
-    display: block;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .chapter-header {
-    margin-bottom: 40px;
-  }
-
-  .chapter-number {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-  }
-
-  .chapter-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 12px;
-  }
-
-  .chapter-subtitle {
-    font-size: 1rem;
-    color: var(--text-secondary);
-  }
-
-  /* --- CONTENT BLOCKS --- */
-  .content-block {
-    margin-bottom: 36px;
-  }
-
-  .content-block h3 {
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--text);
-  }
-
-  .content-block p {
-    color: var(--text-secondary);
-    margin-bottom: 14px;
-    font-size: 0.95rem;
-  }
-
-  /* --- METAPHOR CARD --- */
-  .metaphor {
-    background: linear-gradient(135deg, rgba(123, 237, 159, 0.08), rgba(30, 144, 255, 0.08));
-    border: 1px solid rgba(123, 237, 159, 0.2);
-    border-radius: 12px;
-    padding: 24px;
-    margin: 24px 0;
-  }
-
-  .metaphor-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .metaphor-label::before {
-    content: '💡';
-    font-size: 0.9rem;
-  }
-
-  .metaphor h4 {
-    font-size: 1.05rem;
-    margin-bottom: 8px;
-    color: var(--text);
-  }
-
-  .metaphor p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-  }
-
-  /* --- STORY CARD --- */
-  .story {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--blue);
-    border-radius: 8px;
-    padding: 24px;
-    margin: 24px 0;
-  }
-
-  .story-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--blue);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-
-  .story-label::before {
-    content: '📖';
-    font-size: 0.9rem;
-  }
-
-  .story p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-  }
-
-  .story p:last-child {
-    margin-bottom: 0;
-  }
-
-  .story .lesson {
-    color: var(--green);
-    font-weight: 500;
-    margin-top: 8px;
-    font-size: 0.85rem;
-  }
-
-  /* --- COMPARISON --- */
-  .comparison {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin: 24px 0;
-  }
-
-  @media (max-width: 600px) {
-    .comparison { grid-template-columns: 1fr; }
-  }
-
-  .comparison-bad, .comparison-good {
-    background: var(--card);
-    border-radius: 8px;
-    padding: 20px;
-    font-size: 0.85rem;
-  }
-
-  .comparison-bad {
-    border: 1px solid rgba(255, 71, 87, 0.3);
-  }
-
-  .comparison-good {
-    border: 1px solid rgba(123, 237, 159, 0.3);
-  }
-
-  .comparison-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-  }
-
+  .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+  @media (max-width: 600px) { .comparison { grid-template-columns: 1fr; } }
+  .comparison-bad, .comparison-good { background: var(--card); border-radius: 8px; padding: 20px; font-size: 0.85rem; }
+  .comparison-bad { border: 1px solid rgba(255, 71, 87, 0.3); }
+  .comparison-good { border: 1px solid rgba(123, 237, 159, 0.3); }
+  .comparison-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
   .comparison-bad .comparison-label { color: var(--wrong); }
   .comparison-good .comparison-label { color: var(--correct); }
+  .comparison p { color: var(--text-secondary); font-size: 0.85rem; }
 
-  .comparison p {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
-  }
+  .quiz { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 36px 0; }
+  .quiz-label { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--orange); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+  .quiz-label::before { content: '🧠'; font-size: 0.9rem; }
+  .quiz-question { font-size: 1rem; font-weight: 500; margin-bottom: 16px; color: var(--text); }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option { display: block; width: 100%; padding: 12px 16px; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 8px; color: var(--text-secondary); font-size: 0.9rem; cursor: pointer; transition: all 0.2s; text-align: left; font-family: 'Space Grotesk', sans-serif; }
+  .quiz-option:hover:not(.selected) { background: rgba(255, 255, 255, 0.06); border-color: var(--text-muted); }
+  .quiz-option.selected.correct { background: rgba(46, 213, 115, 0.1); border-color: var(--correct); color: var(--correct); }
+  .quiz-option.selected.wrong { background: rgba(255, 71, 87, 0.1); border-color: var(--wrong); color: var(--wrong); }
+  .quiz-option.reveal-correct { background: rgba(46, 213, 115, 0.08); border-color: rgba(46, 213, 115, 0.4); color: var(--correct); }
+  .quiz-explanation { display: none; margin-top: 16px; padding: 16px; background: rgba(255, 255, 255, 0.02); border-radius: 8px; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
+  .quiz-explanation.visible { display: block; animation: fadeIn 0.3s ease; }
 
-  /* --- QUIZ --- */
-  .quiz {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 28px;
-    margin: 36px 0;
-  }
+  .chapter-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .chapter-nav button { padding: 10px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'Space Grotesk', sans-serif; }
+  .btn-prev { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); }
+  .btn-prev:hover { border-color: var(--text-muted); color: var(--text); }
+  .btn-next { background: var(--green); border: none; color: var(--bg); font-weight: 600; }
+  .btn-next:hover { background: #00ff99; box-shadow: 0 0 16px rgba(0, 255, 136, 0.3); }
 
-  .quiz-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--orange);
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
+  .key-points { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 24px 0; }
+  .key-points h4 { font-size: 0.85rem; font-family: 'Space Mono', monospace; color: var(--green); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+  .key-points ul { list-style: none; padding: 0; }
+  .key-points li { padding: 8px 0; padding-left: 20px; position: relative; color: var(--text-secondary); font-size: 0.9rem; }
+  .key-points li::before { content: '→'; position: absolute; left: 0; color: var(--green); }
 
-  .quiz-label::before {
-    content: '🧠';
-    font-size: 0.9rem;
-  }
+  .score-card { background: linear-gradient(135deg, rgba(123, 237, 159, 0.1), rgba(30, 144, 255, 0.1)); border: 1px solid rgba(123, 237, 159, 0.3); border-radius: 16px; padding: 40px; text-align: center; margin: 40px 0; }
+  .score-number { font-family: 'Space Mono', monospace; font-size: 3rem; font-weight: 700; color: var(--green); margin-bottom: 8px; }
+  .score-label { color: var(--text-secondary); font-size: 1rem; margin-bottom: 24px; }
+  .score-breakdown { display: flex; justify-content: center; gap: 32px; margin-top: 16px; }
+  .score-stat { text-align: center; }
+  .score-stat-num { font-family: 'Space Mono', monospace; font-size: 1.5rem; font-weight: 700; color: var(--text); }
+  .score-stat-label { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
 
-  .quiz-question {
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 16px;
-    color: var(--text);
-  }
-
-  .quiz-options {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .quiz-option {
-    display: block;
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-
-  .quiz-option:hover:not(.selected) {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--text-muted);
-  }
-
-  .quiz-option.selected.correct {
-    background: rgba(46, 213, 115, 0.1);
-    border-color: var(--correct);
-    color: var(--correct);
-  }
-
-  .quiz-option.selected.wrong {
-    background: rgba(255, 71, 87, 0.1);
-    border-color: var(--wrong);
-    color: var(--wrong);
-  }
-
-  .quiz-option.reveal-correct {
-    background: rgba(46, 213, 115, 0.08);
-    border-color: rgba(46, 213, 115, 0.4);
-    color: var(--correct);
-  }
-
-  .quiz-explanation {
-    display: none;
-    margin-top: 16px;
-    padding: 16px;
-    background: rgba(255, 255, 255, 0.02);
-    border-radius: 8px;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    line-height: 1.6;
-  }
-
-  .quiz-explanation.visible {
-    display: block;
-    animation: fadeIn 0.3s ease;
-  }
-
-  /* --- CHAPTER NAVIGATION --- */
-  .chapter-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 48px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-  }
-
-  .chapter-nav button {
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Space Grotesk', sans-serif;
-  }
-
-  .btn-prev {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-  }
-
-  .btn-prev:hover {
-    border-color: var(--text-muted);
-    color: var(--text);
-  }
-
-  .btn-next {
-    background: var(--green);
-    border: none;
-    color: var(--bg);
-    font-weight: 600;
-  }
-
-  .btn-next:hover {
-    background: #00ff99;
-    box-shadow: 0 0 16px rgba(0, 255, 136, 0.3);
-  }
-
-  .btn-next:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-
-  /* --- KEY POINTS --- */
-  .key-points {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 24px;
-    margin: 24px 0;
-  }
-
-  .key-points h4 {
-    font-size: 0.85rem;
-    font-family: 'Space Mono', monospace;
-    color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    margin-bottom: 16px;
-  }
-
-  .key-points ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .key-points li {
-    padding: 8px 0;
-    padding-left: 20px;
-    position: relative;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-  }
-
-  .key-points li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--green);
-  }
-
-  /* --- SCORE CARD (final) --- */
-  .score-card {
-    background: linear-gradient(135deg, rgba(123, 237, 159, 0.1), rgba(30, 144, 255, 0.1));
-    border: 1px solid rgba(123, 237, 159, 0.3);
-    border-radius: 16px;
-    padding: 40px;
-    text-align: center;
-    margin: 40px 0;
-  }
-
-  .score-number {
-    font-family: 'Space Mono', monospace;
-    font-size: 3rem;
-    font-weight: 700;
-    color: var(--green);
-    margin-bottom: 8px;
-  }
-
-  .score-label {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    margin-bottom: 24px;
-  }
-
-  .score-breakdown {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-top: 16px;
-  }
-
-  .score-stat {
-    text-align: center;
-  }
-
-  .score-stat-num {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .score-stat-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 4px;
-  }
-
-  /* --- LIST STYLES --- */
-  .content-block ol {
-    padding-left: 20px;
-    margin: 12px 0;
-  }
-
-  .content-block li {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 8px;
-  }
-
-  /* --- CODE --- */
-  code {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.82rem;
-    background: rgba(255, 255, 255, 0.06);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--green);
-  }
-
-  /* --- SCROLL BEHAVIOR --- */
+  code { font-family: 'Space Mono', monospace; font-size: 0.82rem; background: rgba(255, 255, 255, 0.06); padding: 2px 6px; border-radius: 4px; color: var(--green); }
   html { scroll-behavior: smooth; }
 </style>
 </head>
@@ -648,13 +160,11 @@
     <p>a framework for people who've never used AI to build software — based on how real teams ship real products to real customers.</p>
     <button class="start-btn" onclick="goTo(1)">start learning</button>
   </div>
-
   <div class="content-block" style="margin-top: 40px;">
     <h3>what you'll learn</h3>
     <p>this is not a tool tutorial. it's a framework for a new kind of working relationship — one where you bring judgment, context, and direction while AI handles implementation at superhuman speed.</p>
-    <p>8 chapters. ~20 minutes. quizzes to make it stick.</p>
+    <p>8 chapters. ~25 minutes. 24 quizzes to make it stick.</p>
   </div>
-
   <div class="key-points">
     <h4>chapters</h4>
     <ul>
@@ -677,19 +187,16 @@
     <div class="chapter-title">the mindset shift</div>
     <div class="chapter-subtitle">you're not using a tool — you're running a team</div>
   </div>
-
   <div class="content-block">
     <p>the biggest mistake new users make is treating AI like a search engine. type a question, get an answer, done.</p>
     <p>the teams that actually ship software with AI treat it differently. they treat it like hiring a brilliant junior engineer who has amnesia between shifts.</p>
     <p>this engineer shows up every day ready to work. they know every programming language. they can read any codebase in seconds. but they don't remember what you told them yesterday unless you wrote it down somewhere they can find it.</p>
   </div>
-
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
     <h4>the orchestra conductor</h4>
     <p>building software with AI is like conducting an orchestra. you don't play every instrument — you couldn't, and you don't need to. but you choose the piece (what to build), set the tempo (when to ship), bring in the right sections at the right time (which capabilities to invoke), listen for wrong notes (verify the output), and keep everyone on the same page (documentation). the musicians are world-class. your job is to make sure they're playing the same song.</p>
   </div>
-
   <div class="content-block">
     <h3>your actual job</h3>
     <p>your job isn't to write code. it's to be the person who:</p>
@@ -699,17 +206,15 @@
       <li><strong>knows what's fragile</strong> — production awareness</li>
       <li><strong>verifies what actually happened</strong> — quality control</li>
     </ol>
-    <p>the AI's job is everything else: writing the code, running the commands, debugging the errors, deploying the changes.</p>
   </div>
-
   <div class="story">
     <div class="story-label">from the field</div>
     <p>a startup team needed to migrate their task management system from a local server to a shared cloud server, adding multi-user support along the way. the human never wrote a line of code. they described what they wanted ("port the whole thing over to the cloud server"), provided context the AI couldn't infer ("my teammate doesn't have a local copy of the repo"), and caught gaps the AI missed ("does it search DMs too?"). the migration shipped in one session.</p>
     <p class="lesson">the human's contribution wasn't code — it was direction, context, and quality control.</p>
   </div>
 
-  <div class="quiz" data-quiz="1">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="1a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">what's the primary role of the human when building software with AI?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">writing the code and reviewing it line by line</button>
@@ -717,7 +222,31 @@
       <button class="quiz-option" data-correct="true">providing direction, context, and verification</button>
       <button class="quiz-option" data-correct="false">debugging every error message yourself before asking the AI</button>
     </div>
-    <div class="quiz-explanation">the most effective humans focus on what the AI can't do: deciding what to build, providing business context, catching things the AI can't see, and verifying the actual results. implementation is what the AI does best.</div>
+    <div class="quiz-explanation">the most effective humans focus on what the AI can't do: deciding what to build, providing business context, catching things the AI can't see, and verifying the actual results.</div>
+  </div>
+
+  <div class="quiz" data-quiz="1b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">why is AI compared to "a brilliant junior engineer with amnesia"?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">because it makes a lot of mistakes</button>
+      <button class="quiz-option" data-correct="true">because it's highly capable but forgets everything between conversations unless you write things down</button>
+      <button class="quiz-option" data-correct="false">because it needs constant supervision on every line of code</button>
+      <button class="quiz-option" data-correct="false">because it's slow and needs hand-holding</button>
+    </div>
+    <div class="quiz-explanation">the AI is genuinely capable — it knows every language and can read codebases instantly. the "amnesia" is the key insight: without persistent context (rules, skills, memory), every conversation starts from zero.</div>
+  </div>
+
+  <div class="quiz" data-quiz="1c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">in the orchestra metaphor, what does "listening for wrong notes" represent?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">reading every line of code the AI writes</button>
+      <button class="quiz-option" data-correct="false">running the test suite</button>
+      <button class="quiz-option" data-correct="true">verifying the AI's output against reality — checking the actual results</button>
+      <button class="quiz-option" data-correct="false">asking the AI to explain its code</button>
+    </div>
+    <div class="quiz-explanation">a conductor doesn't read sheet music for every instrument — they listen to the actual sound. similarly, you verify by checking real results: loading the page, querying the database, testing on your phone. not by reading every line of code.</div>
   </div>
 
   <div class="chapter-nav">
@@ -733,52 +262,29 @@
     <div class="chapter-title">the five things only you can do</div>
     <div class="chapter-subtitle">what you bring to the collaboration that AI cannot replace</div>
   </div>
-
-  <div class="content-block">
-    <h3>1. direction</h3>
-    <p>the AI can build anything. it cannot decide <em>what</em> to build. that's you.</p>
-  </div>
-
+  <div class="content-block"><h3>1. direction</h3><p>the AI can build anything. it cannot decide <em>what</em> to build. that's you.</p></div>
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
     <h4>the restaurant kitchen</h4>
     <p>you're the head chef deciding the menu. the AI is the entire kitchen staff. they can execute any recipe brilliantly, but if you say "make something good," you'll get something random. if you say "make a mushroom risotto, the rice is in the third pantry, and the customer is lactose intolerant," you'll get exactly what you need.</p>
   </div>
-
-  <div class="content-block">
-    <h3>2. context</h3>
-    <p>the AI can read every file in your codebase. what it can't see: who your customers are, which systems are fragile, what your team tried last month that didn't work, why that weird workaround exists, or that the CEO is demoing this to investors on thursday.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>3. judgment</h3>
-    <p>the AI will confidently present guesses as conclusions. it might tell you "the database is rate-limiting" when someone actually unplugged the ethernet cable.</p>
-  </div>
-
+  <div class="content-block"><h3>2. context</h3><p>the AI can read every file in your codebase. what it can't see: who your customers are, which systems are fragile, what your team tried last month that didn't work, why that weird workaround exists, or that the CEO is demoing this to investors on thursday.</p></div>
+  <div class="content-block"><h3>3. judgment</h3><p>the AI will confidently present guesses as conclusions. it might tell you "the database is rate-limiting" when someone actually unplugged the ethernet cable.</p></div>
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
     <h4>the GPS</h4>
     <p>AI is like a GPS that's usually right but sometimes confidently drives you into a lake. your job is to look out the window. when the AI says "the issue is X," ask: "how confident are you?" (forces honesty), "why X but not Y?" (tests the logic), and "what would prove you wrong?" (reveals blind spots).</p>
   </div>
-
-  <div class="content-block">
-    <h3>4. risk awareness</h3>
-    <p>the AI optimizes for completing the task. you optimize for not destroying what's already working. you're the one who says "what happens to the 47 existing bookings when we make this change?"</p>
-  </div>
-
-  <div class="content-block">
-    <h3>5. verification</h3>
-    <p>the most dangerous phrase in AI-assisted development: <strong>"it looks like it worked."</strong></p>
-  </div>
-
+  <div class="content-block"><h3>4. risk awareness</h3><p>the AI optimizes for completing the task. you optimize for not destroying what's already working. you're the one who says "what happens to the 47 existing bookings when we make this change?"</p></div>
+  <div class="content-block"><h3>5. verification</h3><p>the most dangerous phrase in AI-assisted development: <strong>"it looks like it worked."</strong></p></div>
   <div class="story">
     <div class="story-label">from the field</div>
-    <p>a team's data scraper ran for 3 straight days, reporting success each time. zero records collected. the API had silently returned empty results when credits ran out — no error, no warning, just "success" with nothing inside. a background process "started successfully" but crashed 1 second after launch. a calendar integration created events at the wrong time because the AI confused PST and PDT.</p>
+    <p>a team's data scraper ran for 3 straight days, reporting success each time. zero records collected. the API had silently returned empty results when credits ran out — no error, no warning, just "success" with nothing inside.</p>
     <p class="lesson">verification means checking the actual output, not just the exit code. query the database. open the calendar. load the page on your phone.</p>
   </div>
 
-  <div class="quiz" data-quiz="2">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="2a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">a data pipeline reports "completed successfully" three days in a row. what should you do?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">trust the success message — if it says it worked, it worked</button>
@@ -786,7 +292,31 @@
       <button class="quiz-option" data-correct="false">wait for users to report problems</button>
       <button class="quiz-option" data-correct="false">rewrite the pipeline from scratch to be safe</button>
     </div>
-    <div class="quiz-explanation">"success" only means the process didn't crash — it doesn't guarantee the output is correct. in the real-world example, the API returned HTTP 200 with empty data when credits ran out. always verify the actual results, not just the status code.</div>
+    <div class="quiz-explanation">"success" only means the process didn't crash — it doesn't guarantee the output is correct. always verify the actual results, not just the status code.</div>
+  </div>
+
+  <div class="quiz" data-quiz="2b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">which of these is something the AI CANNOT do, no matter how good it gets?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">write code in any programming language</button>
+      <button class="quiz-option" data-correct="false">read and understand your entire codebase</button>
+      <button class="quiz-option" data-correct="true">know that your CEO is demoing the product to investors on thursday</button>
+      <button class="quiz-option" data-correct="false">debug a complex multi-step error</button>
+    </div>
+    <div class="quiz-explanation">the AI can read code, write code, and debug — but it can't know your business context unless you tell it. deadlines, stakeholder expectations, team dynamics, and customer sensitivities are all invisible to the AI.</div>
+  </div>
+
+  <div class="quiz" data-quiz="2c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">the AI proposes a database migration. what question best demonstrates "risk awareness"?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">"which SQL dialect should we use?"</button>
+      <button class="quiz-option" data-correct="false">"can you make it run faster?"</button>
+      <button class="quiz-option" data-correct="true">"what happens to the 4,700 existing records during the migration? can we roll back?"</button>
+      <button class="quiz-option" data-correct="false">"can you add better variable names?"</button>
+    </div>
+    <div class="quiz-explanation">risk awareness means thinking about what could go wrong with existing data and live systems. the AI optimizes for completing the task; you optimize for not breaking what's already working.</div>
   </div>
 
   <div class="chapter-nav">
@@ -802,53 +332,32 @@
     <div class="chapter-title">how specificity changes everything</div>
     <div class="chapter-subtitle">the quality of your input determines the quality of AI's output</div>
   </div>
-
-  <div class="content-block">
-    <p>this is the single highest-leverage skill you can develop. the difference between a vague request and a specific one is the difference between a 20-minute rabbit hole and a correct answer on the first try.</p>
-  </div>
-
+  <div class="content-block"><p>this is the single highest-leverage skill you can develop. the difference between a vague request and a specific one is the difference between a 20-minute rabbit hole and a correct answer on the first try.</p></div>
   <div class="comparison">
-    <div class="comparison-bad">
-      <div class="comparison-label">vague</div>
-      <p>"fix the login"</p>
-    </div>
-    <div class="comparison-good">
-      <div class="comparison-label">specific</div>
-      <p>"users on mobile Safari get a white screen after entering their OTP. console shows a CORS error. started after yesterday's deploy."</p>
-    </div>
+    <div class="comparison-bad"><div class="comparison-label">vague</div><p>"fix the login"</p></div>
+    <div class="comparison-good"><div class="comparison-label">specific</div><p>"users on mobile Safari get a white screen after entering their OTP. console shows a CORS error. started after yesterday's deploy."</p></div>
   </div>
-
   <div class="comparison">
-    <div class="comparison-bad">
-      <div class="comparison-label">prescriptive</div>
-      <p>"create a React component with useState hooks and a Postgres table"</p>
-    </div>
-    <div class="comparison-good">
-      <div class="comparison-label">outcome-focused</div>
-      <p>"we need to notify readers when content they've already read gets updated, without spoiling parts they haven't reached yet"</p>
-    </div>
+    <div class="comparison-bad"><div class="comparison-label">prescriptive</div><p>"create a React component with useState hooks and a Postgres table"</p></div>
+    <div class="comparison-good"><div class="comparison-label">outcome-focused</div><p>"we need to notify readers when content they've already read gets updated, without spoiling parts they haven't reached yet"</p></div>
   </div>
-
   <div class="content-block">
     <h3>the pattern</h3>
     <p>describe <strong>outcomes</strong>, not implementations. let the AI propose the architecture, then steer it. you say "what" — the AI figures out "how."</p>
-    <p>but when something specific matters to you — "use console logging, PM2 logs are terrible" — correct immediately. this is the right ratio: delegate implementation details, own the decisions that matter.</p>
+    <p>but when something specific matters to you — "use console logging, PM2 logs are terrible" — correct immediately.</p>
   </div>
-
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
     <h4>the architect and the builder</h4>
-    <p>you don't tell the builder which nails to use. you tell them you want a door that locks, a window that faces south, and a floor that holds a piano. you describe the requirements — they choose the materials and methods. but if you know the soil is clay and the builder doesn't, you speak up.</p>
+    <p>you don't tell the builder which nails to use. you tell them you want a door that locks, a window that faces south, and a floor that holds a piano. but if you know the soil is clay and the builder doesn't, you speak up.</p>
   </div>
-
   <div class="content-block">
     <h3>front-loading requirements</h3>
-    <p>every requirement discovered after building starts costs a round trip: redo, redeploy, retest. a team found this the hard way when they didn't mention "it needs to work in DMs" until after the feature was built and deployed. one sentence upfront would have saved three commit-push-deploy cycles.</p>
-    <p>you don't need to spec everything perfectly. but if you have a mental model of the full feature, dump it as a rough bullet list before the AI starts building.</p>
+    <p>every requirement discovered after building starts costs a round trip: redo, redeploy, retest. one team didn't mention "it needs to work in DMs" until after the feature was deployed. one sentence upfront would have saved three commit-push-deploy cycles.</p>
   </div>
 
-  <div class="quiz" data-quiz="3">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="3a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">you want the AI to build a notification system. which request will get the best result?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">"build a notification system"</button>
@@ -856,7 +365,31 @@
       <button class="quiz-option" data-correct="true">"notify users via email when a document they've commented on gets edited. batch notifications so they don't get spammed. we have about 200 active users."</button>
       <button class="quiz-option" data-correct="false">"make it so users get alerts"</button>
     </div>
-    <div class="quiz-explanation">the best request describes the outcome (what users experience), provides constraints (batching, user count), and lets the AI choose the implementation. too vague = wrong direction. too prescriptive = missed opportunities for better architecture.</div>
+    <div class="quiz-explanation">the best request describes the outcome (what users experience), provides constraints (batching, user count), and lets the AI choose the implementation.</div>
+  </div>
+
+  <div class="quiz" data-quiz="3b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">why is "create a React component with useState" a weaker request than describing the outcome?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">because React is a bad framework</button>
+      <button class="quiz-option" data-correct="true">because prescribing implementation prevents the AI from suggesting a potentially better architecture</button>
+      <button class="quiz-option" data-correct="false">because the AI doesn't know React</button>
+      <button class="quiz-option" data-correct="false">because you should never mention technology choices</button>
+    </div>
+    <div class="quiz-explanation">when you prescribe implementation details, you close the door on better solutions the AI might propose. describe the outcome and constraints — then steer the AI's proposal. it's fine to mention tech preferences, but lead with the problem.</div>
+  </div>
+
+  <div class="quiz" data-quiz="3c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">a team deployed a feature, then realized it also needed to work in DMs. what should they have done differently?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">written a complete specification document before starting</button>
+      <button class="quiz-option" data-correct="true">mentioned known requirements as a rough bullet list before the AI started building</button>
+      <button class="quiz-option" data-correct="false">tested the feature for a week before deploying</button>
+      <button class="quiz-option" data-correct="false">let the AI figure out all the requirements on its own</button>
+    </div>
+    <div class="quiz-explanation">you don't need a perfect spec — just dump your mental model as a quick bullet list. "needs to work in channels, DMs, and group messages" takes 5 seconds to type and saves hours of rework.</div>
   </div>
 
   <div class="chapter-nav">
@@ -872,47 +405,20 @@
     <div class="chapter-title">the three layers of AI memory</div>
     <div class="chapter-subtitle">how to stop re-explaining everything every conversation</div>
   </div>
-
-  <div class="content-block">
-    <p>out of the box, AI forgets everything between conversations. that's fine for asking questions. it's useless for building software over weeks and months.</p>
-    <p>production teams solve this with three layers of persistent context.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>layer 1: the rules file — "how we do things here"</h3>
-    <p>a file the AI reads at the start of every conversation. short, opinionated, non-negotiable. your team's constitution.</p>
-  </div>
-
-  <div class="metaphor">
-    <div class="metaphor-label">mental model</div>
-    <h4>the employee handbook</h4>
-    <p>every company has norms. don't force push to main. always add logging. commit after every change. don't change the approach without asking first. you wouldn't re-explain these to a returning employee every morning — you'd point them to the handbook. the rules file is that handbook for AI.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>layer 2: skills — "here's everything about X"</h3>
-    <p>documents that give AI specialist-level knowledge about specific domains. when you mention "deploy" or "database issue," the relevant skill loads automatically — complete with server addresses, commands, API keys, and step-by-step procedures.</p>
-  </div>
-
-  <div class="metaphor">
-    <div class="metaphor-label">mental model</div>
-    <h4>the specialist's brain</h4>
-    <p>when you visit a cardiologist, you don't explain what a heart is. the specialist already knows the anatomy, common problems, and standard treatments. they just need YOUR symptoms. skills give the AI specialist-level knowledge so you can skip straight to your problem.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>layer 3: memory — "what we learned last time"</h3>
-    <p>after you discover that a certain API silently fails on specific inputs, or that a deploy script overwrites changes unless you push to git first, you write it down. memory stores these learnings so the AI doesn't make the same mistake twice.</p>
-  </div>
-
+  <div class="content-block"><p>out of the box, AI forgets everything between conversations. production teams solve this with three layers of persistent context.</p></div>
+  <div class="content-block"><h3>layer 1: the rules file — "how we do things here"</h3><p>a file the AI reads at the start of every conversation. short, opinionated, non-negotiable. your team's constitution.</p></div>
+  <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the employee handbook</h4><p>every company has norms. don't force push to main. always add logging. commit after every change. you wouldn't re-explain these to a returning employee every morning — you'd point them to the handbook.</p></div>
+  <div class="content-block"><h3>layer 2: skills — "here's everything about X"</h3><p>documents that give AI specialist-level knowledge about specific domains. when you mention "deploy" or "database issue," the relevant skill loads automatically.</p></div>
+  <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the specialist's brain</h4><p>when you visit a cardiologist, you don't explain what a heart is. the specialist already knows the anatomy, common problems, and standard treatments. they just need YOUR symptoms.</p></div>
+  <div class="content-block"><h3>layer 3: memory — "what we learned last time"</h3><p>after you discover that a certain API silently fails, or that a deploy script overwrites changes unless you push first, you write it down. memory stores these learnings so the AI doesn't repeat mistakes.</p></div>
   <div class="story">
     <div class="story-label">from the field</div>
-    <p>a team kept their AI configuration in a shared git repository. when one team member improved a skill document (adding a missing deployment step that had caused an outage), the other team member got the fix on their next git pull. every session after that, the AI automatically knew the correct deployment procedure. one 5-minute documentation update prevented a class of errors permanently.</p>
+    <p>a team kept their AI configuration in a shared git repository. when one person improved a skill document (adding a missing deployment step that had caused an outage), the other team member got the fix on their next git pull. one 5-minute documentation update prevented a class of errors permanently.</p>
     <p class="lesson">documentation for the AI pays back more than code. a 30-minute skill doc saves 15 minutes per conversation, forever.</p>
   </div>
 
-  <div class="quiz" data-quiz="4">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="4a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">you've explained your deployment process to the AI three times across three conversations. what should you do?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">keep explaining it — it only takes a minute</button>
@@ -920,7 +426,31 @@
       <button class="quiz-option" data-correct="true">write it into a skill or rules file so the AI knows it automatically</button>
       <button class="quiz-option" data-correct="false">simplify the deployment so there's nothing to explain</button>
     </div>
-    <div class="quiz-explanation">if you're saying the same thing every conversation, it belongs in persistent context. a skill document or rules file is read automatically, eliminates the re-explanation, and ensures consistency. the time investment pays back across every future session.</div>
+    <div class="quiz-explanation">if you're saying the same thing every conversation, it belongs in persistent context. the time investment pays back across every future session.</div>
+  </div>
+
+  <div class="quiz" data-quiz="4b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">what's the difference between a "rules file" and a "skill"?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">rules files are longer and more detailed than skills</button>
+      <button class="quiz-option" data-correct="true">rules files set universal standards (always loaded); skills provide domain-specific expertise (loaded on demand)</button>
+      <button class="quiz-option" data-correct="false">skills are for coding and rules are for project management</button>
+      <button class="quiz-option" data-correct="false">there's no real difference — they're interchangeable</button>
+    </div>
+    <div class="quiz-explanation">rules files are your constitution — short, universal, always active. skills are specialist knowledge — detailed, domain-specific, loaded when relevant. "always commit your changes" is a rule. "here's how to deploy to our DigitalOcean server" is a skill.</div>
+  </div>
+
+  <div class="quiz" data-quiz="4c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">a teammate shares their AI configuration via git so you both benefit from improvements. which memory layer does this relate to?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">rules only — git is for rules files</button>
+      <button class="quiz-option" data-correct="false">memory only — git tracks learnings</button>
+      <button class="quiz-option" data-correct="true">all three layers — rules, skills, and memory can all be version-controlled and shared</button>
+      <button class="quiz-option" data-correct="false">none — AI configuration shouldn't be in git</button>
+    </div>
+    <div class="quiz-explanation">version-controlling your entire AI configuration means every improvement — a new skill, a corrected rule, a documented gotcha — benefits the whole team on their next git pull. this is one of the highest-leverage patterns observed in production teams.</div>
   </div>
 
   <div class="chapter-nav">
@@ -936,56 +466,52 @@
     <div class="chapter-title">the workflow</div>
     <div class="chapter-subtitle">orient → plan → build → verify → document</div>
   </div>
-
-  <div class="content-block">
-    <h3>phase 1: orient</h3>
-    <p>state what you want to accomplish. be specific. the AI automatically loads your rules, relevant skills, and memory — so it already knows your infrastructure, standards, and who you are.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>phase 2: plan</h3>
-    <p>for anything beyond a simple fix, the AI proposes a plan. you review it — not for code quality, but for missing requirements, edge cases, and things the AI doesn't know about your system.</p>
-  </div>
-
-  <div class="metaphor">
-    <div class="metaphor-label">mental model</div>
-    <h4>the blueprint review</h4>
-    <p>you're the building owner reviewing the architect's blueprints. you don't need to know how to calculate load-bearing requirements — but you do need to say "there's no bathroom on this floor" and "the front door opens into a wall."</p>
-  </div>
-
-  <div class="content-block">
-    <h3>phase 3: build</h3>
-    <p>the AI writes code, creates files, runs commands, deploys. you don't need to watch every keystroke — check in at milestones, not after every line.</p>
-    <p>stay available for questions. provide context the AI can't infer. correct mistakes early — it's cheaper to fix direction than to rebuild later.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>phase 4: verify</h3>
-    <p>this is where most people drop the ball. the AI says "done" and you say "great." three days later a customer reports a bug.</p>
-    <p>test the feature on a real device. check the database. verify the deployment. test the edge cases: no data, 10,000 rows, mobile, slow network.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>phase 5: document</h3>
-    <p>update your skill docs and memory with what you learned. the AI helped you discover that a certain config flag needs to be set — write that down so neither of you discovers it again.</p>
-  </div>
-
+  <div class="content-block"><h3>phase 1: orient</h3><p>state what you want to accomplish. be specific. the AI automatically loads your rules, relevant skills, and memory.</p></div>
+  <div class="content-block"><h3>phase 2: plan</h3><p>for anything beyond a simple fix, the AI proposes a plan. you review it — not for code quality, but for missing requirements, edge cases, and things the AI doesn't know.</p></div>
+  <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the blueprint review</h4><p>you're the building owner reviewing the architect's blueprints. you don't need to know how to calculate load-bearing requirements — but you do need to say "there's no bathroom on this floor" and "the front door opens into a wall."</p></div>
+  <div class="content-block"><h3>phase 3: build</h3><p>the AI writes code, creates files, runs commands, deploys. check in at milestones, not after every line. stay available for questions. correct mistakes early.</p></div>
+  <div class="content-block"><h3>phase 4: verify</h3><p>this is where most people drop the ball. test the feature on a real device. check the database. verify the deployment. test edge cases.</p></div>
+  <div class="content-block"><h3>phase 5: document</h3><p>update your skill docs and memory with what you learned. the next conversation starts with accurate context instead of stale docs.</p></div>
   <div class="story">
     <div class="story-label">from the field</div>
-    <p>a team was migrating off a third-party calendar integration. they followed the workflow precisely: oriented (identified the problem — credentials getting revoked), planned (proposed a phased migration with a "mirror mode" for testing), built (replaced the integration piece by piece), verified (manually checked the google calendar for correct events, caught a PST/PDT time bug), and documented (updated the infrastructure skill so the next conversation started with accurate context). the migration shipped cleanly because every phase got its due attention.</p>
-    <p class="lesson">the verify phase caught a time zone bug that no test would have found. the document phase prevented the next developer from reading stale documentation.</p>
+    <p>a team migrating off a third-party calendar integration followed the workflow precisely: oriented (credentials getting revoked), planned (phased migration with "mirror mode" testing), built (replaced piece by piece), verified (manually checked google calendar — caught a PST/PDT time bug), documented (updated infra skill). the migration shipped cleanly because every phase got its due attention.</p>
+    <p class="lesson">the verify phase caught a time zone bug no test would have found. the document phase prevented the next developer from reading stale docs.</p>
   </div>
 
-  <div class="quiz" data-quiz="5">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="5a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">the AI just finished building a booking system and says "deployment complete." what's the most important next step?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">ask the AI to write unit tests</button>
-      <button class="quiz-option" data-correct="false">start building the next feature while the context is fresh</button>
+      <button class="quiz-option" data-correct="false">start building the next feature while context is fresh</button>
       <button class="quiz-option" data-correct="true">make a real booking on a real device and verify the data end-to-end</button>
       <button class="quiz-option" data-correct="false">update the documentation first</button>
     </div>
-    <div class="quiz-explanation">verification comes before documentation. test the critical path with real data on a real device — make a booking, check the database, verify the calendar event, confirm the email sent. the gap between "code looks right" and "it works end-to-end" is where most bugs live.</div>
+    <div class="quiz-explanation">verification comes before documentation. test the critical path with real data on a real device. the gap between "code looks right" and "it works end-to-end" is where most bugs live.</div>
+  </div>
+
+  <div class="quiz" data-quiz="5b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">during the "plan" phase, what should you be looking for?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">syntax errors in the proposed code</button>
+      <button class="quiz-option" data-correct="false">whether the AI chose the right programming language</button>
+      <button class="quiz-option" data-correct="true">missing requirements, edge cases, and things the AI doesn't know about your system</button>
+      <button class="quiz-option" data-correct="false">whether the plan uses best practices</button>
+    </div>
+    <div class="quiz-explanation">you're the building owner, not the architect. you don't review load-bearing calculations — you catch "there's no bathroom on this floor." look for gaps in business logic, missing edge cases, and systems the AI doesn't know about.</div>
+  </div>
+
+  <div class="quiz" data-quiz="5c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">why is the "document" phase important even though the code itself is documentation?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">because code comments make debugging easier</button>
+      <button class="quiz-option" data-correct="true">because the AI's skill docs and memory need to reflect the new reality so the next conversation starts with accurate context</button>
+      <button class="quiz-option" data-correct="false">because managers need documentation for compliance</button>
+      <button class="quiz-option" data-correct="false">because the AI can't read code</button>
+    </div>
+    <div class="quiz-explanation">if you change how deployment works but don't update the skill doc, the next session starts with stale instructions. documentation for the AI is as important as the code change itself.</div>
   </div>
 
   <div class="chapter-nav">
@@ -1001,39 +527,19 @@
     <div class="chapter-title">debugging with AI</div>
     <div class="chapter-subtitle">data first, theories second — and always push back</div>
   </div>
-
-  <div class="content-block">
-    <p>debugging is where AI collaboration shines brightest — and where it can go most wrong. the AI can investigate logs, query databases, trace code paths, and propose fixes faster than any human. but it can also confidently lead you down the wrong path for 45 minutes.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>rule 1: data before theories</h3>
-    <p>don't let the AI theorize about what might be wrong. have it look at what IS wrong. check the logs first. query the database. hit the health endpoint. once you have data, theories become much more targeted.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>rule 2: push back on confidence</h3>
-    <p>the AI will present hypotheses as conclusions. "the issue is probably X" sounds authoritative. it might be wrong.</p>
-  </div>
-
+  <div class="content-block"><p>debugging is where AI collaboration shines brightest — and where it can go most wrong. the AI can investigate logs, query databases, and propose fixes faster than any human. but it can also confidently lead you down the wrong path for 45 minutes.</p></div>
+  <div class="content-block"><h3>rule 1: data before theories</h3><p>don't let the AI theorize about what might be wrong. have it look at what IS wrong. check the logs first. query the database. hit the health endpoint.</p></div>
+  <div class="content-block"><h3>rule 2: push back on confidence</h3><p>the AI will present hypotheses as conclusions. "the issue is probably X" sounds authoritative. it might be wrong.</p></div>
   <div class="story">
     <div class="story-label">from the field</div>
-    <p>when google calendar credentials kept getting revoked, the AI suggested the cause was "aggressive API polling rate-limiting the tokens." the human asked: "how confident are you?" — the AI admitted it was an educated guess. the human then asked: "why would it target one user and not the other 79?" — a simple question that exposed the theory didn't hold up. the actual cause turned out to be their own monitoring script accidentally disconnecting credentials.</p>
+    <p>when google calendar credentials kept getting revoked, the AI suggested "aggressive API polling rate-limiting." the human asked: "how confident are you?" — the AI admitted it was guessing. then: "why would it target one user and not the other 79?" — a simple question that exposed the theory didn't hold. the actual cause was their own monitoring script accidentally disconnecting credentials.</p>
     <p class="lesson">two questions — "how confident?" and "why this and not that?" — saved hours of debugging the wrong thing.</p>
   </div>
+  <div class="content-block"><h3>rule 3: give AI access to the real system</h3><p>teams that give AI SSH access to servers debug 3x faster. instead of "run this, paste output, wait, repeat," the AI checks logs and queries databases directly.</p></div>
+  <div class="content-block"><h3>rule 4: screenshots are underrated</h3><p>the AI can read screenshots. "it shows no data" + screenshot is 10x more useful than "it's not working" because the AI sees the URL, page state, and error messages simultaneously.</p></div>
 
-  <div class="content-block">
-    <h3>rule 3: give AI access to the real system</h3>
-    <p>teams that give AI SSH access to their servers, database access, and API credentials debug 3x faster. instead of "run this command, paste the output, wait for analysis, repeat," the AI can directly check logs, query tables, and verify endpoints.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>rule 4: screenshots are underrated</h3>
-    <p>when something looks wrong in the UI, screenshot it. the AI can read screenshots. "it shows no data" + screenshot is 10x more useful than "it's not working" because the AI can see the URL, the page state, error messages, and UI context simultaneously.</p>
-  </div>
-
-  <div class="quiz" data-quiz="6">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="6a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">the AI says "the 500 error is probably caused by a database connection timeout." what's the best response?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">"ok, increase the timeout to 60 seconds"</button>
@@ -1041,7 +547,31 @@
       <button class="quiz-option" data-correct="false">"let's rewrite the database connection code to be more robust"</button>
       <button class="quiz-option" data-correct="false">"restart the database server"</button>
     </div>
-    <div class="quiz-explanation">before accepting any theory, ask for evidence. "probably" means the AI is guessing. checking the actual error log takes 10 seconds and tells you exactly what happened — it might be a timeout, or it might be a completely different issue. data before theories.</div>
+    <div class="quiz-explanation">before accepting any theory, ask for evidence. "probably" means the AI is guessing. checking the actual error log takes 10 seconds and tells you exactly what happened.</div>
+  </div>
+
+  <div class="quiz" data-quiz="6b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">why is giving the AI SSH access to your server such a time-saver for debugging?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">because the AI can fix problems without your involvement</button>
+      <button class="quiz-option" data-correct="true">because the AI can directly check logs, query databases, and verify endpoints instead of you copying and pasting output back and forth</button>
+      <button class="quiz-option" data-correct="false">because it's more secure than sharing log files</button>
+      <button class="quiz-option" data-correct="false">because the AI needs root access to debug properly</button>
+    </div>
+    <div class="quiz-explanation">the copy-paste debugging loop (run command → copy output → paste into chat → wait for analysis → repeat) is the biggest time sink. direct access lets the AI explore the problem space the way a human engineer would — following leads, checking related systems, and verifying hypotheses in real-time.</div>
+  </div>
+
+  <div class="quiz" data-quiz="6c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">a UI bug appears on your phone. what's the most effective way to report it to the AI?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">"the page looks wrong on mobile"</button>
+      <button class="quiz-option" data-correct="false">describe the CSS properties you think are wrong</button>
+      <button class="quiz-option" data-correct="true">send a screenshot — the AI can see the URL, layout, error messages, and page state all at once</button>
+      <button class="quiz-option" data-correct="false">paste the entire page's HTML source</button>
+    </div>
+    <div class="quiz-explanation">screenshots are the highest-bandwidth communication channel for UI bugs. the AI sees everything a human would see — the URL bar, the broken layout, any error messages, the device context — in one glance. worth a thousand words of description.</div>
   </div>
 
   <div class="chapter-nav">
@@ -1057,46 +587,16 @@
     <div class="chapter-title">the traps everyone falls into</div>
     <div class="chapter-subtitle">mistakes observed across real teams — and how to avoid them</div>
   </div>
+  <div class="content-block"><h3>trap 1: being too vague</h3><p>"fix the login" → AI investigates 15 possible issues. "mobile Safari shows white screen after OTP entry, CORS error in console, started after yesterday's deploy" → AI goes straight to the answer.</p></div>
+  <div class="content-block"><h3>trap 2: not pushing back</h3><p>the AI sounds confident even when guessing. develop the reflex: "what makes you think so?"</p></div>
+  <div class="content-block"><h3>trap 3: "it said it worked"</h3><p>not verification. an exit code of 0 means the process didn't crash — not that it did the right thing.</p></div>
+  <div class="content-block"><h3>trap 4: re-explaining everything</h3><p>if you're saying the same things every conversation, write it into a rules file or skill document once.</p></div>
+  <div class="content-block"><h3>trap 5: micromanaging code</h3><p>describe the outcome. intervene at decision points — architecture, tradeoffs, business rules — not at every line.</p></div>
+  <div class="content-block"><h3>trap 6: trying to predict everything upfront</h3><p>build the core, test it, discover what's missing, iterate. real requirements emerge from real usage.</p></div>
+  <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the pottery wheel</h4><p>you don't design a perfect vase on paper and then execute. you throw clay, shape it, see how it looks, adjust. the first pass gives you the form. iterations give you the art. software works the same way.</p></div>
 
-  <div class="content-block">
-    <h3>trap 1: being too vague</h3>
-    <p>"fix the login" → AI investigates 15 possible issues. "mobile Safari shows white screen after OTP entry, CORS error in console, started after yesterday's deploy" → AI goes straight to the answer.</p>
-    <p>include: what you expected, what happened, when it started, what changed recently.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>trap 2: not pushing back</h3>
-    <p>the AI sounds confident even when guessing. if you accept every suggestion without questioning, you'll fix the wrong problem half the time. develop the reflex: "what makes you think so?"</p>
-  </div>
-
-  <div class="content-block">
-    <h3>trap 3: "it said it worked"</h3>
-    <p>not verification. verification means YOU confirmed the result with YOUR eyes on the ACTUAL system. an exit code of 0 means the process didn't crash — not that it did the right thing.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>trap 4: re-explaining everything</h3>
-    <p>if you're saying the same things every conversation, you're wasting time. write it into a rules file or skill document once. let the AI read it automatically every time.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>trap 5: micromanaging code</h3>
-    <p>you don't need to specify which React hooks to use. describe the outcome, let the AI choose the implementation. intervene at decision points — architecture, tradeoffs, business rules — not at every line.</p>
-  </div>
-
-  <div class="content-block">
-    <h3>trap 6: trying to predict everything upfront</h3>
-    <p>you can't spec every edge case before building. build the core, test it, discover what's missing, iterate. "what about users who dismiss the modal?" is a question you'll ask after seeing the modal, not before.</p>
-  </div>
-
-  <div class="metaphor">
-    <div class="metaphor-label">mental model</div>
-    <h4>the pottery wheel</h4>
-    <p>you don't design a perfect vase on paper and then execute. you throw clay, shape it, see how it looks, adjust. the first pass gives you the form. iterations give you the art. software works the same way — build the core, then refine based on what you actually see.</p>
-  </div>
-
-  <div class="quiz" data-quiz="7">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="7a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">you've asked the AI to deploy a change. it responds "deployment complete, all services healthy." what should you NOT do?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="true">move on to the next task without checking anything</button>
@@ -1104,7 +604,31 @@
       <button class="quiz-option" data-correct="false">ask the AI to show you the deployment logs</button>
       <button class="quiz-option" data-correct="false">test the specific feature that was changed</button>
     </div>
-    <div class="quiz-explanation">never take "deployment complete" at face value without personal verification. load the page, test the feature, check the data. the other three options are all good verification steps.</div>
+    <div class="quiz-explanation">never take "deployment complete" at face value. load the page, test the feature, check the data. the other three options are all good verification steps.</div>
+  </div>
+
+  <div class="quiz" data-quiz="7b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">the AI suggests a completely different technical approach than what you originally discussed. what should you do?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">always go with the AI's suggestion — it knows more about code</button>
+      <button class="quiz-option" data-correct="false">always reject it — you should stick to the original plan</button>
+      <button class="quiz-option" data-correct="true">ask why it changed approach, and whether the original approach was tried first</button>
+      <button class="quiz-option" data-correct="false">let it do both approaches and pick the one that works</button>
+    </div>
+    <div class="quiz-explanation">AI can silently switch approaches when the first one hits a snag, which can lead to rabbit holes. ask why — there might be a good reason, or the AI might have given up too early. the best teams insist on trying the original approach first.</div>
+  </div>
+
+  <div class="quiz" data-quiz="7c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">which is the better development approach?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">write a complete specification for every feature and edge case before building anything</button>
+      <button class="quiz-option" data-correct="true">build the core feature, test it, then discover and handle edge cases through iteration</button>
+      <button class="quiz-option" data-correct="false">let the AI decide the scope and edge cases</button>
+      <button class="quiz-option" data-correct="false">build everything at once to avoid multiple deploy cycles</button>
+    </div>
+    <div class="quiz-explanation">like the pottery wheel — throw the clay first, then shape it. build the core, see how it actually works, and THEN handle edge cases. "what about users who dismiss the modal?" is a question you ask after seeing the modal, not before.</div>
   </div>
 
   <div class="chapter-nav">
@@ -1120,34 +644,25 @@
     <div class="chapter-title">the investment that compounds</div>
     <div class="chapter-subtitle">why the scaffolding matters more than the code</div>
   </div>
-
   <div class="content-block">
     <p>here's the counterintuitive truth: the time spent writing documentation for the AI pays back more than the time spent writing code.</p>
-    <p>a 30-minute skill document saves 15 minutes per conversation. after 20 conversations, that's 5 hours saved. after 100, it's 25 hours. and the quality goes up too — the AI makes fewer mistakes when it has complete context.</p>
+    <p>a 30-minute skill document saves 15 minutes per conversation. after 20 conversations, that's 5 hours saved. after 100, it's 25 hours. and quality goes up too — the AI makes fewer mistakes with complete context.</p>
   </div>
-
-  <div class="metaphor">
-    <div class="metaphor-label">mental model</div>
-    <h4>compound interest</h4>
-    <p>your skills and rules files are like a savings account that earns compound interest. every investment (a new skill, a corrected rule, a documented gotcha) makes every future conversation faster and more reliable. teams that invest early have dramatically higher "AI ROI" six months in than teams that keep starting from scratch.</p>
-  </div>
-
+  <div class="metaphor"><div class="metaphor-label">mental model</div><h4>compound interest</h4><p>your skills and rules files are like a savings account that earns compound interest. every investment (a new skill, a corrected rule, a documented gotcha) makes every future conversation faster and more reliable. teams that invest early have dramatically higher "AI ROI" six months in.</p></div>
   <div class="content-block">
     <h3>what to build first</h3>
     <ol>
-      <li><strong>a rules file</strong> — your non-negotiable standards (commit habits, logging, safety rails). 15 minutes to write. used every conversation.</li>
-      <li><strong>an infrastructure skill</strong> — server addresses, SSH commands, deployment steps, health checks. the most-used skill for any production team.</li>
-      <li><strong>memory entries</strong> — who you are, what you're working on, gotchas you've discovered. builds automatically as you work.</li>
-      <li><strong>process skills</strong> — complex multi-step workflows that would take 20 minutes to re-explain each time.</li>
+      <li><strong>a rules file</strong> — your non-negotiable standards. 15 minutes. used every conversation.</li>
+      <li><strong>an infrastructure skill</strong> — server addresses, SSH commands, deployment steps. the most-used skill.</li>
+      <li><strong>memory entries</strong> — who you are, what you're working on, gotchas you've discovered.</li>
+      <li><strong>process skills</strong> — complex multi-step workflows that would take 20 minutes to re-explain.</li>
     </ol>
   </div>
-
   <div class="content-block">
     <h3>the meta-lesson</h3>
     <p>skills are living documentation that happens to be executable. the rules file is a team agreement that happens to be enforced by AI. memory is institutional knowledge that happens to persist across sessions.</p>
     <p>the teams that write the best skills debug the fastest, ship the most reliably, and onboard new collaborators — human or AI — with the least friction.</p>
   </div>
-
   <div class="key-points">
     <h4>your action items</h4>
     <ul>
@@ -1161,8 +676,8 @@
     </ul>
   </div>
 
-  <div class="quiz" data-quiz="8">
-    <div class="quiz-label">check your understanding</div>
+  <div class="quiz" data-quiz="8a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">what's the highest-leverage thing you can do to improve your AI collaboration over time?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">learn to code so you can review every line the AI writes</button>
@@ -1170,10 +685,34 @@
       <button class="quiz-option" data-correct="true">invest in your scaffolding — rules, skills, and memory that compound over time</button>
       <button class="quiz-option" data-correct="false">switch AI tools frequently to find the best one</button>
     </div>
-    <div class="quiz-explanation">the scaffolding (rules, skills, memory) is what separates teams that get exponentially more productive from teams that reset every conversation. it's compound interest for AI collaboration — every investment makes every future session faster and more reliable.</div>
+    <div class="quiz-explanation">the scaffolding is compound interest for AI collaboration — every investment makes every future session faster and more reliable.</div>
   </div>
 
-  <!-- FINAL SCORE -->
+  <div class="quiz" data-quiz="8b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">what should you build FIRST when starting with AI-assisted development?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">a rules file with your non-negotiable standards — it takes 15 minutes and is used every conversation</button>
+      <button class="quiz-option" data-correct="false">a complete library of skills covering every system</button>
+      <button class="quiz-option" data-correct="false">automated testing infrastructure</button>
+      <button class="quiz-option" data-correct="false">a custom AI model fine-tuned on your codebase</button>
+    </div>
+    <div class="quiz-explanation">start small — a rules file is 15 minutes and immediately impacts every conversation. skills and memory grow organically as you work. don't try to document everything upfront; document what you find yourself repeating.</div>
+  </div>
+
+  <div class="quiz" data-quiz="8c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">what does "skills are living documentation that happens to be executable" mean?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">skills contain runnable code scripts</button>
+      <button class="quiz-option" data-correct="false">skills are generated automatically from your codebase</button>
+      <button class="quiz-option" data-correct="true">skills document your systems in a way the AI actively uses to make decisions and take actions — they're not just reference docs, they shape behavior</button>
+      <button class="quiz-option" data-correct="false">skills replace the need for traditional documentation</button>
+    </div>
+    <div class="quiz-explanation">traditional docs sit in a wiki and hope someone reads them. skill docs are read by the AI at the moment of action — they directly influence what commands get run, what safety checks get performed, and what patterns get followed. documentation that shapes behavior, not just records information.</div>
+  </div>
+
+  <!-- FINAL SCORE — rendered dynamically -->
   <div class="score-card" id="final-score" style="display: none;">
     <div class="score-number" id="score-pct">0%</div>
     <div class="score-label">quiz accuracy</div>
@@ -1183,7 +722,7 @@
         <div class="score-stat-label">correct</div>
       </div>
       <div class="score-stat">
-        <div class="score-stat-num" id="score-total">8</div>
+        <div class="score-stat-num" id="score-total">24</div>
         <div class="score-stat-label">questions</div>
       </div>
     </div>
@@ -1203,13 +742,13 @@
 
 <script>
 const TOTAL_CHAPTERS = 8;
+const TOTAL_QUIZZES = 24;
 let currentChapter = 0;
 let quizAnswers = {};
 let visitedChapters = new Set([0]);
 
-// Load progress from localStorage
 try {
-  const saved = localStorage.getItem('cc101-progress');
+  const saved = localStorage.getItem('cc101-progress-v2');
   if (saved) {
     const data = JSON.parse(saved);
     quizAnswers = data.quizAnswers || {};
@@ -1219,7 +758,7 @@ try {
 
 function saveProgress() {
   try {
-    localStorage.setItem('cc101-progress', JSON.stringify({
+    localStorage.setItem('cc101-progress-v2', JSON.stringify({
       quizAnswers,
       visited: [...visitedChapters]
     }));
@@ -1234,39 +773,29 @@ function goTo(n) {
   updateNav();
   saveProgress();
   window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  // Restore quiz states for visited chapters
   restoreQuizStates();
-
-  // Show final score if on last chapter and all quizzes answered
-  if (n === TOTAL_CHAPTERS) {
-    showFinalScore();
-  }
+  updateFinalScore();
 }
 
 function updateNav() {
-  const completed = visitedChapters.size - 1; // don't count chapter 0
+  const completed = visitedChapters.size - 1;
   const pct = Math.round((completed / TOTAL_CHAPTERS) * 100);
   document.getElementById('progress-text').textContent = `${completed} / ${TOTAL_CHAPTERS}`;
   document.getElementById('progress-fill').style.width = `${pct}%`;
 
-  // Update dots
   const dotsContainer = document.getElementById('chapter-dots');
   dotsContainer.innerHTML = '';
-  const labels = ['home', 'mindset', 'what you bring', 'specificity', 'memory layers',
-                  'workflow', 'debugging', 'common traps', 'compounding'];
+  const labels = ['home','mindset','what you bring','specificity','memory layers','workflow','debugging','common traps','compounding'];
   for (let i = 0; i <= TOTAL_CHAPTERS; i++) {
     const dot = document.createElement('button');
     dot.className = 'chapter-dot';
     if (i === currentChapter) dot.classList.add('active');
-    else if (visitedChapters.has(i) && i !== currentChapter) dot.classList.add('completed');
+    else if (visitedChapters.has(i)) dot.classList.add('completed');
     dot.onclick = () => goTo(i);
-
     const tooltip = document.createElement('span');
     tooltip.className = 'tooltip';
     tooltip.textContent = labels[i];
     dot.appendChild(tooltip);
-
     dotsContainer.appendChild(dot);
   }
 }
@@ -1279,22 +808,16 @@ document.querySelectorAll('.quiz').forEach(quiz => {
 
   options.forEach((opt, idx) => {
     opt.addEventListener('click', () => {
-      if (quizAnswers[quizId] !== undefined) return; // already answered
-
+      if (quizAnswers[quizId] !== undefined) return;
       const isCorrect = opt.dataset.correct === 'true';
       quizAnswers[quizId] = { idx, isCorrect };
       saveProgress();
-
       opt.classList.add('selected', isCorrect ? 'correct' : 'wrong');
-
-      // Reveal correct answer if wrong
       if (!isCorrect) {
-        options.forEach(o => {
-          if (o.dataset.correct === 'true') o.classList.add('reveal-correct');
-        });
+        options.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('reveal-correct'); });
       }
-
       explanation.classList.add('visible');
+      updateFinalScore();
     });
   });
 });
@@ -1304,37 +827,31 @@ function restoreQuizStates() {
     const quizId = quiz.dataset.quiz;
     const answer = quizAnswers[quizId];
     if (!answer) return;
-
     const options = quiz.querySelectorAll('.quiz-option');
     const explanation = quiz.querySelector('.quiz-explanation');
-
     options[answer.idx].classList.add('selected', answer.isCorrect ? 'correct' : 'wrong');
-
     if (!answer.isCorrect) {
-      options.forEach(o => {
-        if (o.dataset.correct === 'true') o.classList.add('reveal-correct');
-      });
+      options.forEach(o => { if (o.dataset.correct === 'true') o.classList.add('reveal-correct'); });
     }
-
     explanation.classList.add('visible');
   });
 }
 
-function showFinalScore() {
-  const total = TOTAL_CHAPTERS;
-  const correct = Object.values(quizAnswers).filter(a => a.isCorrect).length;
+function updateFinalScore() {
   const answered = Object.keys(quizAnswers).length;
+  const correct = Object.values(quizAnswers).filter(a => a.isCorrect).length;
+  const scoreCard = document.getElementById('final-score');
 
-  if (answered >= total * 0.5) { // show if at least half answered
-    const scoreCard = document.getElementById('final-score');
+  if (currentChapter === TOTAL_CHAPTERS && answered > 0) {
     scoreCard.style.display = 'block';
-    document.getElementById('score-pct').textContent = `${Math.round((correct / total) * 100)}%`;
+    document.getElementById('score-pct').textContent = `${Math.round((correct / answered) * 100)}%`;
     document.getElementById('score-correct').textContent = correct;
-    document.getElementById('score-total').textContent = total;
+    document.getElementById('score-total').textContent = answered;
+  } else {
+    scoreCard.style.display = 'none';
   }
 }
 
-// Initialize
 updateNav();
 restoreQuizStates();
 </script>
