@@ -26,6 +26,8 @@ your job isn't to write code. your job is to be the person who:
 
 the AI's job is everything else: writing the code, running the commands, debugging the errors, deploying the changes.
 
+one thing the best teams do that others skip: they tell the AI *how* they want to work, not just *what* to build. "i want this to be a conversation first — explore ideas with me before committing to a plan" is fundamentally different from "just execute this." the AI defaults to whatever mode it's in — setting the collaboration style explicitly changes the quality of the whole interaction.
+
 ---
 
 ## the five things you bring to the collaboration
@@ -41,6 +43,8 @@ the AI can build anything. it cannot decide what to build. that's you.
 - "create a React component with useState hooks and a Postgres table" (less good — prescribes implementation before the AI understands the problem)
 
 describe outcomes, not implementations. let the AI propose the architecture, then steer it.
+
+**but sometimes, start with curiosity.** when you're exploring unfamiliar territory, "what does the roster discovery script do?" is better than "add tier 2 to the roster discovery script." understanding the existing system before modifying it surfaces information that shapes better decisions. the pattern: specify when you know what you want, explore when you don't.
 
 ### 2. context — "here's what you can't see from the code"
 
@@ -140,6 +144,8 @@ the AI loads your rules file, relevant skills, and memory automatically. within 
 
 **what you do:** state what you want to accomplish. be specific. "the webhook server is returning 500 errors on the /booking endpoint" is better than "something's broken."
 
+**pro tip: check current state first.** before modifying a system, ask "is it even working right now?" one team discovered their monthly script had been silently failing for a month — not because they went looking for problems, but because they asked "did it already run?" before deploying new code. this habit catches infrastructure rot that would otherwise compound silently.
+
 ### phase 2: plan
 
 for anything beyond a simple fix, the AI proposes a plan. you review it.
@@ -199,7 +205,11 @@ if you find yourself saying the same things every conversation — "our database
 
 you don't need to specify which React hooks to use or how to structure the SQL query. describe the outcome you want and let the AI figure out the implementation. intervene at decision points (architecture, tradeoffs, business rules), not at every line of code.
 
-### mistake 6: trying to specify everything upfront
+### mistake 6: naming things for yourself instead of the future
+
+"Discovery Tier" makes sense today. "TAM Discovery Tier" makes sense six months from now when nobody remembers what "discovery" referred to. name database fields, variables, and features for the person who doesn't have your current context — including future you.
+
+### mistake 7: trying to specify everything upfront
 
 you can't predict every edge case before building. the best workflow is: build the core feature, test it, discover what's missing, iterate. real requirements emerge from real usage. "what about users who dismiss the modal?" is a question you'll ask after seeing the modal, not before.
 

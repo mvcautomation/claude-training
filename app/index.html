@@ -192,6 +192,11 @@
     <p>the teams that actually ship software with AI treat it differently. they treat it like hiring a brilliant junior engineer who has amnesia between shifts.</p>
     <p>this engineer shows up every day ready to work. they know every programming language. they can read any codebase in seconds. but they don't remember what you told them yesterday unless you wrote it down somewhere they can find it.</p>
   </div>
+
+  <div class="content-block">
+    <h3>set the collaboration style</h3>
+    <p>one thing the best teams do that others skip: they tell the AI <em>how</em> they want to work, not just <em>what</em> to build. "i want this to be a conversation first — explore ideas with me before committing to a plan." or "just execute this, i've already decided." the AI defaults to whatever mode it's in — telling it how you want to engage changes the quality of the whole interaction.</p>
+  </div>
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
     <h4>the orchestra conductor</h4>
@@ -352,8 +357,16 @@
     <p>you don't tell the builder which nails to use. you tell them you want a door that locks, a window that faces south, and a floor that holds a piano. but if you know the soil is clay and the builder doesn't, you speak up.</p>
   </div>
   <div class="content-block">
-    <h3>front-loading requirements</h3>
-    <p>every requirement discovered after building starts costs a round trip: redo, redeploy, retest. one team didn't mention "it needs to work in DMs" until after the feature was deployed. one sentence upfront would have saved three commit-push-deploy cycles.</p>
+    <h3>when to explore vs. when to specify</h3>
+    <p>specificity is king when you know what you want. but sometimes you don't — and that's where a different approach shines.</p>
+    <p><strong>when you know the system well:</strong> front-load requirements. every requirement discovered after building costs a round trip. one team didn't mention "it needs to work in DMs" until after the feature was deployed. one sentence upfront saves three commit-push-deploy cycles.</p>
+    <p><strong>when you're exploring unfamiliar territory:</strong> start with curiosity. "what does the roster discovery script do?" before "add tier 2 to the roster discovery script." understanding the existing system first produces better designs and catches issues the AI would miss if it just started coding.</p>
+  </div>
+
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>the doctor's visit</h4>
+    <p>if you know you broke your arm, tell the doctor "i broke my arm." don't make them guess. but if you have a mysterious pain, don't walk in saying "prescribe me antibiotics." describe the symptoms and let the doctor investigate. same with AI — specify when you know, explore when you don't.</p>
   </div>
 
   <div class="quiz" data-quiz="3a">
@@ -535,8 +548,9 @@
     <p>when google calendar credentials kept getting revoked, the AI suggested "aggressive API polling rate-limiting." the human asked: "how confident are you?" — the AI admitted it was guessing. then: "why would it target one user and not the other 79?" — a simple question that exposed the theory didn't hold. the actual cause was their own monitoring script accidentally disconnecting credentials.</p>
     <p class="lesson">two questions — "how confident?" and "why this and not that?" — saved hours of debugging the wrong thing.</p>
   </div>
-  <div class="content-block"><h3>rule 3: give AI access to the real system</h3><p>teams that give AI SSH access to servers debug 3x faster. instead of "run this, paste output, wait, repeat," the AI checks logs and queries databases directly.</p></div>
-  <div class="content-block"><h3>rule 4: screenshots are underrated</h3><p>the AI can read screenshots. "it shows no data" + screenshot is 10x more useful than "it's not working" because the AI sees the URL, page state, and error messages simultaneously.</p></div>
+  <div class="content-block"><h3>rule 3: check current state before changing anything</h3><p>before modifying a system, ask "is it even working right now?" one team discovered their monthly script had been silently failing for a month — not because they went looking for problems, but because they asked "did it already run?" before deploying new code. this habit of checking current state before modifying it catches infrastructure rot that would otherwise compound silently.</p></div>
+  <div class="content-block"><h3>rule 4: give AI access to the real system</h3><p>teams that give AI SSH access to servers debug 3x faster. instead of "run this, paste output, wait, repeat," the AI checks logs and queries databases directly.</p></div>
+  <div class="content-block"><h3>rule 5: screenshots are underrated</h3><p>the AI can read screenshots. "it shows no data" + screenshot is 10x more useful than "it's not working" because the AI sees the URL, page state, and error messages simultaneously.</p></div>
 
   <div class="quiz" data-quiz="6a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
@@ -592,7 +606,8 @@
   <div class="content-block"><h3>trap 3: "it said it worked"</h3><p>not verification. an exit code of 0 means the process didn't crash — not that it did the right thing.</p></div>
   <div class="content-block"><h3>trap 4: re-explaining everything</h3><p>if you're saying the same things every conversation, write it into a rules file or skill document once.</p></div>
   <div class="content-block"><h3>trap 5: micromanaging code</h3><p>describe the outcome. intervene at decision points — architecture, tradeoffs, business rules — not at every line.</p></div>
-  <div class="content-block"><h3>trap 6: trying to predict everything upfront</h3><p>build the core, test it, discover what's missing, iterate. real requirements emerge from real usage.</p></div>
+  <div class="content-block"><h3>trap 6: naming things for yourself instead of the future</h3><p>"Discovery Tier" makes sense today. "TAM Discovery Tier" makes sense six months from now when nobody remembers what "discovery" referred to. name database fields, variables, and features for the person who doesn't have your current context.</p></div>
+  <div class="content-block"><h3>trap 7: trying to predict everything upfront</h3><p>build the core, test it, discover what's missing, iterate. real requirements emerge from real usage.</p></div>
   <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the pottery wheel</h4><p>you don't design a perfect vase on paper and then execute. you throw clay, shape it, see how it looks, adjust. the first pass gives you the form. iterations give you the art. software works the same way.</p></div>
 
   <div class="quiz" data-quiz="7a">
