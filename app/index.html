@@ -135,6 +135,44 @@
 
   code { font-family: 'Space Mono', monospace; font-size: 0.82rem; background: rgba(255, 255, 255, 0.06); padding: 2px 6px; border-radius: 4px; color: var(--green); }
   html { scroll-behavior: smooth; }
+
+  /* ---- Setup Guide ---- */
+  .setup-step { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 24px; margin-bottom: 16px; position: relative; }
+  .setup-step-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .setup-step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: 700; flex-shrink: 0; }
+  .setup-step-num.manual { background: rgba(255, 165, 2, 0.15); color: var(--orange); border: 1px solid rgba(255, 165, 2, 0.3); }
+  .setup-step-num.command { background: rgba(123, 237, 159, 0.15); color: var(--green); border: 1px solid rgba(123, 237, 159, 0.3); }
+  .setup-step-num.claude { background: rgba(30, 144, 255, 0.15); color: var(--blue); border: 1px solid rgba(30, 144, 255, 0.3); }
+  .setup-step-title { font-size: 1rem; font-weight: 600; color: var(--text); }
+  .setup-badge { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; padding: 3px 8px; border-radius: 4px; margin-left: auto; flex-shrink: 0; }
+  .setup-badge.manual { background: rgba(255, 165, 2, 0.12); color: var(--orange); }
+  .setup-badge.command { background: rgba(123, 237, 159, 0.12); color: var(--green); }
+  .setup-badge.claude { background: rgba(30, 144, 255, 0.12); color: var(--blue); }
+  .setup-step p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 10px; }
+  .setup-step p:last-child { margin-bottom: 0; }
+
+  .platform-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+  .platform-tab { padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; font-weight: 500; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text-muted); transition: all 0.2s; font-family: 'Space Grotesk', sans-serif; }
+  .platform-tab.active { background: rgba(123, 237, 159, 0.12); border-color: rgba(123, 237, 159, 0.3); color: var(--green); }
+  .platform-content { display: none; }
+  .platform-content.active { display: block; }
+
+  .cmd-block { position: relative; background: #0d1117; border: 1px solid var(--border); border-radius: 8px; padding: 14px 48px 14px 16px; margin: 10px 0; font-family: 'Space Mono', monospace; font-size: 0.82rem; color: var(--green); overflow-x: auto; white-space: pre-wrap; word-break: break-all; line-height: 1.6; }
+  .cmd-copy { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid var(--border); border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; color: var(--text-muted); font-size: 0.85rem; }
+  .cmd-copy:hover { background: rgba(255,255,255,0.12); color: var(--green); border-color: var(--green); }
+  .cmd-copy.copied { background: rgba(123, 237, 159, 0.15); border-color: var(--green); color: var(--green); }
+
+  .setup-note { background: rgba(30, 144, 255, 0.08); border: 1px solid rgba(30, 144, 255, 0.2); border-radius: 8px; padding: 14px 16px; margin: 10px 0; font-size: 0.85rem; color: var(--text-secondary); }
+  .setup-note strong { color: var(--blue); }
+
+  .setup-legend { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+  .setup-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: var(--text-muted); }
+  .setup-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .setup-legend-dot.manual { background: var(--orange); }
+  .setup-legend-dot.command { background: var(--green); }
+  .setup-legend-dot.claude { background: var(--blue); }
+
+  .setup-prompt-block { background: rgba(30, 144, 255, 0.06); border: 1px solid rgba(30, 144, 255, 0.2); border-radius: 8px; padding: 14px 48px 14px 16px; margin: 10px 0; font-size: 0.85rem; color: var(--text-secondary); position: relative; font-style: italic; line-height: 1.6; }
 </style>
 </head>
 <body>
@@ -163,7 +201,7 @@
   <div class="content-block" style="margin-top: 40px;">
     <h3>what you'll learn</h3>
     <p>this is not a tool tutorial. it's a framework for a new kind of working relationship — one where you bring judgment, context, and direction while AI handles implementation at superhuman speed.</p>
-    <p>8 chapters. ~25 minutes. 24 quizzes to make it stick.</p>
+    <p>10 chapters. ~35 minutes. 30 quizzes to make it stick.</p>
   </div>
   <div class="key-points">
     <h4>chapters</h4>
@@ -176,6 +214,8 @@
       <li>debugging with AI — when things go wrong</li>
       <li>common mistakes — the traps everyone falls into</li>
       <li>the investment that compounds — building your scaffolding</li>
+      <li>github essentials — commits, pushing, repos, and staying safe</li>
+      <li>environment setup — install your tools and create your first repo</li>
     </ul>
   </div>
 </div>
@@ -727,6 +767,390 @@
     <div class="quiz-explanation">traditional docs sit in a wiki and hope someone reads them. skill docs are read by the AI at the moment of action — they directly influence what commands get run, what safety checks get performed, and what patterns get followed. documentation that shapes behavior, not just records information.</div>
   </div>
 
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(7)">← back</button>
+    <button class="btn-next" onclick="goTo(9)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 9: GITHUB ESSENTIALS ==================== -->
+<div class="chapter" id="chapter-9">
+  <div class="chapter-header">
+    <div class="chapter-number">chapter 9</div>
+    <div class="chapter-title">github essentials</div>
+    <div class="chapter-subtitle">commits, pushing, repos, and how not to destroy your work</div>
+  </div>
+
+  <div class="content-block">
+    <p>before you start building with Claude, you need to understand the tool that keeps your work safe: git and GitHub. Claude will handle most git commands for you, but you need to understand what's happening — because when things go wrong with git, they can go <em>very</em> wrong.</p>
+    <p>this chapter is a crash course. not everything about git — just the parts that matter when you're building with AI.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>commits — saving your progress</h3>
+    <p>a commit is a snapshot of your project at a specific moment. think of it like hitting "save" in a video game — you can always go back to that exact point.</p>
+    <p>every commit has a message that describes what changed and why. good commit messages are short and specific:</p>
+  </div>
+  <div class="comparison">
+    <div class="comparison-bad">
+      <div class="comparison-label">vague</div>
+      <p>"fixed stuff"</p>
+      <p>"updates"</p>
+      <p>"work in progress"</p>
+    </div>
+    <div class="comparison-good">
+      <div class="comparison-label">specific</div>
+      <p>"fix login redirect loop on mobile Safari"</p>
+      <p>"add email notification for updated content"</p>
+      <p>"remove deprecated auth middleware"</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <p><strong>how often should you commit?</strong> every time you finish a logical unit of work. added a feature? commit. fixed a bug? commit. refactored a function? commit. if Claude just built something that works, tell it to commit before moving to the next thing. small, frequent commits mean you can undo one change without losing everything else.</p>
+    <div class="setup-note"><strong>rule of thumb:</strong> if you'd be upset losing the work you just did, you should have committed it already. tell Claude: "commit after every working change."</div>
+  </div>
+
+  <div class="content-block">
+    <h3>push and pull — syncing with GitHub</h3>
+    <p><strong>push</strong> sends your local commits up to GitHub. until you push, your work only exists on your machine. if your laptop dies, it's gone.</p>
+    <p><strong>pull</strong> downloads changes from GitHub to your local machine. this is how you get updates that others (or you from another machine) have pushed.</p>
+    <p>the normal flow is simple: commit your work, push it up. but there's a dangerous command that can ruin your day.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">horror story</div>
+    <p>a developer had two weeks of work on a branch. their AI assistant hit a merge conflict and, trying to be helpful, ran <code>git push --force</code>. force push doesn't merge — it <em>overwrites</em> whatever is on GitHub with whatever is on your machine. the developer's teammate had pushed changes to the same branch that morning. those changes were instantly and silently erased. no warning, no confirmation, no undo. two days of their teammate's work — gone.</p>
+    <p class="lesson">force push rewrites history. it doesn't ask permission. it doesn't check if someone else pushed first. it just overwrites. this is why your CLAUDE.md should always include: "NEVER force push without explicit approval."</p>
+  </div>
+  <div class="content-block">
+    <p><strong>the safe approach:</strong> always tell Claude to use the safest route that prevents irreversible loss. a normal <code>git push</code> will fail if there are conflicts — and that's a <em>good</em> thing. it means git is protecting you. if a push fails, ask Claude to pull first, resolve conflicts, and then push normally.</p>
+    <div class="setup-note"><strong>add this to your CLAUDE.md:</strong> "never use force push or rewrite git history without specific approval from the user. always prefer the safest approach that prevents irreversible data loss."</div>
+  </div>
+
+  <div class="content-block">
+    <h3>repos — one project, one repo</h3>
+    <p>a repository (repo) is a folder that git tracks. it contains your project's code, history, and configuration. the rule is simple: <strong>one repo per project.</strong></p>
+    <p>don't put multiple unrelated projects in one repo. don't split one project across multiple repos (unless you have a very good reason). one project, one repo, one source of truth.</p>
+    <p>when you create a repo on GitHub, it lives in two places: your local machine (where you work) and GitHub (where it's backed up and shared). commits save locally, pushes sync to GitHub.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>working solo — keep it simple</h3>
+    <p>when you're the only person on a project, the workflow is straightforward:</p>
+    <ol style="margin: 12px 0 12px 32px; padding-left: 0;">
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">write code (or have Claude write it)</li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">commit with a clear message</li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">push to main</li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">repeat</li>
+    </ol>
+    <p><strong>pushing directly to main is fine when you're solo.</strong> there's nobody else to conflict with, and the overhead of branches and pull requests slows you down for no benefit. just commit often and push regularly so your work is backed up.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>the notebook</h4>
+    <p>working solo on main is like writing in a personal notebook. you don't need a formal review process to write in your own notebook — you just write. the important thing is that you're writing (committing) frequently and keeping a copy somewhere safe (pushing to GitHub).</p>
+  </div>
+
+  <div class="content-block">
+    <h3>working with a team — branches and pull requests</h3>
+    <p>when multiple people work on the same repo, pushing directly to main is a recipe for disaster. instead, teams use <strong>feature branches</strong> and <strong>pull requests</strong>.</p>
+    <p><strong>feature branches:</strong> instead of working on main, you create a branch — a parallel copy of the code. you make your changes there, isolated from everyone else. the naming convention is descriptive: <code>feature/add-notifications</code>, <code>fix/login-redirect</code>, <code>refactor/auth-middleware</code>.</p>
+    <p><strong>pull requests (PRs):</strong> when your branch is ready, you open a pull request on GitHub. this is a formal proposal to merge your changes into main. teammates can review the code, leave comments, request changes, and ultimately approve it. only after approval does the code get merged into main.</p>
+  </div>
+  <div class="comparison">
+    <div class="comparison-bad">
+      <div class="comparison-label">solo workflow</div>
+      <p>work → commit → push to main</p>
+      <p>simple, fast, no overhead</p>
+      <p>fine when you're the only one</p>
+    </div>
+    <div class="comparison-good">
+      <div class="comparison-label">team workflow</div>
+      <p>branch → work → commit → push branch → open PR → review → merge</p>
+      <p>more steps, but prevents conflicts and catches bugs before they hit main</p>
+    </div>
+  </div>
+  <div class="content-block">
+    <p>Claude can handle all of this for you. "create a feature branch called add-notifications, build the feature, commit, push, and open a PR" — Claude will do every step. but you need to understand the flow so you can tell Claude which workflow to use and catch it if it tries to push directly to main on a team project.</p>
+  </div>
+
+  <div class="quiz" data-quiz="9a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
+    <div class="quiz-question">how often should you commit your work?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">once at the end of the day</button>
+      <button class="quiz-option" data-correct="false">only when a feature is completely finished</button>
+      <button class="quiz-option" data-correct="true">after every logical unit of work — a feature, a bug fix, a refactor</button>
+      <button class="quiz-option" data-correct="false">every time you save a file</button>
+    </div>
+    <div class="quiz-explanation">commit at logical checkpoints. each commit should represent one coherent change. this way you can undo one thing without losing everything else. too few commits means losing large chunks of work; too many clutters the history with meaningless snapshots.</div>
+  </div>
+
+  <div class="quiz" data-quiz="9b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">Claude hits a merge conflict and suggests running <code>git push --force</code>. what should you do?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">let it run — Claude knows what it's doing</button>
+      <button class="quiz-option" data-correct="false">say yes, but only if it's your own branch</button>
+      <button class="quiz-option" data-correct="true">stop it and ask Claude to pull first, resolve the conflict, and push normally</button>
+      <button class="quiz-option" data-correct="false">delete the branch and start over</button>
+    </div>
+    <div class="quiz-explanation">force push overwrites remote history — any commits others pushed (or you pushed from another machine) are erased without warning. a normal push failing on conflict is git <em>protecting</em> you. pull, resolve, push normally. this is exactly the kind of rule that belongs in your CLAUDE.md.</div>
+  </div>
+
+  <div class="quiz" data-quiz="9c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">you're working on a team project. what's the right way to add a new feature?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">commit and push directly to main — it's faster</button>
+      <button class="quiz-option" data-correct="true">create a feature branch, build the feature, push the branch, and open a pull request for review</button>
+      <button class="quiz-option" data-correct="false">work locally and email the code to your teammates</button>
+      <button class="quiz-option" data-correct="false">create a new repo for each feature</button>
+    </div>
+    <div class="quiz-explanation">on a team, feature branches and pull requests keep main stable. everyone works in isolation, then merges through a review process. this prevents conflicts, catches bugs before they hit production, and creates a clear history of who changed what and why.</div>
+  </div>
+
+  <div class="key-points">
+    <h4>git survival rules</h4>
+    <ul>
+      <li>commit after every working change — small, frequent snapshots</li>
+      <li>push regularly — until it's on GitHub, it only exists on your machine</li>
+      <li>never force push — tell Claude this is a hard rule</li>
+      <li>one repo per project — keep it clean</li>
+      <li>solo? push to main. team? feature branches + pull requests</li>
+      <li>if a push fails, that's git protecting you — pull, resolve, push normally</li>
+    </ul>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(8)">← back</button>
+    <button class="btn-next" onclick="goTo(10)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 10: ENVIRONMENT SETUP ==================== -->
+<div class="chapter" id="chapter-10">
+  <div class="chapter-header">
+    <div class="chapter-number">chapter 10</div>
+    <div class="chapter-title">environment setup</div>
+    <div class="chapter-subtitle">install your tools, configure claude, and create your first repo</div>
+  </div>
+
+  <div class="content-block">
+    <p>now it's time to get your hands dirty. this chapter walks you through setting up every tool you need to work with Claude Code — from your editor to your first GitHub push.</p>
+    <p>each step is labeled so you know whether to do it yourself, run a terminal command, or let Claude handle it.</p>
+  </div>
+
+  <div class="setup-legend">
+    <div class="setup-legend-item"><span class="setup-legend-dot manual"></span> you do this manually</div>
+    <div class="setup-legend-item"><span class="setup-legend-dot command"></span> run this command</div>
+    <div class="setup-legend-item"><span class="setup-legend-dot claude"></span> let claude do it</div>
+  </div>
+
+  <!-- STEP 1: VS Code -->
+  <div class="setup-step">
+    <div class="setup-step-header">
+      <div class="setup-step-num manual">1</div>
+      <div class="setup-step-title">install VS Code</div>
+      <span class="setup-badge manual">manual</span>
+    </div>
+    <p>VS Code is the code editor we'll use alongside Claude. download and install it for your platform.</p>
+    <div class="platform-tabs" data-group="vscode">
+      <button class="platform-tab active" onclick="switchPlatform('vscode','mac',this)">Mac</button>
+      <button class="platform-tab" onclick="switchPlatform('vscode','win',this)">Windows</button>
+    </div>
+    <div class="platform-content active" data-group="vscode" data-platform="mac">
+      <p>go to <code>code.visualstudio.com</code>, download the Mac build, drag it into your Applications folder, and open it. alternatively, if you have Homebrew:</p>
+      <div class="cmd-block">brew install --cask visual-studio-code<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    </div>
+    <div class="platform-content" data-group="vscode" data-platform="win">
+      <p>go to <code>code.visualstudio.com</code>, download the Windows installer, run it, and accept all defaults (check "Add to PATH" when prompted).</p>
+    </div>
+  </div>
+
+  <!-- STEP 2: Install Claude Code -->
+  <div class="setup-step">
+    <div class="setup-step-header">
+      <div class="setup-step-num command">2</div>
+      <div class="setup-step-title">install Claude Code</div>
+      <span class="setup-badge command">run command</span>
+    </div>
+    <p>Claude Code is a CLI that lives in your terminal. it needs Node.js 18+ to run.</p>
+    <div class="platform-tabs" data-group="claude-install">
+      <button class="platform-tab active" onclick="switchPlatform('claude-install','mac',this)">Mac</button>
+      <button class="platform-tab" onclick="switchPlatform('claude-install','win',this)">Windows</button>
+    </div>
+    <div class="platform-content active" data-group="claude-install" data-platform="mac">
+      <p>install Node.js if you don't have it, then install Claude Code globally:</p>
+      <div class="cmd-block">brew install node<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+      <div class="cmd-block">npm install -g @anthropic-ai/claude-code<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+      <p>verify it works:</p>
+      <div class="cmd-block">claude --version<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    </div>
+    <div class="platform-content" data-group="claude-install" data-platform="win">
+      <p>install Node.js from <code>nodejs.org</code> (LTS version), then open PowerShell or Command Prompt:</p>
+      <div class="cmd-block">npm install -g @anthropic-ai/claude-code<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+      <div class="cmd-block">claude --version<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    </div>
+    <div class="setup-note"><strong>first launch:</strong> the first time you run <code>claude</code> in a terminal, it will prompt you to authenticate. follow the browser flow to link your Anthropic account.</div>
+  </div>
+
+  <!-- STEP 3: Enable Agent Swarms -->
+  <div class="setup-step">
+    <div class="setup-step-header">
+      <div class="setup-step-num command">3</div>
+      <div class="setup-step-title">enable agent swarms</div>
+      <span class="setup-badge command">run command</span>
+    </div>
+    <p>agent swarms let Claude spin up sub-agents to work on tasks in parallel — research, code exploration, and multi-file edits happening simultaneously. this is how Claude scales beyond a single thread of work.</p>
+    <p>open Claude Code and run:</p>
+    <div class="cmd-block">/config<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>this opens your settings file. set <code>enableAgentSwarms</code> to <code>true</code>, save, and restart Claude. alternatively, just tell Claude:</p>
+    <div class="setup-prompt-block">"enable agent swarms in my settings"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+  </div>
+
+  <!-- STEP 4: Chrome Extension -->
+  <div class="setup-step">
+    <div class="setup-step-header">
+      <div class="setup-step-num manual">4</div>
+      <div class="setup-step-title">enable /chrome and install the extension</div>
+      <span class="setup-badge manual">manual</span>
+    </div>
+    <p>the <code>/chrome</code> skill lets Claude read and interact with your browser — useful for testing web apps, reading documentation, and scraping pages.</p>
+    <p><strong>step a:</strong> install the Claude Code Chrome extension from the Chrome Web Store. search for "Claude Code" or ask your admin for the direct link.</p>
+    <p><strong>step b:</strong> once installed, open Claude Code and test it:</p>
+    <div class="cmd-block">/chrome<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <div class="setup-note"><strong>why this matters:</strong> without the extension, Claude is limited to the terminal and your local files. with it, Claude can see what's on your screen, read web pages, and interact with browser-based tools.</div>
+  </div>
+
+  <!-- STEP 5: Create CLAUDE.md -->
+  <div class="setup-step">
+    <div class="setup-step-header">
+      <div class="setup-step-num claude">5</div>
+      <div class="setup-step-title">create your CLAUDE.md</div>
+      <span class="setup-badge claude">let claude do it</span>
+    </div>
+    <p><code>CLAUDE.md</code> is the instruction file Claude reads at the start of every conversation. it lives in the <code>.claude/</code> directory of whatever folder you launch Claude from. think of it as your constitution — safety rails, behavior rules, and project context all in one place.</p>
+    <div class="setup-note"><strong>important:</strong> the <code>.claude/</code> directory must exist in the directory where you launch Claude. if you use a <code>Projects/</code> folder, your CLAUDE.md goes at <code>Projects/.claude/CLAUDE.md</code>.</div>
+    <p>navigate to your projects directory and let Claude create a starter file:</p>
+    <div class="cmd-block">cd ~/Documents/Projects &amp;&amp; claude<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>then tell Claude:</p>
+    <div class="setup-prompt-block">"create a .claude directory here and add a CLAUDE.md with basic safety rails: don't force push, don't delete without recovery, always commit work, add logging to key stages, and ask before changing approach"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>you'll customize this over time — it's a living document. every time Claude does something you don't like, add a rule. every time it does something great, reinforce the pattern.</p>
+  </div>
+
+  <!-- STEP 6: Create First Skill -->
+  <div class="setup-step">
+    <div class="setup-step-header">
+      <div class="setup-step-num claude">6</div>
+      <div class="setup-step-title">create your first skill</div>
+      <span class="setup-badge claude">let claude do it</span>
+    </div>
+    <p>skills are reusable prompts you invoke with <code>/skillname</code>. they live as markdown files in <code>.claude/skills/</code> and let you package workflows you run repeatedly.</p>
+    <p>let's create a simple one. tell Claude:</p>
+    <div class="setup-prompt-block">"create a skill called 'commit' in .claude/skills/ that stages all changes, writes a concise commit message describing what changed and why, and pushes to the current branch"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>after it's created, you can use it anytime by typing:</p>
+    <div class="cmd-block">/commit<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <div class="setup-note"><strong>skill ideas to build over time:</strong> <code>/deploy</code>, <code>/review</code>, <code>/test</code>, <code>/scaffold</code> — anything you do more than twice is a candidate.</div>
+  </div>
+
+  <!-- STEP 7: Install GitHub CLI -->
+  <div class="setup-step">
+    <div class="setup-step-header">
+      <div class="setup-step-num command">7</div>
+      <div class="setup-step-title">install GitHub CLI</div>
+      <span class="setup-badge command">run command</span>
+    </div>
+    <p>the GitHub CLI (<code>gh</code>) lets Claude create repos, open PRs, manage issues, and push code — all from the terminal. without it, Claude can't interact with GitHub on your behalf.</p>
+    <div class="platform-tabs" data-group="gh">
+      <button class="platform-tab active" onclick="switchPlatform('gh','mac',this)">Mac</button>
+      <button class="platform-tab" onclick="switchPlatform('gh','win',this)">Windows</button>
+    </div>
+    <div class="platform-content active" data-group="gh" data-platform="mac">
+      <div class="cmd-block">brew install gh<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    </div>
+    <div class="platform-content" data-group="gh" data-platform="win">
+      <div class="cmd-block">winget install --id GitHub.cli<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    </div>
+    <p>then authenticate with your GitHub account:</p>
+    <div class="cmd-block">gh auth login<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>follow the prompts — choose HTTPS, authenticate via browser, and you're done.</p>
+  </div>
+
+  <!-- STEP 8: Create First Repo (Assignment) -->
+  <div class="setup-step" style="border-color: rgba(123, 237, 159, 0.3); background: linear-gradient(135deg, var(--card), rgba(123, 237, 159, 0.03));">
+    <div class="setup-step-header">
+      <div class="setup-step-num claude">8</div>
+      <div class="setup-step-title">create your first repo — the assignment</div>
+      <span class="setup-badge claude">let claude do it</span>
+    </div>
+    <p>this is your hands-on assignment. you're going to create a real GitHub repository using Claude — from init to first push. this verifies your entire setup works end-to-end.</p>
+    <p><strong>here's what to do:</strong></p>
+    <p>open Claude Code in your projects directory and give it this prompt:</p>
+    <div class="setup-prompt-block">"create a new project called 'hello-claude' — initialize a git repo, create a README.md that says this project was scaffolded by Claude Code, create a .claude directory with a basic CLAUDE.md, then create a GitHub repo under my account and push everything up"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p><strong>what Claude will do:</strong></p>
+    <ol style="margin: 12px 0 12px 32px; padding-left: 0;">
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">create the <code>hello-claude/</code> directory</li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">run <code>git init</code></li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">write <code>README.md</code> and <code>.claude/CLAUDE.md</code></li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">use <code>gh repo create</code> to make the repo on GitHub</li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">commit and push</li>
+    </ol>
+    <p><strong>how to verify:</strong></p>
+    <div class="cmd-block">gh repo view hello-claude --web<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>this should open your new repo in the browser. if you see your README and CLAUDE.md — you're set up and ready to build.</p>
+    <div class="setup-note"><strong>what you just learned:</strong> you didn't write any code. you didn't run git commands. you gave Claude a clear outcome ("create a repo, push it to GitHub") and it handled the implementation. that's the core workflow this entire course is about.</div>
+  </div>
+
+  <div class="quiz" data-quiz="10a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
+    <div class="quiz-question">where does CLAUDE.md need to live for Claude to automatically load it?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">in your home directory (~/.claude/CLAUDE.md)</button>
+      <button class="quiz-option" data-correct="true">in the .claude/ directory of whatever folder you launch Claude from</button>
+      <button class="quiz-option" data-correct="false">anywhere on your computer — Claude searches for it</button>
+      <button class="quiz-option" data-correct="false">in the VS Code settings folder</button>
+    </div>
+    <div class="quiz-explanation">CLAUDE.md is loaded from the .claude/ directory relative to where you start Claude. if you launch from ~/Documents/Projects, it looks for ~/Documents/Projects/.claude/CLAUDE.md. this is why picking a consistent launch directory matters.</div>
+  </div>
+
+  <div class="quiz" data-quiz="10b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">what's the difference between a "run this command" step and a "let Claude do it" step?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">there's no difference — Claude runs both</button>
+      <button class="quiz-option" data-correct="false">"run this command" is for installing things, "let Claude do it" is for coding</button>
+      <button class="quiz-option" data-correct="true">"run this command" is a specific terminal command you copy and execute — "let Claude do it" means you describe an outcome to Claude and it figures out the implementation</button>
+      <button class="quiz-option" data-correct="false">"let Claude do it" is faster than running commands manually</button>
+    </div>
+    <div class="quiz-explanation">this is the core distinction from chapter 1: you describe outcomes, Claude handles implementation. terminal commands are for things that need to happen exactly one way (install X). letting Claude handle it is for things where the outcome matters more than the specific steps (create a repo with these files).</div>
+  </div>
+
+  <div class="quiz" data-quiz="10c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">you told Claude to create a repo and push it to GitHub, but it says <code>gh: command not found</code>. what went wrong?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Claude doesn't support GitHub</button>
+      <button class="quiz-option" data-correct="false">you need to give Claude your GitHub password</button>
+      <button class="quiz-option" data-correct="true">the GitHub CLI (gh) isn't installed or isn't in your PATH — go back to step 7</button>
+      <button class="quiz-option" data-correct="false">you need to create the repo manually on github.com first</button>
+    </div>
+    <div class="quiz-explanation">Claude uses the tools available in your terminal. if gh isn't installed, Claude can't interact with GitHub. this is why the setup order matters — each step builds on the previous ones.</div>
+  </div>
+
+  <div class="key-points">
+    <h4>setup checklist</h4>
+    <ul>
+      <li>VS Code installed and running</li>
+      <li>Claude Code installed and authenticated</li>
+      <li>agent swarms enabled in settings</li>
+      <li>Chrome extension installed, /chrome working</li>
+      <li>CLAUDE.md created with your safety rails</li>
+      <li>first skill created and tested</li>
+      <li>GitHub CLI installed and authenticated</li>
+      <li>first repo created, committed, and pushed to GitHub</li>
+    </ul>
+  </div>
+
   <!-- FINAL SCORE — rendered dynamically -->
   <div class="score-card" id="final-score" style="display: none;">
     <div class="score-number" id="score-pct">0%</div>
@@ -737,18 +1161,18 @@
         <div class="score-stat-label">correct</div>
       </div>
       <div class="score-stat">
-        <div class="score-stat-num" id="score-total">24</div>
+        <div class="score-stat-num" id="score-total">30</div>
         <div class="score-stat-label">questions</div>
       </div>
     </div>
   </div>
 
   <div class="content-block" style="text-align: center; margin-top: 48px;">
-    <p style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">this framework will evolve. the best practices of today will be the defaults of tomorrow. what matters is starting — and writing down what you learn along the way.</p>
+    <p style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">you're set up. everything from the course — rules, skills, memory, workflows — you can now practice for real. go build something.</p>
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(7)">← back</button>
+    <button class="btn-prev" onclick="goTo(9)">← back</button>
     <button class="btn-next" onclick="goTo(0)">start over →</button>
   </div>
 </div>
@@ -756,8 +1180,8 @@
 </div><!-- /main -->
 
 <script>
-const TOTAL_CHAPTERS = 8;
-const TOTAL_QUIZZES = 24;
+const TOTAL_CHAPTERS = 10;
+const TOTAL_QUIZZES = 30;
 let currentChapter = 0;
 let quizAnswers = {};
 let visitedChapters = new Set([0]);
@@ -800,7 +1224,7 @@ function updateNav() {
 
   const dotsContainer = document.getElementById('chapter-dots');
   dotsContainer.innerHTML = '';
-  const labels = ['home','mindset','what you bring','specificity','memory layers','workflow','debugging','common traps','compounding'];
+  const labels = ['home','mindset','what you bring','specificity','memory layers','workflow','debugging','common traps','compounding','git essentials','setup'];
   for (let i = 0; i <= TOTAL_CHAPTERS; i++) {
     const dot = document.createElement('button');
     dot.className = 'chapter-dot';
@@ -869,6 +1293,26 @@ function updateFinalScore() {
 
 updateNav();
 restoreQuizStates();
+
+// Copy-to-clipboard
+function copyCmd(btn) {
+  const block = btn.closest('.cmd-block, .setup-prompt-block');
+  const text = block.childNodes[0].textContent.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✓';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '⧉'; }, 1500);
+  });
+}
+
+// Platform tabs
+function switchPlatform(group, platform, tab) {
+  tab.closest('.setup-step').querySelectorAll(`.platform-tab`).forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  tab.closest('.setup-step').querySelectorAll(`.platform-content`).forEach(c => {
+    c.classList.toggle('active', c.dataset.platform === platform && c.dataset.group === group);
+  });
+}
 </script>
 
 </body>
