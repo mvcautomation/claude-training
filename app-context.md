@@ -69,7 +69,7 @@ A self-contained single HTML file with no dependencies or build process. Open it
 | 11 | GitHub Essentials | Commits, push/pull, repos, solo vs team workflows |
 | 12 | Environment Setup | Desktop-app-first 5-step flow: install Claude desktop app (claude.com/download), make a Projects folder, download+unzip the starter template (`app/starter-template.zip`), open a session via Code tab → local → folder, then the first-repo assignment. Manual/let-claude step types only (no terminal "command" steps). |
 
-Note: ch3 and ch7 are the two newest chapters. ch7 is intentionally written without em dashes (testing Peter's no-em-dash-in-public-copy preference); the rest of the course uses em dashes as its house voice. This inconsistency is known/unresolved — Peter chose to leave it for now.
+Writing style: standard English capitalization (Title Case for headers/subtitles-as-titles/TOC/chapter labels, sentence case for body, quizzes, and callouts; proper nouns capitalized) and NO em dashes anywhere. The earlier dtcmvp-style all-lowercase + em-dash voice was fully removed (Peter: "the lowercase thing is dtcmvp brand only"). Keep new content in this same standard-English, em-dash-free style. Literal text inside `<code>`, `.cmd-block`, and `.setup-prompt-block` (commands, filenames, example prompts) is intentionally left in casual lowercase.
 
 ### JavaScript Architecture
 - `TOTAL_CHAPTERS = 12`, `TOTAL_QUIZZES = 36`
