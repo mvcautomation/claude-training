@@ -78,7 +78,7 @@ Writing style: standard English capitalization (Title Case for headers/subtitles
 - Quiz handling via event listeners on `.quiz-option` buttons, answers stored in `quizAnswers` object
 - `copyCmd(btn)` — copies terminal command/prompt text to clipboard
 - `switchPlatform(group, platform, tab)` — toggles Mac/Windows content sections
-- Score card (`#final-score`) renders on chapter 10 showing quiz accuracy
+- Score card (`#final-score`) renders on the last chapter (12) showing quiz accuracy; `updateFinalScore()` gates on `currentChapter === TOTAL_CHAPTERS`
 
 ### Quiz ID Convention
 - Format: `{chapter}{letter}` — e.g., `9a`, `9b`, `9c`
@@ -95,7 +95,7 @@ Writing style: standard English capitalization (Title Case for headers/subtitles
 ## How to Add a New Chapter
 
 1. Increment `TOTAL_CHAPTERS` and `TOTAL_QUIZZES` (if adding quizzes) in the `<script>` block
-2. Add a label to the `labels` array in `updateNav()`
+2. Add a label to BOTH the `labels` array (dot tooltips, in `updateNav()`) and the `chapterTitles` array (TOC drawer) — keep them Title Case
 3. Add a `<div class="chapter" id="chapter-N">` block before `</div><!-- /main -->`
 4. Use `data-quiz="Na"`, `data-quiz="Nb"`, `data-quiz="Nc"` for quiz IDs
 5. Update the previous chapter's "next" nav button to point to the new chapter
@@ -104,12 +104,10 @@ Writing style: standard English capitalization (Title Case for headers/subtitles
 8. If moving the final score card, ensure it's in the last chapter and `updateFinalScore()` checks for the correct chapter number
 9. Update `score-total` display to match new `TOTAL_QUIZZES`
 
-## Recent Changes
+## Current state / open items
+_Last updated: 2026-06-01_
 
-- Expanded from 10 to 12 chapters by inserting two new chapters and renumbering everything after them (chapter IDs, `goTo()` nav, `data-quiz` IDs, `labels` array, hero list, counts). localStorage key bumped `v2`→`v3` since renumbered quiz IDs would mismatch old saved progress.
-  - **New Ch3 — How Claude Actually Works**: plain-english mechanics with three practical takeaways (it bluffs → verify; it can't count → use scripts; it can't introspect → check docs). Metaphors: well-read autocomplete, exam-with-no-penalty-for-guessing. 3 quizzes (3a-c).
-  - **New Ch7 — Managing Context**: context window as finite working memory (desk vs filing cabinet), subagents, the cost of losing hard-won knowledge, capture-before-clear habit (the `/update-docs` pattern) with the two-question discriminator (unrecoverable→save fact; expensive→save pointer). 3 quizzes (7a-c). Written em-dash-free on purpose (see note above).
-  - Smaller revisions: Ch4 gained an "ask, don't tell" section + numbered-questions tip; Ch5 gained an MCP-vs-skills parenthetical; Ch6 phase-2 reworded so "plan" reads as a conversation not a formal mode; Ch12 gained an aside that Claude Code also runs as a desktop app / in VS Code / on web.
-- Added Chapter 9 (GitHub Essentials): crash course covering commits, push/pull dangers (force push horror story), repos, solo workflow (push to main), team workflow (feature branches + PRs)
-- Added Chapter 10 (Environment Setup): 8-step guided walkthrough with color-coded step types (manual/command/let-claude-do-it), Mac/Windows platform toggles, copy-to-clipboard on all commands and prompts, final assignment to create first GitHub repo
-- Both chapters include 3 quizzes each and follow the existing design system
+- **Course is complete and shipped.** 12 chapters / 36 quizzes (3 per chapter), all in standard-English / em-dash-free style. Everything verified live (render, prev/next + dot + TOC nav on desktop and mobile, quiz scoring, final-score card on ch12, zip download, no console errors) and pushed to `main` (`github.com/mvcautomation/claude-training`). No known broken behavior.
+- **Starter template:** `starter-template/.claude/` is the **source of truth** (CLAUDE.md + commit/update-docs/brainstorm skills, all em-dash-free). `app/starter-template.zip` is built from it with the command in the Repo Structure block above. Do NOT edit inside `app/.claude/` — an unzip-and-edit-there workflow caused drift earlier (that stray dir has been removed).
+- **Preview/dev server:** served via the `claude-training` config in the repo-root `.claude/launch.json` (`npx http-server claude-training/app -p 8099`). Static file, so any local HTTP server over `app/` works.
+- **Watch-outs for future edits:** (1) ch12's desktop-app steps describe a specific UI flow (Code tab → start new session → local → select folder) provided by Peter — re-verify if the desktop app UI changes. (2) When adding/removing chapters, update BOTH nav arrays (`labels` + `chapterTitles`) and the localStorage key if quiz IDs shift. (3) Keep literal command/prompt text in `<code>`/`.cmd-block`/`.setup-prompt-block` in casual lowercase; everything else is standard English.
