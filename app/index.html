@@ -173,17 +173,48 @@
   .setup-legend-dot.claude { background: var(--blue); }
 
   .setup-prompt-block { background: rgba(30, 144, 255, 0.06); border: 1px solid rgba(30, 144, 255, 0.2); border-radius: 8px; padding: 14px 48px 14px 16px; margin: 10px 0; font-size: 0.85rem; color: var(--text-secondary); position: relative; font-style: italic; line-height: 1.6; }
+
+  /* ---- Table of Contents ---- */
+  .nav-left { display: flex; align-items: center; gap: 14px; }
+  .toc-btn { display: flex; align-items: center; gap: 7px; background: transparent; border: 1px solid var(--border); color: var(--text-secondary); font-family: 'Space Mono', monospace; font-size: 0.75rem; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+  .toc-btn:hover { border-color: var(--green); color: var(--green); }
+  @media (max-width: 600px) { .nav-title { display: none; } }
+
+  .toc-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(5, 8, 16, 0.7); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .toc-overlay.open { opacity: 1; pointer-events: auto; }
+  .toc-panel { position: absolute; top: 0; left: 0; bottom: 0; width: 330px; max-width: 86vw; background: var(--card); border-right: 1px solid var(--border); padding: 68px 14px 24px; overflow-y: auto; transform: translateX(-100%); transition: transform 0.25s ease; }
+  .toc-overlay.open .toc-panel { transform: translateX(0); }
+  .toc-panel h4 { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--green); text-transform: uppercase; letter-spacing: 2px; margin: 0 10px 10px; }
+  .toc-item { display: flex; align-items: baseline; gap: 10px; width: 100%; text-align: left; background: transparent; border: none; border-radius: 8px; padding: 10px 12px; cursor: pointer; color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; transition: all 0.15s; }
+  .toc-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+  .toc-item.active { background: rgba(123, 237, 159, 0.1); color: var(--green); }
+  .toc-num { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text-muted); min-width: 18px; flex-shrink: 0; }
+  .toc-item.active .toc-num { color: var(--green); }
+  .toc-check { margin-left: auto; color: var(--green); opacity: 0.65; font-size: 0.8rem; flex-shrink: 0; }
+  .toc-close { position: absolute; top: 16px; right: 16px; background: transparent; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; line-height: 1; }
+  .toc-close:hover { color: var(--text); }
 </style>
 </head>
 <body>
 
 <div class="nav">
-  <div class="nav-title">claude code 101</div>
+  <div class="nav-left">
+    <button class="toc-btn" id="toc-btn" onclick="openTOC()" aria-label="open chapter menu">☰ chapters</button>
+    <div class="nav-title">claude code 101</div>
+  </div>
   <div class="nav-progress">
     <span id="progress-text">0 / 12</span>
     <div class="nav-progress-bar">
       <div class="nav-progress-fill" id="progress-fill" style="width: 0%"></div>
     </div>
+  </div>
+</div>
+
+<div class="toc-overlay" id="toc-overlay" onclick="if(event.target===this)closeTOC()">
+  <div class="toc-panel">
+    <button class="toc-close" onclick="closeTOC()" aria-label="close menu">&times;</button>
+    <h4>jump to a chapter</h4>
+    <div id="toc-list"></div>
   </div>
 </div>
 
@@ -1439,6 +1470,44 @@ function updateNav() {
     dotsContainer.appendChild(dot);
   }
 }
+
+// Table of contents (jump-to-any-chapter menu)
+const chapterTitles = ['introduction','the mindset shift','what you bring','how claude actually works','talking to AI','the three layers of memory','the workflow','managing context','debugging with AI','common mistakes','the investment that compounds','github essentials','environment setup'];
+
+function buildTOC() {
+  const list = document.getElementById('toc-list');
+  list.innerHTML = '';
+  for (let i = 0; i <= TOTAL_CHAPTERS; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'toc-item' + (i === currentChapter ? ' active' : '');
+    const num = document.createElement('span');
+    num.className = 'toc-num';
+    num.textContent = i === 0 ? '◆' : i;
+    const label = document.createElement('span');
+    label.textContent = chapterTitles[i] || `chapter ${i}`;
+    btn.appendChild(num);
+    btn.appendChild(label);
+    if (visitedChapters.has(i) && i !== currentChapter) {
+      const check = document.createElement('span');
+      check.className = 'toc-check';
+      check.textContent = '✓';
+      btn.appendChild(check);
+    }
+    btn.onclick = () => { closeTOC(); goTo(i); };
+    list.appendChild(btn);
+  }
+}
+
+function openTOC() {
+  buildTOC();
+  document.getElementById('toc-overlay').classList.add('open');
+}
+
+function closeTOC() {
+  document.getElementById('toc-overlay').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeTOC(); });
 
 // Quiz handling
 document.querySelectorAll('.quiz').forEach(quiz => {

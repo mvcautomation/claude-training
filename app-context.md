@@ -86,10 +86,11 @@ Note: ch3 and ch7 are the two newest chapters. ch7 is intentionally written with
 - Quiz state persists in localStorage across sessions
 
 ### Navigation
-- Chapter dots on right sidebar (hidden on mobile <900px)
+- **"☰ chapters" TOC menu** in the top-left nav (`openTOC()`/`closeTOC()`/`buildTOC()`) opens a left drawer listing all chapters (0-12) with current-chapter highlight + visited checkmarks. Works on mobile (primary jump method there) and desktop. Closes on item click, backdrop click, or Esc. Titles live in the `chapterTitles` array.
+- Chapter dots on right sidebar (hidden on mobile <900px) — quick-jump on desktop
 - Each chapter has prev/next buttons at bottom
-- Chapter 10 "next" links back to hero (start over)
-- Progress bar in fixed top nav shows chapters visited
+- Chapter 12 "next" links back to hero (start over)
+- Progress bar in fixed top nav shows chapters visited; `.nav-title` hidden <600px to make room for the TOC button
 
 ## How to Add a New Chapter
 
