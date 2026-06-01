@@ -51,7 +51,7 @@ A self-contained single HTML file with no dependencies or build process. Open it
 | 1 | The Mindset Shift | You're running a team, not using a tool |
 | 2 | What You Bring | 5 irreplaceable human contributions |
 | 3 | How Claude Actually Works | Plain-english: prediction/hallucination, tokenization+no-scratchpad (use scripts for math), can't introspect itself |
-| 4 | Talking to AI | How specificity changes everything + "ask, don't tell" (anti-sycophancy) + numbered-questions tip |
+| 4 | Talking to AI | How specificity changes everything + "ask, don't tell" (anti-sycophancy) + numbered-questions tip + "you shape what's probable" (framing steers the response shape; the "constant question" mental model). Quiz 4b is on framing, not specificity. |
 | 5 | Three Layers of Memory | CLAUDE.md, skills, memory system (+ MCP-vs-skills parenthetical) |
 | 6 | The Workflow | Orient, plan (as conversation, not a "mode"), build, verify, document |
 | 7 | Managing Context | Context window as working memory, compaction, subagents ("delegate the exploration, keep the answer"), capture-before-clear /update-docs habit + two-question discriminator |
