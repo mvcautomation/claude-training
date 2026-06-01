@@ -404,8 +404,23 @@
     <p>imagine a test where a blank answer scores zero but a wrong guess might get lucky. the smart move is to always guess, never leave it blank. AI was effectively trained under those rules — so when it's unsure, it guesses rather than admits it doesn't know. newer models are better at saying "i'm not sure," but the instinct to produce a confident answer is baked deep.</p>
   </div>
   <div class="content-block">
-    <p><strong>what this means for you:</strong> never take a factual claim, a number, or a "this exists" on faith. verify it against reality. this is the root of the "always verify" habit from chapters 1 and 2 — now you know <em>why</em> it matters.</p>
+    <p><strong>what this means for you:</strong> you can't verify everything — that's exhausting, and it cancels out the speed that made the AI worth using in the first place. the real skill is knowing <em>when</em> the risk of a made-up answer is high, and spending your attention there.</p>
   </div>
+  <div class="content-block">
+    <h3>where hallucinations hide (and where they don't)</h3>
+    <p>before trusting an answer, ask yourself one question: <strong>is this something discussed widely and accurately in text on the internet?</strong></p>
+    <p><strong>low risk</strong> — popular programming languages, well-documented tools, established facts. these showed up thousands of times in training, so the "most plausible answer" is almost always the right one. you rarely need to second-guess Claude on how a common React feature works.</p>
+    <p><strong>high risk</strong> — anything niche or barely written about, anything highly debated or subjective, anything newer than the model's training cutoff, and above all, <em>anything specific to you</em>: your codebase, your data, your private setup. the model never saw those, so whatever it says about them is a guess dressed up as a fact.</p>
+  </div>
+  <div class="content-block">
+    <h3>for your own code, make it look instead of guess</h3>
+    <p>your codebase was never in Claude's training, so "what does our code actually do?" is exactly where it's most tempted to assume. two habits kill most of these hallucinations:</p>
+    <ol>
+      <li><strong>tell it not to guess.</strong> "don't make assumptions — go read the actual files and use tool calls when you're unsure what's really there."</li>
+      <li><strong>check afterward.</strong> if an answer comes back suspiciously fast, ask: "did you actually check that, or answer from assumption?" it's a surprisingly reliable way to catch a confident guess.</li>
+    </ol>
+  </div>
+  <div class="setup-note"><strong>a great CLAUDE.md rule:</strong> "accuracy is more important than completion." it pushes back on the model's instinct to hand you a finished-looking answer, and gives it permission to say "i'm not sure" or go check, instead of guessing to seem helpful.</div>
 
   <div class="content-block">
     <h3>why it's weirdly bad at counting and math</h3>
