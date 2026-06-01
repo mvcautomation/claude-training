@@ -180,7 +180,7 @@
 <div class="nav">
   <div class="nav-title">claude code 101</div>
   <div class="nav-progress">
-    <span id="progress-text">0 / 8</span>
+    <span id="progress-text">0 / 12</span>
     <div class="nav-progress-bar">
       <div class="nav-progress-fill" id="progress-fill" style="width: 0%"></div>
     </div>
@@ -201,16 +201,18 @@
   <div class="content-block" style="margin-top: 40px;">
     <h3>what you'll learn</h3>
     <p>this is not a tool tutorial. it's a framework for a new kind of working relationship — one where you bring judgment, context, and direction while AI handles implementation at superhuman speed.</p>
-    <p>10 chapters. ~35 minutes. 30 quizzes to make it stick.</p>
+    <p>12 chapters. ~45 minutes. 36 quizzes to make it stick.</p>
   </div>
   <div class="key-points">
     <h4>chapters</h4>
     <ul>
       <li>the mindset shift — you're running a team, not using a tool</li>
       <li>what you bring — the five irreplaceable human contributions</li>
+      <li>how claude actually works — a plain-english look under the hood</li>
       <li>talking to AI — how specificity changes everything</li>
       <li>the three layers of memory — how AI remembers</li>
       <li>the workflow — orient, plan, build, verify, document</li>
+      <li>managing context — protect working memory, never lose your work</li>
       <li>debugging with AI — when things go wrong</li>
       <li>common mistakes — the traps everyone falls into</li>
       <li>the investment that compounds — building your scaffolding</li>
@@ -370,10 +372,118 @@
   </div>
 </div>
 
-<!-- ==================== CH 3: TALKING TO AI ==================== -->
+<!-- ==================== CH 3: HOW CLAUDE ACTUALLY WORKS (placeholder) ==================== -->
 <div class="chapter" id="chapter-3">
   <div class="chapter-header">
     <div class="chapter-number">chapter 3</div>
+    <div class="chapter-title">how claude actually works</div>
+    <div class="chapter-subtitle">a plain-english look under the hood, and why it matters</div>
+  </div>
+  <div class="content-block">
+    <p>you don't need to understand how an engine works to drive a car. but knowing it needs oil, overheats, and won't run on water makes you a much safer driver. same with Claude. here's what's actually happening under the hood, in plain english — and the three things it means for how you work.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>it's a prediction machine, not a fact lookup</h3>
+    <p>Claude was trained by reading an enormous slice of the internet, books, and code, and learning to do one thing astonishingly well: predict what comes next. that's it. when you ask it something, it isn't looking up an answer in a database — it's generating the most plausible continuation, a little at a time, based on patterns it learned.</p>
+    <p>most of the time the most plausible continuation IS the correct answer, because true things are what showed up most in its training. but not always — and that gap is where everything else in this chapter comes from.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>the world's most well-read autocomplete</h4>
+    <p>your phone's autocomplete guesses your next word from the texts you've sent. Claude does the same thing, but having read more than any human ever could. that's why it sounds so fluent — and why it will sometimes finish a sentence with something that simply isn't true, just as confidently as it states a fact.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>why it "makes things up"</h3>
+    <p>here's the key: Claude has no built-in alarm that goes off when it doesn't know something. it doesn't pause and ask itself "do i actually know this?" it just produces the most natural-sounding answer. when it genuinely knows, that answer is right. when it doesn't, it produces a confident, plausible guess anyway — a made-up citation, a function that doesn't exist, a date that's slightly wrong. this is called a <em>hallucination</em>, and it looks exactly as confident as a real answer.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>the exam with no penalty for guessing</h4>
+    <p>imagine a test where a blank answer scores zero but a wrong guess might get lucky. the smart move is to always guess, never leave it blank. AI was effectively trained under those rules — so when it's unsure, it guesses rather than admits it doesn't know. newer models are better at saying "i'm not sure," but the instinct to produce a confident answer is baked deep.</p>
+  </div>
+  <div class="content-block">
+    <p><strong>what this means for you:</strong> never take a factual claim, a number, or a "this exists" on faith. verify it against reality. this is the root of the "always verify" habit from chapters 1 and 2 — now you know <em>why</em> it matters.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>why it's weirdly bad at counting and math</h3>
+    <p>Claude can explain advanced calculus but might miscount the letters in a word or botch a simple multiplication. two reasons:</p>
+    <p><strong>it doesn't see individual digits the way you do.</strong> text gets chopped into chunks called "tokens" before Claude ever sees it. a number like 1,000,000 might arrive as a couple of clumps rather than seven separate digits — so carrying and place-value get garbled.</p>
+    <p><strong>it has no scratch paper.</strong> when it answers "in its head," it's predicting the answer directly, with nowhere to work out the steps. force it to show its working — or better, have it write a quick script — and accuracy jumps, because now the computer does real arithmetic instead of the model guessing the result.</p>
+  </div>
+  <div class="setup-note"><strong>the takeaway:</strong> for anything that has to be exactly right — totals, large datasets, precise counts — ask Claude to write a script and run it, rather than working it out inside the conversation. let the computer calculate; let Claude orchestrate.</div>
+
+  <div class="content-block">
+    <h3>why it knows so much about code but so little about itself</h3>
+    <p>ask Claude about React and it's an expert — millions of code examples, docs, and discussions were in its training. ask it about its own version, its exact settings, or what it can do today, and it often gets it wrong. two reasons: very little is written about the AI itself compared to popular tools, and more importantly, <strong>it can't look inward.</strong> Claude can't read its own wiring — it only knows what was written about AI in general. asking Claude about Claude is like asking someone to describe their own brain cells firing.</p>
+    <p><strong>what this means for you:</strong> don't trust the AI's claims about itself — which model it is, what its limits are, when its knowledge ends. check the actual documentation instead.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>a user asked an AI assistant for the documentation link to a software feature. it produced a clean, official-looking URL with total confidence. the link 404'd — the page had never existed. the AI had generated the most plausible-looking URL from the pattern of real ones, not retrieved a real address. ten minutes were lost before the user realized the source itself was invented.</p>
+    <p class="lesson">a confident answer and a correct answer look identical. the only way to tell them apart is to check.</p>
+  </div>
+
+  <div class="key-points">
+    <h4>how claude actually works</h4>
+    <ul>
+      <li>it predicts the most plausible next words — it's not looking up facts in a database</li>
+      <li>it has no "i don't know" alarm, so it can produce confident, made-up answers (hallucinations)</li>
+      <li>verify facts, numbers, and "this exists" claims against reality</li>
+      <li>it's bad at exact math because text is chopped into tokens and it has no scratch paper</li>
+      <li>for precise counts or big datasets, have it write and run a script</li>
+      <li>it knows tools like React deeply but can't reliably describe itself — check the docs</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-quiz="3a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
+    <div class="quiz-question">Claude gives you a confident answer with a specific citation, but you've never heard of the source. what's the safest assumption?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">it might be a hallucination — Claude can generate plausible but invented details, so verify the source before trusting it</button>
+      <button class="quiz-option" data-correct="false">if Claude included a citation, the source is definitely real</button>
+      <button class="quiz-option" data-correct="false">Claude never makes up citations</button>
+      <button class="quiz-option" data-correct="false">the source is real but probably just outdated</button>
+    </div>
+    <div class="quiz-explanation">Claude predicts plausible text and has no built-in alarm for "i don't know." a confident answer and a correct one look identical. always verify facts and sources against reality.</div>
+  </div>
+
+  <div class="quiz" data-quiz="3b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">you need Claude to add up 4,000 rows of sales data and get an exact total. what's the most reliable approach?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">ask Claude to add them up carefully in the conversation</button>
+      <button class="quiz-option" data-correct="true">ask Claude to write and run a script that does the calculation</button>
+      <button class="quiz-option" data-correct="false">ask Claude to double-check its mental math twice</button>
+      <button class="quiz-option" data-correct="false">trust the total — Claude is good at math</button>
+    </div>
+    <div class="quiz-explanation">Claude does precise arithmetic poorly because text is split into tokens (so digits get garbled) and it has no scratch paper when answering directly. for anything that must be exact, have it write a script — the computer calculates, Claude orchestrates.</div>
+  </div>
+
+  <div class="quiz" data-quiz="3c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">why does Claude know a huge amount about a tool like React but often get details about itself wrong?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">tons was written about React in its training, but little about the AI itself — and it can't look inward at its own wiring</button>
+      <button class="quiz-option" data-correct="false">Claude is deliberately programmed to hide information about itself</button>
+      <button class="quiz-option" data-correct="false">React is simply a less complex topic than Claude</button>
+      <button class="quiz-option" data-correct="false">Claude refuses to answer any questions about itself</button>
+    </div>
+    <div class="quiz-explanation">Claude only knows what was written about AI in general; it can't introspect its own settings or limits. don't trust its self-reports about which model it is or what it can do — check the actual documentation.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(2)">← back</button>
+    <button class="btn-next" onclick="goTo(4)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 4: TALKING TO AI ==================== -->
+<div class="chapter" id="chapter-4">
+  <div class="chapter-header">
+    <div class="chapter-number">chapter 4</div>
     <div class="chapter-title">how specificity changes everything</div>
     <div class="chapter-subtitle">the quality of your input determines the quality of AI's output</div>
   </div>
@@ -409,7 +519,22 @@
     <p>if you know you broke your arm, tell the doctor "i broke my arm." don't make them guess. but if you have a mysterious pain, don't walk in saying "prescribe me antibiotics." describe the symptoms and let the doctor investigate. same with AI — specify when you know, explore when you don't.</p>
   </div>
 
-  <div class="quiz" data-quiz="3a">
+  <div class="content-block">
+    <h3>ask, don't just tell</h3>
+    <p>here's a habit that changes everything, and almost nobody does it: instead of telling Claude what to build, ask it what it thinks first. left to its own devices, AI leans toward being a "yes-man" — you ask for something, it builds exactly that, even when there's a far better approach or a serious flaw you didn't spot. it's trained to be agreeable, not to tell you what you need to hear. you have to invite the pushback.</p>
+    <p>compare these two openings:</p>
+  </div>
+  <div class="comparison">
+    <div class="comparison-bad"><div class="comparison-label">telling</div><p>"build me a task management app with these features."</p></div>
+    <div class="comparison-good"><div class="comparison-label">asking</div><p>"i'm thinking of building a task app. here's what i want to be different: [list]. what am i missing? has this been done? what would you push back on? what valuable features am i not thinking of?"</p></div>
+  </div>
+  <div class="content-block">
+    <p>the second version puts Claude in advisor mode instead of order-taker mode. you'll catch flaws before you've built them, discover features you hadn't considered, and sometimes learn the whole idea needs rethinking — all before a line of code gets written.</p>
+    <p>this matters most for big, hard-to-reverse decisions: what to build, which approach to take, how to structure something. for "rename this variable," just tell it. the skill is knowing when the stakes are worth a conversation.</p>
+  </div>
+  <div class="setup-note"><strong>handy trick:</strong> when Claude fires a pile of questions at you at once and you lose track of which is which, just say "ask me one question at a time" or "number all your questions so i can answer by number." it puts the friction back on Claude instead of you.</div>
+
+  <div class="quiz" data-quiz="4a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">you want the AI to build a notification system. which request will get the best result?</div>
     <div class="quiz-options">
@@ -421,7 +546,7 @@
     <div class="quiz-explanation">the best request describes the outcome (what users experience), provides constraints (batching, user count), and lets the AI choose the implementation.</div>
   </div>
 
-  <div class="quiz" data-quiz="3b">
+  <div class="quiz" data-quiz="4b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">why is "create a React component with useState" a weaker request than describing the outcome?</div>
     <div class="quiz-options">
@@ -433,7 +558,7 @@
     <div class="quiz-explanation">when you prescribe implementation details, you close the door on better solutions the AI might propose. describe the outcome and constraints — then steer the AI's proposal. it's fine to mention tech preferences, but lead with the problem.</div>
   </div>
 
-  <div class="quiz" data-quiz="3c">
+  <div class="quiz" data-quiz="4c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">a team deployed a feature, then realized it also needed to work in DMs. what should they have done differently?</div>
     <div class="quiz-options">
@@ -446,15 +571,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(2)">← back</button>
-    <button class="btn-next" onclick="goTo(4)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(3)">← back</button>
+    <button class="btn-next" onclick="goTo(5)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 4: MEMORY ==================== -->
-<div class="chapter" id="chapter-4">
+<!-- ==================== CH 5: MEMORY ==================== -->
+<div class="chapter" id="chapter-5">
   <div class="chapter-header">
-    <div class="chapter-number">chapter 4</div>
+    <div class="chapter-number">chapter 5</div>
     <div class="chapter-title">the three layers of AI memory</div>
     <div class="chapter-subtitle">how to stop re-explaining everything every conversation</div>
   </div>
@@ -463,6 +588,7 @@
   <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the employee handbook</h4><p>every company has norms. don't force push to main. always add logging. commit after every change. you wouldn't re-explain these to a returning employee every morning — you'd point them to the handbook.</p></div>
   <div class="content-block"><h3>layer 2: skills — "here's everything about X"</h3><p>documents that give AI specialist-level knowledge about specific domains. when you mention "deploy" or "database issue," the relevant skill loads automatically.</p></div>
   <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the specialist's brain</h4><p>when you visit a cardiologist, you don't explain what a heart is. the specialist already knows the anatomy, common problems, and standard treatments. they just need YOUR symptoms.</p></div>
+  <div class="setup-note"><strong>you might hear about "MCPs":</strong> another way to plug Claude into outside tools and data. they're powerful, but a skill is often simpler when you want your own notes and gotchas sitting right next to the instructions. start with skills.</div>
   <div class="content-block"><h3>layer 3: memory — "what we learned last time"</h3><p>after you discover that a certain API silently fails, or that a deploy script overwrites changes unless you push first, you write it down. memory stores these learnings so the AI doesn't repeat mistakes.</p></div>
   <div class="story">
     <div class="story-label">from the field</div>
@@ -470,7 +596,7 @@
     <p class="lesson">documentation for the AI pays back more than code. a 30-minute skill doc saves 15 minutes per conversation, forever.</p>
   </div>
 
-  <div class="quiz" data-quiz="4a">
+  <div class="quiz" data-quiz="5a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">you've explained your deployment process to the AI three times across three conversations. what should you do?</div>
     <div class="quiz-options">
@@ -482,7 +608,7 @@
     <div class="quiz-explanation">if you're saying the same thing every conversation, it belongs in persistent context. the time investment pays back across every future session.</div>
   </div>
 
-  <div class="quiz" data-quiz="4b">
+  <div class="quiz" data-quiz="5b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">what's the difference between a "rules file" and a "skill"?</div>
     <div class="quiz-options">
@@ -494,7 +620,7 @@
     <div class="quiz-explanation">rules files are your constitution — short, universal, always active. skills are specialist knowledge — detailed, domain-specific, loaded when relevant. "always commit your changes" is a rule. "here's how to deploy to our DigitalOcean server" is a skill.</div>
   </div>
 
-  <div class="quiz" data-quiz="4c">
+  <div class="quiz" data-quiz="5c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">a teammate shares their AI configuration via git so you both benefit from improvements. which memory layer does this relate to?</div>
     <div class="quiz-options">
@@ -507,20 +633,20 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(3)">← back</button>
-    <button class="btn-next" onclick="goTo(5)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(4)">← back</button>
+    <button class="btn-next" onclick="goTo(6)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 5: WORKFLOW ==================== -->
-<div class="chapter" id="chapter-5">
+<!-- ==================== CH 6: WORKFLOW ==================== -->
+<div class="chapter" id="chapter-6">
   <div class="chapter-header">
-    <div class="chapter-number">chapter 5</div>
+    <div class="chapter-number">chapter 6</div>
     <div class="chapter-title">the workflow</div>
     <div class="chapter-subtitle">orient → plan → build → verify → document</div>
   </div>
   <div class="content-block"><h3>phase 1: orient</h3><p>state what you want to accomplish. be specific. the AI automatically loads your rules, relevant skills, and memory.</p></div>
-  <div class="content-block"><h3>phase 2: plan</h3><p>for anything beyond a simple fix, the AI proposes a plan. you review it — not for code quality, but for missing requirements, edge cases, and things the AI doesn't know.</p></div>
+  <div class="content-block"><h3>phase 2: plan</h3><p>for anything beyond a simple fix, ask the AI to lay out its approach before it starts. you review it — not for code quality, but for missing requirements, edge cases, and things the AI doesn't know. this is just a conversation; you don't need a special "mode" for it. talk it through, steer it, and only then say "go."</p></div>
   <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the blueprint review</h4><p>you're the building owner reviewing the architect's blueprints. you don't need to know how to calculate load-bearing requirements — but you do need to say "there's no bathroom on this floor" and "the front door opens into a wall."</p></div>
   <div class="content-block"><h3>phase 3: build</h3><p>the AI writes code, creates files, runs commands, deploys. check in at milestones, not after every line. stay available for questions. correct mistakes early.</p></div>
   <div class="content-block"><h3>phase 4: verify</h3><p>this is where most people drop the ball. test the feature on a real device. check the database. verify the deployment. test edge cases.</p></div>
@@ -531,7 +657,7 @@
     <p class="lesson">the verify phase caught a time zone bug no test would have found. the document phase prevented the next developer from reading stale docs.</p>
   </div>
 
-  <div class="quiz" data-quiz="5a">
+  <div class="quiz" data-quiz="6a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">the AI just finished building a booking system and says "deployment complete." what's the most important next step?</div>
     <div class="quiz-options">
@@ -543,7 +669,7 @@
     <div class="quiz-explanation">verification comes before documentation. test the critical path with real data on a real device. the gap between "code looks right" and "it works end-to-end" is where most bugs live.</div>
   </div>
 
-  <div class="quiz" data-quiz="5b">
+  <div class="quiz" data-quiz="6b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">during the "plan" phase, what should you be looking for?</div>
     <div class="quiz-options">
@@ -555,7 +681,7 @@
     <div class="quiz-explanation">you're the building owner, not the architect. you don't review load-bearing calculations — you catch "there's no bathroom on this floor." look for gaps in business logic, missing edge cases, and systems the AI doesn't know about.</div>
   </div>
 
-  <div class="quiz" data-quiz="5c">
+  <div class="quiz" data-quiz="6c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">why is the "document" phase important even though the code itself is documentation?</div>
     <div class="quiz-options">
@@ -568,15 +694,131 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(4)">← back</button>
-    <button class="btn-next" onclick="goTo(6)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(5)">← back</button>
+    <button class="btn-next" onclick="goTo(7)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 6: DEBUGGING ==================== -->
-<div class="chapter" id="chapter-6">
+<!-- ==================== CH 7: MANAGING CONTEXT ==================== -->
+<div class="chapter" id="chapter-7">
   <div class="chapter-header">
-    <div class="chapter-number">chapter 6</div>
+    <div class="chapter-number">chapter 7</div>
+    <div class="chapter-title">managing context (and never losing your work)</div>
+    <div class="chapter-subtitle">your AI has a limited working memory. protect it, and capture what can't be rediscovered.</div>
+  </div>
+
+  <div class="content-block">
+    <p>every conversation with Claude happens inside a "context window": a limited amount of working memory that holds everything said so far. it is not infinite. as a conversation grows, the window fills up, and at some point the oldest details get summarized or quietly dropped to make room. this is called <em>compaction</em>.</p>
+    <p>and when you start a fresh conversation, or clear the current one, the slate is wiped completely. anything that lived only in that chat is gone.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>working memory is not storage</h3>
+    <p>think of the context window as the AI's desk, not its filing cabinet. a desk holds what you're actively working on, and it has limited surface area. pile on too much and older papers slide off the edge. the filing cabinet (your CLAUDE.md, skills, and memory from chapter 5) is permanent storage that survives between sessions. the desk does not.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>the cluttered desk</h4>
+    <p>picture a brilliant assistant with a small desk. while you work together, everything sits in front of them and they're sharp. but the desk only fits so much. when it overflows, they sweep older papers into the bin so they can keep working. nothing you said is safe long-term unless it made it into the filing cabinet. your job is to keep the desk clear of clutter, and to file the important things before they get swept away.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>subagents: borrow a second desk</h3>
+    <p>some tasks generate enormous mess: reading forty files to answer one question, searching an entire codebase, sifting through pages of logs. if Claude does that work in your main conversation, all that noise lands on the shared desk and crowds out everything else you care about.</p>
+    <p>a <strong>subagent</strong> is a separate worker with its own desk. you hand it the messy job. it reads the forty files on its own surface, works out the answer, and hands you back a short summary. the clutter stayed on its desk, not yours, so your main conversation stays clean and focused.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>the research assistant</h4>
+    <p>you don't read forty documents yourself and try to hold them all in your head. you ask an assistant to read them and bring you a one-page memo. you get the conclusion; they absorbed the volume. subagents are how Claude keeps the main thread sharp while still doing heavy lifting underneath. the lesson in one line: <strong>delegate the exploration, keep the answer.</strong></p>
+  </div>
+
+  <div class="content-block">
+    <h3>the expensive part: losing what you can't rediscover</h3>
+    <p>here's the fear that catches people off guard. you spend two hours working through a hard problem with Claude. you make decisions, rule out three approaches that didn't pan out, and uncover a weird constraint nobody ever wrote down. then the conversation ends, or compacts, or you clear it to start something new. a fresh Claude shows up with none of it.</p>
+    <p>some of that loss is cheap. the AI can re-read your code, re-check git history, and re-explore your file structure in seconds. but some of it is <em>expensive or impossible</em> to recover: <em>why</em> you chose this approach, the three dead-ends you already ruled out, the constraint that lives in one person's head and nowhere else. rediscovering that can cost hours, or it may be gone for good.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>a builder spent an afternoon with Claude untangling why a payment webhook fired twice. they tried three fixes that failed, then found the real cause: a retry setting buried deep in a third-party dashboard. satisfied, they closed the chat and moved on. a week later the bug came back in a slightly different form. the new conversation had no memory of the three failed fixes or the dashboard setting, so they paid for the entire investigation a second time.</p>
+    <p class="lesson">the code was always rediscoverable. the hard-won knowledge (what didn't work, and the one setting that did) was not. that's exactly what should have been written down before the chat closed.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>the habit that saves you: capture before you clear</h3>
+    <p>before you end a meaningful session, compact, or start fresh, run one simple check. ask Claude: <em>"what did we learn or decide here that a fresh you couldn't easily rediscover, or that would cost real time to figure out again?"</em> then save the answers where they belong.</p>
+    <p>many teams build this into a reusable skill (often called something like <code>/update-docs</code>) so it runs the same way every time: review the session, surface what matters, and file each piece into the right layer of memory.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>two questions decide what to save</h3>
+    <ol>
+      <li><strong>is it truly unrecoverable?</strong> the <em>why</em> behind a decision, the approaches you rejected, a business constraint nobody documented. save the <strong>fact itself</strong>.</li>
+      <li><strong>is it recoverable but expensive?</strong> something a fresh agent <em>could</em> work out, but only after burning lots of time and tokens exploring. sometimes save the fact; often it's enough to save a <strong>pointer</strong>: "the answer lives in X, regenerate it by doing Y."</li>
+    </ol>
+    <p>then route each piece to the right home, using the three layers from chapter 5: a standing rule goes in your CLAUDE.md, a how-to-do-X procedure goes in a skill, a one-off learning or preference goes in memory, and session-specific project state goes in a project doc.</p>
+  </div>
+  <div class="setup-note"><strong>do this before you lose it, not after.</strong> capture while the knowledge is still on the desk. once the chat is cleared or compacted, you're trying to remember what you've already forgotten.</div>
+
+  <div class="key-points">
+    <h4>protecting context</h4>
+    <ul>
+      <li>the context window is working memory, not storage: it fills up and old details drop</li>
+      <li>your CLAUDE.md, skills, and memory are the permanent filing cabinet</li>
+      <li>hand heavy, messy jobs to subagents: delegate the exploration, keep the answer</li>
+      <li>code is cheap to rediscover; decisions, dead-ends, and hidden constraints are not</li>
+      <li>before you clear or compact, ask "what would a fresh you fail to rediscover?"</li>
+      <li>save the fact when it's unrecoverable, a pointer when it's just expensive</li>
+      <li>file each learning into the right layer: rules, skills, memory, or project docs</li>
+    </ul>
+  </div>
+
+  <div class="quiz" data-quiz="7a">
+    <div class="quiz-label">check your understanding — 1 of 3</div>
+    <div class="quiz-question">you've been working with Claude for two hours and notice it seems to have "forgotten" something you discussed early on. what most likely happened?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">the context window filled up, so older details were compacted — summarized or dropped — to make room</button>
+      <button class="quiz-option" data-correct="false">Claude is malfunctioning and should be restarted</button>
+      <button class="quiz-option" data-correct="false">the information was saved to memory but loaded incorrectly</button>
+      <button class="quiz-option" data-correct="false">you need to upgrade to a larger AI model</button>
+    </div>
+    <div class="quiz-explanation">the context window is finite working memory. as a long conversation grows, the oldest details get summarized or dropped. the fix isn't a bigger model — it's capturing important things in permanent storage (CLAUDE.md, skills, memory) before they slide off the desk.</div>
+  </div>
+
+  <div class="quiz" data-quiz="7b">
+    <div class="quiz-label">check your understanding — 2 of 3</div>
+    <div class="quiz-question">you ask Claude how a feature works, and answering means reading through 40 files. why is it better for Claude to send a subagent to do this?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">the subagent absorbs all 40 files on its own desk and hands back just the answer, keeping your main conversation clean</button>
+      <button class="quiz-option" data-correct="false">subagents are faster because they skip reading most of the files</button>
+      <button class="quiz-option" data-correct="false">subagents are smarter than the main AI</button>
+      <button class="quiz-option" data-correct="false">it isn't better — the main conversation should always do the work itself</button>
+    </div>
+    <div class="quiz-explanation">delegate the exploration, keep the answer. the subagent burns its own working memory on the messy reading and returns a short summary. your main conversation stays focused instead of getting buried in 40 files of detail.</div>
+  </div>
+
+  <div class="quiz" data-quiz="7c">
+    <div class="quiz-label">check your understanding — 3 of 3</div>
+    <div class="quiz-question">after a long debugging session, you're about to start a fresh conversation. which of these is MOST important to write down first?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">the structure of your project's folders</button>
+      <button class="quiz-option" data-correct="true">the two approaches you tried that didn't work, and the obscure setting that finally fixed it</button>
+      <button class="quiz-option" data-correct="false">the names of the files Claude edited</button>
+      <button class="quiz-option" data-correct="false">the exact commands Claude ran, which are already in your terminal history</button>
+    </div>
+    <div class="quiz-explanation">a fresh agent can re-read your folders, files, and git history in seconds. what it cannot recover is the hard-won knowledge: the dead-ends you already ruled out and the non-obvious fix. always save what can't be cheaply rediscovered.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(6)">← back</button>
+    <button class="btn-next" onclick="goTo(8)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 8: DEBUGGING ==================== -->
+<div class="chapter" id="chapter-8">
+  <div class="chapter-header">
+    <div class="chapter-number">chapter 8</div>
     <div class="chapter-title">debugging with AI</div>
     <div class="chapter-subtitle">data first, theories second — and always push back</div>
   </div>
@@ -592,7 +834,7 @@
   <div class="content-block"><h3>rule 4: give AI access to the real system</h3><p>teams that give AI SSH access to servers debug 3x faster. instead of "run this, paste output, wait, repeat," the AI checks logs and queries databases directly.</p></div>
   <div class="content-block"><h3>rule 5: screenshots are underrated</h3><p>the AI can read screenshots. "it shows no data" + screenshot is 10x more useful than "it's not working" because the AI sees the URL, page state, and error messages simultaneously.</p></div>
 
-  <div class="quiz" data-quiz="6a">
+  <div class="quiz" data-quiz="8a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">the AI says "the 500 error is probably caused by a database connection timeout." what's the best response?</div>
     <div class="quiz-options">
@@ -604,7 +846,7 @@
     <div class="quiz-explanation">before accepting any theory, ask for evidence. "probably" means the AI is guessing. checking the actual error log takes 10 seconds and tells you exactly what happened.</div>
   </div>
 
-  <div class="quiz" data-quiz="6b">
+  <div class="quiz" data-quiz="8b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">why is giving the AI SSH access to your server such a time-saver for debugging?</div>
     <div class="quiz-options">
@@ -616,7 +858,7 @@
     <div class="quiz-explanation">the copy-paste debugging loop (run command → copy output → paste into chat → wait for analysis → repeat) is the biggest time sink. direct access lets the AI explore the problem space the way a human engineer would — following leads, checking related systems, and verifying hypotheses in real-time.</div>
   </div>
 
-  <div class="quiz" data-quiz="6c">
+  <div class="quiz" data-quiz="8c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">a UI bug appears on your phone. what's the most effective way to report it to the AI?</div>
     <div class="quiz-options">
@@ -629,15 +871,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(5)">← back</button>
-    <button class="btn-next" onclick="goTo(7)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(7)">← back</button>
+    <button class="btn-next" onclick="goTo(9)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 7: COMMON MISTAKES ==================== -->
-<div class="chapter" id="chapter-7">
+<!-- ==================== CH 9: COMMON MISTAKES ==================== -->
+<div class="chapter" id="chapter-9">
   <div class="chapter-header">
-    <div class="chapter-number">chapter 7</div>
+    <div class="chapter-number">chapter 9</div>
     <div class="chapter-title">the traps everyone falls into</div>
     <div class="chapter-subtitle">mistakes observed across real teams — and how to avoid them</div>
   </div>
@@ -650,7 +892,7 @@
   <div class="content-block"><h3>trap 7: trying to predict everything upfront</h3><p>build the core, test it, discover what's missing, iterate. real requirements emerge from real usage.</p></div>
   <div class="metaphor"><div class="metaphor-label">mental model</div><h4>the pottery wheel</h4><p>you don't design a perfect vase on paper and then execute. you throw clay, shape it, see how it looks, adjust. the first pass gives you the form. iterations give you the art. software works the same way.</p></div>
 
-  <div class="quiz" data-quiz="7a">
+  <div class="quiz" data-quiz="9a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">you've asked the AI to deploy a change. it responds "deployment complete, all services healthy." what should you NOT do?</div>
     <div class="quiz-options">
@@ -662,7 +904,7 @@
     <div class="quiz-explanation">never take "deployment complete" at face value. load the page, test the feature, check the data. the other three options are all good verification steps.</div>
   </div>
 
-  <div class="quiz" data-quiz="7b">
+  <div class="quiz" data-quiz="9b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">the AI suggests a completely different technical approach than what you originally discussed. what should you do?</div>
     <div class="quiz-options">
@@ -674,7 +916,7 @@
     <div class="quiz-explanation">AI can silently switch approaches when the first one hits a snag, which can lead to rabbit holes. ask why — there might be a good reason, or the AI might have given up too early. the best teams insist on trying the original approach first.</div>
   </div>
 
-  <div class="quiz" data-quiz="7c">
+  <div class="quiz" data-quiz="9c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">which is the better development approach?</div>
     <div class="quiz-options">
@@ -687,15 +929,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(6)">← back</button>
-    <button class="btn-next" onclick="goTo(8)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(8)">← back</button>
+    <button class="btn-next" onclick="goTo(10)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 8: COMPOUNDING ==================== -->
-<div class="chapter" id="chapter-8">
+<!-- ==================== CH 10: COMPOUNDING ==================== -->
+<div class="chapter" id="chapter-10">
   <div class="chapter-header">
-    <div class="chapter-number">chapter 8</div>
+    <div class="chapter-number">chapter 10</div>
     <div class="chapter-title">the investment that compounds</div>
     <div class="chapter-subtitle">why the scaffolding matters more than the code</div>
   </div>
@@ -731,7 +973,7 @@
     </ul>
   </div>
 
-  <div class="quiz" data-quiz="8a">
+  <div class="quiz" data-quiz="10a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">what's the highest-leverage thing you can do to improve your AI collaboration over time?</div>
     <div class="quiz-options">
@@ -743,7 +985,7 @@
     <div class="quiz-explanation">the scaffolding is compound interest for AI collaboration — every investment makes every future session faster and more reliable.</div>
   </div>
 
-  <div class="quiz" data-quiz="8b">
+  <div class="quiz" data-quiz="10b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">what should you build FIRST when starting with AI-assisted development?</div>
     <div class="quiz-options">
@@ -755,7 +997,7 @@
     <div class="quiz-explanation">start small — a rules file is 15 minutes and immediately impacts every conversation. skills and memory grow organically as you work. don't try to document everything upfront; document what you find yourself repeating.</div>
   </div>
 
-  <div class="quiz" data-quiz="8c">
+  <div class="quiz" data-quiz="10c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">what does "skills are living documentation that happens to be executable" mean?</div>
     <div class="quiz-options">
@@ -768,15 +1010,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(7)">← back</button>
-    <button class="btn-next" onclick="goTo(9)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(9)">← back</button>
+    <button class="btn-next" onclick="goTo(11)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 9: GITHUB ESSENTIALS ==================== -->
-<div class="chapter" id="chapter-9">
+<!-- ==================== CH 11: GITHUB ESSENTIALS ==================== -->
+<div class="chapter" id="chapter-11">
   <div class="chapter-header">
-    <div class="chapter-number">chapter 9</div>
+    <div class="chapter-number">chapter 11</div>
     <div class="chapter-title">github essentials</div>
     <div class="chapter-subtitle">commits, pushing, repos, and how not to destroy your work</div>
   </div>
@@ -873,7 +1115,7 @@
     <p>Claude can handle all of this for you. "create a feature branch called add-notifications, build the feature, commit, push, and open a PR" — Claude will do every step. but you need to understand the flow so you can tell Claude which workflow to use and catch it if it tries to push directly to main on a team project.</p>
   </div>
 
-  <div class="quiz" data-quiz="9a">
+  <div class="quiz" data-quiz="11a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">how often should you commit your work?</div>
     <div class="quiz-options">
@@ -885,7 +1127,7 @@
     <div class="quiz-explanation">commit at logical checkpoints. each commit should represent one coherent change. this way you can undo one thing without losing everything else. too few commits means losing large chunks of work; too many clutters the history with meaningless snapshots.</div>
   </div>
 
-  <div class="quiz" data-quiz="9b">
+  <div class="quiz" data-quiz="11b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">Claude hits a merge conflict and suggests running <code>git push --force</code>. what should you do?</div>
     <div class="quiz-options">
@@ -897,7 +1139,7 @@
     <div class="quiz-explanation">force push overwrites remote history — any commits others pushed (or you pushed from another machine) are erased without warning. a normal push failing on conflict is git <em>protecting</em> you. pull, resolve, push normally. this is exactly the kind of rule that belongs in your CLAUDE.md.</div>
   </div>
 
-  <div class="quiz" data-quiz="9c">
+  <div class="quiz" data-quiz="11c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">you're working on a team project. what's the right way to add a new feature?</div>
     <div class="quiz-options">
@@ -922,15 +1164,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(8)">← back</button>
-    <button class="btn-next" onclick="goTo(10)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(10)">← back</button>
+    <button class="btn-next" onclick="goTo(12)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 10: ENVIRONMENT SETUP ==================== -->
-<div class="chapter" id="chapter-10">
+<!-- ==================== CH 12: ENVIRONMENT SETUP ==================== -->
+<div class="chapter" id="chapter-12">
   <div class="chapter-header">
-    <div class="chapter-number">chapter 10</div>
+    <div class="chapter-number">chapter 12</div>
     <div class="chapter-title">environment setup</div>
     <div class="chapter-subtitle">install your tools, configure claude, and create your first repo</div>
   </div>
@@ -939,6 +1181,8 @@
     <p>now it's time to get your hands dirty. this chapter walks you through setting up every tool you need to work with Claude Code — from your editor to your first GitHub push.</p>
     <p>each step is labeled so you know whether to do it yourself, run a terminal command, or let Claude handle it.</p>
   </div>
+
+  <div class="setup-note">this guide sets up Claude Code in the terminal, which works on every machine. (Claude Code also comes as a desktop app for Mac and Windows, and runs inside VS Code and on the web — once you're set up here, use whichever you like best.)</div>
 
   <div class="setup-legend">
     <div class="setup-legend-item"><span class="setup-legend-dot manual"></span> you do this manually</div>
@@ -1101,7 +1345,7 @@
     <div class="setup-note"><strong>what you just learned:</strong> you didn't write any code. you didn't run git commands. you gave Claude a clear outcome ("create a repo, push it to GitHub") and it handled the implementation. that's the core workflow this entire course is about.</div>
   </div>
 
-  <div class="quiz" data-quiz="10a">
+  <div class="quiz" data-quiz="12a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
     <div class="quiz-question">where does CLAUDE.md need to live for Claude to automatically load it?</div>
     <div class="quiz-options">
@@ -1113,7 +1357,7 @@
     <div class="quiz-explanation">CLAUDE.md is loaded from the .claude/ directory relative to where you start Claude. if you launch from ~/Documents/Projects, it looks for ~/Documents/Projects/.claude/CLAUDE.md. this is why picking a consistent launch directory matters.</div>
   </div>
 
-  <div class="quiz" data-quiz="10b">
+  <div class="quiz" data-quiz="12b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
     <div class="quiz-question">what's the difference between a "run this command" step and a "let Claude do it" step?</div>
     <div class="quiz-options">
@@ -1125,7 +1369,7 @@
     <div class="quiz-explanation">this is the core distinction from chapter 1: you describe outcomes, Claude handles implementation. terminal commands are for things that need to happen exactly one way (install X). letting Claude handle it is for things where the outcome matters more than the specific steps (create a repo with these files).</div>
   </div>
 
-  <div class="quiz" data-quiz="10c">
+  <div class="quiz" data-quiz="12c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
     <div class="quiz-question">you told Claude to create a repo and push it to GitHub, but it says <code>gh: command not found</code>. what went wrong?</div>
     <div class="quiz-options">
@@ -1161,7 +1405,7 @@
         <div class="score-stat-label">correct</div>
       </div>
       <div class="score-stat">
-        <div class="score-stat-num" id="score-total">30</div>
+        <div class="score-stat-num" id="score-total">36</div>
         <div class="score-stat-label">questions</div>
       </div>
     </div>
@@ -1172,7 +1416,7 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(9)">← back</button>
+    <button class="btn-prev" onclick="goTo(11)">← back</button>
     <button class="btn-next" onclick="goTo(0)">start over →</button>
   </div>
 </div>
@@ -1180,14 +1424,14 @@
 </div><!-- /main -->
 
 <script>
-const TOTAL_CHAPTERS = 10;
-const TOTAL_QUIZZES = 30;
+const TOTAL_CHAPTERS = 12;
+const TOTAL_QUIZZES = 36;
 let currentChapter = 0;
 let quizAnswers = {};
 let visitedChapters = new Set([0]);
 
 try {
-  const saved = localStorage.getItem('cc101-progress-v2');
+  const saved = localStorage.getItem('cc101-progress-v3');
   if (saved) {
     const data = JSON.parse(saved);
     quizAnswers = data.quizAnswers || {};
@@ -1197,7 +1441,7 @@ try {
 
 function saveProgress() {
   try {
-    localStorage.setItem('cc101-progress-v2', JSON.stringify({
+    localStorage.setItem('cc101-progress-v3', JSON.stringify({
       quizAnswers,
       visited: [...visitedChapters]
     }));
@@ -1224,7 +1468,7 @@ function updateNav() {
 
   const dotsContainer = document.getElementById('chapter-dots');
   dotsContainer.innerHTML = '';
-  const labels = ['home','mindset','what you bring','specificity','memory layers','workflow','debugging','common traps','compounding','git essentials','setup'];
+  const labels = ['home','mindset','what you bring','how claude works','specificity','memory layers','workflow','managing context','debugging','common traps','compounding','git essentials','setup'];
   for (let i = 0; i <= TOTAL_CHAPTERS; i++) {
     const dot = document.createElement('button');
     dot.className = 'chapter-dot';

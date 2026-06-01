@@ -22,7 +22,7 @@ A self-contained single HTML file with no dependencies or build process. Open it
 ### Tech Stack
 - Pure HTML/CSS/JS — no frameworks, no bundler
 - Fonts: Space Grotesk + Space Mono (loaded via Google Fonts CDN)
-- Progress saved to localStorage (`cc101-progress-v2`)
+- Progress saved to localStorage (`cc101-progress-v3`)
 
 ### Design System
 - Dark theme: `--bg: #0a0e1a`, `--card: #131820`
@@ -43,24 +43,28 @@ A self-contained single HTML file with no dependencies or build process. Open it
 - `.setup-note` — blue info callout box
 - `.setup-legend` — color-coded legend for step types
 
-### Chapter Structure (10 chapters + hero)
+### Chapter Structure (12 chapters + hero)
 
 | ID | Chapter | Content |
 |----|---------|---------|
 | 0 | Hero/landing | Intro, chapter list, "start learning" button |
 | 1 | The Mindset Shift | You're running a team, not using a tool |
 | 2 | What You Bring | 5 irreplaceable human contributions |
-| 3 | Talking to AI | How specificity changes everything |
-| 4 | Three Layers of Memory | CLAUDE.md, skills, memory system |
-| 5 | The Workflow | Orient, plan, build, verify, document |
-| 6 | Debugging with AI | Data first, push back on confidence |
-| 7 | Common Mistakes | 7 traps teams fall into |
-| 8 | The Investment That Compounds | Why scaffolding matters more than code |
-| 9 | GitHub Essentials | Commits, push/pull, repos, solo vs team workflows |
-| 10 | Environment Setup | 8-step walkthrough: VS Code, Claude Code, agent swarms, Chrome ext, CLAUDE.md, skills, GitHub CLI, first repo assignment |
+| 3 | How Claude Actually Works | Plain-english: prediction/hallucination, tokenization+no-scratchpad (use scripts for math), can't introspect itself |
+| 4 | Talking to AI | How specificity changes everything + "ask, don't tell" (anti-sycophancy) + numbered-questions tip |
+| 5 | Three Layers of Memory | CLAUDE.md, skills, memory system (+ MCP-vs-skills parenthetical) |
+| 6 | The Workflow | Orient, plan (as conversation, not a "mode"), build, verify, document |
+| 7 | Managing Context | Context window as working memory, compaction, subagents ("delegate the exploration, keep the answer"), capture-before-clear /update-docs habit + two-question discriminator |
+| 8 | Debugging with AI | Data first, push back on confidence |
+| 9 | Common Mistakes | 7 traps teams fall into |
+| 10 | The Investment That Compounds | Why scaffolding matters more than code |
+| 11 | GitHub Essentials | Commits, push/pull, repos, solo vs team workflows |
+| 12 | Environment Setup | 8-step walkthrough: VS Code, Claude Code, agent swarms, Chrome ext, CLAUDE.md, skills, GitHub CLI, first repo assignment |
+
+Note: ch3 and ch7 are the two newest chapters. ch7 is intentionally written without em dashes (testing Peter's no-em-dash-in-public-copy preference); the rest of the course uses em dashes as its house voice. This inconsistency is known/unresolved — Peter chose to leave it for now.
 
 ### JavaScript Architecture
-- `TOTAL_CHAPTERS = 10`, `TOTAL_QUIZZES = 30`
+- `TOTAL_CHAPTERS = 12`, `TOTAL_QUIZZES = 36`
 - `goTo(n)` — navigates to chapter n, updates progress, saves to localStorage
 - `updateNav()` — updates progress bar and chapter dot navigation (right sidebar)
 - Quiz handling via event listeners on `.quiz-option` buttons, answers stored in `quizAnswers` object
@@ -70,7 +74,7 @@ A self-contained single HTML file with no dependencies or build process. Open it
 
 ### Quiz ID Convention
 - Format: `{chapter}{letter}` — e.g., `9a`, `9b`, `9c`
-- 3 quizzes per chapter, 30 total (chapters 1-10, letters a-c)
+- 3 quizzes per chapter, 36 total (chapters 1-12, letters a-c)
 - Quiz state persists in localStorage across sessions
 
 ### Navigation
@@ -93,6 +97,10 @@ A self-contained single HTML file with no dependencies or build process. Open it
 
 ## Recent Changes
 
+- Expanded from 10 to 12 chapters by inserting two new chapters and renumbering everything after them (chapter IDs, `goTo()` nav, `data-quiz` IDs, `labels` array, hero list, counts). localStorage key bumped `v2`→`v3` since renumbered quiz IDs would mismatch old saved progress.
+  - **New Ch3 — How Claude Actually Works**: plain-english mechanics with three practical takeaways (it bluffs → verify; it can't count → use scripts; it can't introspect → check docs). Metaphors: well-read autocomplete, exam-with-no-penalty-for-guessing. 3 quizzes (3a-c).
+  - **New Ch7 — Managing Context**: context window as finite working memory (desk vs filing cabinet), subagents, the cost of losing hard-won knowledge, capture-before-clear habit (the `/update-docs` pattern) with the two-question discriminator (unrecoverable→save fact; expensive→save pointer). 3 quizzes (7a-c). Written em-dash-free on purpose (see note above).
+  - Smaller revisions: Ch4 gained an "ask, don't tell" section + numbered-questions tip; Ch5 gained an MCP-vs-skills parenthetical; Ch6 phase-2 reworded so "plan" reads as a conversation not a formal mode; Ch12 gained an aside that Claude Code also runs as a desktop app / in VS Code / on web.
 - Added Chapter 9 (GitHub Essentials): crash course covering commits, push/pull dangers (force push horror story), repos, solo workflow (push to main), team workflow (feature branches + PRs)
 - Added Chapter 10 (Environment Setup): 8-step guided walkthrough with color-coded step types (manual/command/let-claude-do-it), Mac/Windows platform toggles, copy-to-clipboard on all commands and prompts, final assignment to create first GitHub repo
 - Both chapters include 3 quizzes each and follow the existing design system
