@@ -1,6 +1,6 @@
 ---
 name: update-docs
-description: Capture what would be lost if this conversation ended — decisions, dead-ends, and hard-won knowledge — and save it where a fresh session can find it. Use before clearing or compacting a long session, or when the user says "update docs" or "save what we learned".
+description: Capture what would be lost if this conversation ended (decisions, dead-ends, and hard-won knowledge), and save it where a fresh session can find it. Use before clearing or compacting a long session, or when the user says "update docs" or "save what we learned".
 ---
 
 # Update Docs
