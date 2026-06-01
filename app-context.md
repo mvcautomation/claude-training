@@ -9,10 +9,18 @@ An interactive web-based training course that teaches people how to use Claude C
 ```
 claude-training/
 ├── app/
-│   └── index.html          # The entire course — single-page app, no build step
+│   ├── index.html              # The entire course — single-page app, no build step
+│   └── starter-template.zip    # Downloadable in ch12; built from starter-template/.claude
+├── starter-template/
+│   └── .claude/                # Source for the zip — generic CLAUDE.md + 3 skills
+│       ├── CLAUDE.md           # Beginner safety rails (normal case, NOT dtcmvp lowercase)
+│       └── skills/             # commit, update-docs (ch7), brainstorm (ch4) — each a SKILL.md
 ├── claude-code-101.md       # Source markdown for the conceptual content
 ├── method0.md - method6.md  # Supplementary methodology docs (dtcmvp team workflows)
 └── app-context.md           # This file
+
+# Rebuild the zip after editing starter-template/.claude:
+#   cd starter-template && rm -f ../app/starter-template.zip && zip -r -X ../app/starter-template.zip .claude -x '*.DS_Store'
 ```
 
 ## The App (app/index.html)
@@ -59,7 +67,7 @@ A self-contained single HTML file with no dependencies or build process. Open it
 | 9 | Common Mistakes | 7 traps teams fall into |
 | 10 | The Investment That Compounds | Why scaffolding matters more than code |
 | 11 | GitHub Essentials | Commits, push/pull, repos, solo vs team workflows |
-| 12 | Environment Setup | 8-step walkthrough: VS Code, Claude Code, agent swarms, Chrome ext, CLAUDE.md, skills, GitHub CLI, first repo assignment |
+| 12 | Environment Setup | Desktop-app-first 5-step flow: install Claude desktop app (claude.com/download), make a Projects folder, download+unzip the starter template (`app/starter-template.zip`), open a session via Code tab → local → folder, then the first-repo assignment. Manual/let-claude step types only (no terminal "command" steps). |
 
 Note: ch3 and ch7 are the two newest chapters. ch7 is intentionally written without em dashes (testing Peter's no-em-dash-in-public-copy preference); the rest of the course uses em dashes as its house voice. This inconsistency is known/unresolved — Peter chose to leave it for now.
 

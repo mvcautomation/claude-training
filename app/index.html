@@ -1207,220 +1207,148 @@
   </div>
 
   <div class="content-block">
-    <p>now it's time to get your hands dirty. this chapter walks you through setting up every tool you need to work with Claude Code — from your editor to your first GitHub push.</p>
-    <p>each step is labeled so you know whether to do it yourself, run a terminal command, or let Claude handle it.</p>
+    <p>now it's time to get your hands dirty. this is simpler than it used to be: install one app, make a folder, drop in a starter template, and open your first session. five steps and you're building.</p>
+    <p>each step is labeled so you know whether to do it yourself or let Claude handle it.</p>
   </div>
 
-  <div class="setup-note">this guide sets up Claude Code in the terminal, which works on every machine. (Claude Code also comes as a desktop app for Mac and Windows, and runs inside VS Code and on the web — once you're set up here, use whichever you like best.)</div>
+  <div class="setup-note">we use the <strong>Claude desktop app</strong> here — the simplest way in. (Claude Code also runs in a terminal and inside VS Code once you're comfortable; the desktop app is the easiest place to start.)</div>
 
   <div class="setup-legend">
     <div class="setup-legend-item"><span class="setup-legend-dot manual"></span> you do this manually</div>
-    <div class="setup-legend-item"><span class="setup-legend-dot command"></span> run this command</div>
     <div class="setup-legend-item"><span class="setup-legend-dot claude"></span> let claude do it</div>
   </div>
 
-  <!-- STEP 1: VS Code -->
+  <!-- STEP 1: Install the Claude desktop app -->
   <div class="setup-step">
     <div class="setup-step-header">
       <div class="setup-step-num manual">1</div>
-      <div class="setup-step-title">install VS Code</div>
+      <div class="setup-step-title">install the Claude desktop app</div>
       <span class="setup-badge manual">manual</span>
     </div>
-    <p>VS Code is the code editor we'll use alongside Claude. download and install it for your platform.</p>
-    <div class="platform-tabs" data-group="vscode">
-      <button class="platform-tab active" onclick="switchPlatform('vscode','mac',this)">Mac</button>
-      <button class="platform-tab" onclick="switchPlatform('vscode','win',this)">Windows</button>
+    <p>the desktop app is the one tool you need. it includes Claude Code (the part that writes files and runs commands for you) built right in — no terminal setup required.</p>
+    <p>go to <code>claude.com/download</code> and grab the build for your computer:</p>
+    <div class="platform-tabs" data-group="install">
+      <button class="platform-tab active" onclick="switchPlatform('install','mac',this)">Mac</button>
+      <button class="platform-tab" onclick="switchPlatform('install','win',this)">Windows</button>
     </div>
-    <div class="platform-content active" data-group="vscode" data-platform="mac">
-      <p>go to <code>code.visualstudio.com</code>, download the Mac build, drag it into your Applications folder, and open it. alternatively, if you have Homebrew:</p>
-      <div class="cmd-block">brew install --cask visual-studio-code<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <div class="platform-content active" data-group="install" data-platform="mac">
+      <p>download the Mac version, open the downloaded file, and drag the Claude icon into your Applications folder. open it and sign in with your Anthropic account.</p>
     </div>
-    <div class="platform-content" data-group="vscode" data-platform="win">
-      <p>go to <code>code.visualstudio.com</code>, download the Windows installer, run it, and accept all defaults (check "Add to PATH" when prompted).</p>
+    <div class="platform-content" data-group="install" data-platform="win">
+      <p>download the Windows installer, run it, and accept the defaults. launch Claude and sign in with your Anthropic account.</p>
     </div>
   </div>
 
-  <!-- STEP 2: Install Claude Code -->
+  <!-- STEP 2: Create your projects folder -->
   <div class="setup-step">
     <div class="setup-step-header">
-      <div class="setup-step-num command">2</div>
-      <div class="setup-step-title">install Claude Code</div>
-      <span class="setup-badge command">run command</span>
+      <div class="setup-step-num manual">2</div>
+      <div class="setup-step-title">create a folder for your projects</div>
+      <span class="setup-badge manual">manual</span>
     </div>
-    <p>Claude Code is a CLI that lives in your terminal. it needs Node.js 18+ to run.</p>
-    <div class="platform-tabs" data-group="claude-install">
-      <button class="platform-tab active" onclick="switchPlatform('claude-install','mac',this)">Mac</button>
-      <button class="platform-tab" onclick="switchPlatform('claude-install','win',this)">Windows</button>
+    <p>pick one home for all your coding projects. this is the folder you'll open with Claude.</p>
+    <div class="platform-tabs" data-group="projfolder">
+      <button class="platform-tab active" onclick="switchPlatform('projfolder','mac',this)">Mac</button>
+      <button class="platform-tab" onclick="switchPlatform('projfolder','win',this)">Windows</button>
     </div>
-    <div class="platform-content active" data-group="claude-install" data-platform="mac">
-      <p>install Node.js if you don't have it, then install Claude Code globally:</p>
-      <div class="cmd-block">brew install node<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-      <div class="cmd-block">npm install -g @anthropic-ai/claude-code<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-      <p>verify it works:</p>
-      <div class="cmd-block">claude --version<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <div class="platform-content active" data-group="projfolder" data-platform="mac">
+      <p>open <strong>Finder</strong>, go to your <strong>Documents</strong> folder, and create a new folder (right-click → New Folder). name it something simple like <code>Projects</code>.</p>
     </div>
-    <div class="platform-content" data-group="claude-install" data-platform="win">
-      <p>install Node.js from <code>nodejs.org</code> (LTS version), then open PowerShell or Command Prompt:</p>
-      <div class="cmd-block">npm install -g @anthropic-ai/claude-code<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-      <div class="cmd-block">claude --version<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <div class="platform-content" data-group="projfolder" data-platform="win">
+      <p>open <strong>File Explorer</strong>, go to your <strong>Documents</strong> folder, and create a new folder (right-click → New → Folder). name it something simple like <code>Projects</code>.</p>
     </div>
-    <div class="setup-note"><strong>first launch:</strong> the first time you run <code>claude</code> in a terminal, it will prompt you to authenticate. follow the browser flow to link your Anthropic account.</div>
   </div>
 
-  <!-- STEP 3: Enable Agent Swarms -->
+  <!-- STEP 3: Add the starter template -->
   <div class="setup-step">
     <div class="setup-step-header">
-      <div class="setup-step-num command">3</div>
-      <div class="setup-step-title">enable agent swarms</div>
-      <span class="setup-badge command">run command</span>
+      <div class="setup-step-num manual">3</div>
+      <div class="setup-step-title">add the starter template</div>
+      <span class="setup-badge manual">manual</span>
     </div>
-    <p>agent swarms let Claude spin up sub-agents to work on tasks in parallel — research, code exploration, and multi-file edits happening simultaneously. this is how Claude scales beyond a single thread of work.</p>
-    <p>open Claude Code and run:</p>
-    <div class="cmd-block">/config<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <p>this opens your settings file. set <code>enableAgentSwarms</code> to <code>true</code>, save, and restart Claude. alternatively, just tell Claude:</p>
-    <div class="setup-prompt-block">"enable agent swarms in my settings"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>we've put together a starter pack so you don't begin from scratch: a ready-made <code>CLAUDE.md</code> with sensible safety rails, plus three handy skills (<code>/commit</code>, <code>/update-docs</code>, and <code>/brainstorm</code>) that put the lessons from this course into practice.</p>
+    <p><a href="starter-template.zip" download style="color: var(--green); font-family: 'Space Mono', monospace; text-decoration: underline;">⬇ download starter-template.zip</a></p>
+    <p>move the downloaded zip <strong>into your Projects folder</strong>, then double-click it to unzip. it drops a folder named <code>.claude</code> right where it needs to be.</p>
+    <div class="setup-note"><strong>don't see the <code>.claude</code> folder?</strong> that's normal — folders starting with a dot are hidden. you don't need to see it; Claude finds it automatically. (on Mac you can reveal hidden files with <code>Cmd + Shift + .</code> if you're curious.)</div>
   </div>
 
-  <!-- STEP 4: Chrome Extension -->
+  <!-- STEP 4: Open your first session -->
   <div class="setup-step">
     <div class="setup-step-header">
       <div class="setup-step-num manual">4</div>
-      <div class="setup-step-title">enable /chrome and install the extension</div>
+      <div class="setup-step-title">open your first session</div>
       <span class="setup-badge manual">manual</span>
     </div>
-    <p>the <code>/chrome</code> skill lets Claude read and interact with your browser — useful for testing web apps, reading documentation, and scraping pages.</p>
-    <p><strong>step a:</strong> install the Claude Code Chrome extension from the Chrome Web Store. search for "Claude Code" or ask your admin for the direct link.</p>
-    <p><strong>step b:</strong> once installed, open Claude Code and test it:</p>
-    <div class="cmd-block">/chrome<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <div class="setup-note"><strong>why this matters:</strong> without the extension, Claude is limited to the terminal and your local files. with it, Claude can see what's on your screen, read web pages, and interact with browser-based tools.</div>
+    <p>inside the Claude desktop app:</p>
+    <ol style="margin: 12px 0 12px 32px; padding-left: 0;">
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">go to the <strong>Code</strong> tab</li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">click <strong>start new session</strong></li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">choose <strong>local</strong></li>
+      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">select your <code>Projects</code> folder as the session folder</li>
+    </ol>
+    <p>that's it — Claude automatically loads the <code>CLAUDE.md</code> and skills from the template you added. you're ready to build.</p>
+    <div class="setup-note"><strong>folder or sub-folder?</strong> opening your whole <code>Projects</code> folder means every project shares that starter <code>CLAUDE.md</code> and those skills. you can also open one project's sub-folder instead — but a sub-folder won't have the general template unless you copy it in there too. (the rule: Claude only loads the <code>.claude</code> folder that lives in the folder you actually open.)</div>
   </div>
 
-  <!-- STEP 5: Create CLAUDE.md -->
-  <div class="setup-step">
-    <div class="setup-step-header">
-      <div class="setup-step-num claude">5</div>
-      <div class="setup-step-title">create your CLAUDE.md</div>
-      <span class="setup-badge claude">let claude do it</span>
-    </div>
-    <p><code>CLAUDE.md</code> is the instruction file Claude reads at the start of every conversation. it lives in the <code>.claude/</code> directory of whatever folder you launch Claude from. think of it as your constitution — safety rails, behavior rules, and project context all in one place.</p>
-    <div class="setup-note"><strong>important:</strong> the <code>.claude/</code> directory must exist in the directory where you launch Claude. if you use a <code>Projects/</code> folder, your CLAUDE.md goes at <code>Projects/.claude/CLAUDE.md</code>.</div>
-    <p>navigate to your projects directory and let Claude create a starter file:</p>
-    <div class="cmd-block">cd ~/Documents/Projects &amp;&amp; claude<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <p>then tell Claude:</p>
-    <div class="setup-prompt-block">"create a .claude directory here and add a CLAUDE.md with basic safety rails: don't force push, don't delete without recovery, always commit work, add logging to key stages, and ask before changing approach"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <p>you'll customize this over time — it's a living document. every time Claude does something you don't like, add a rule. every time it does something great, reinforce the pattern.</p>
-  </div>
-
-  <!-- STEP 6: Create First Skill -->
-  <div class="setup-step">
-    <div class="setup-step-header">
-      <div class="setup-step-num claude">6</div>
-      <div class="setup-step-title">create your first skill</div>
-      <span class="setup-badge claude">let claude do it</span>
-    </div>
-    <p>skills are reusable prompts you invoke with <code>/skillname</code>. they live as markdown files in <code>.claude/skills/</code> and let you package workflows you run repeatedly.</p>
-    <p>let's create a simple one. tell Claude:</p>
-    <div class="setup-prompt-block">"create a skill called 'commit' in .claude/skills/ that stages all changes, writes a concise commit message describing what changed and why, and pushes to the current branch"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <p>after it's created, you can use it anytime by typing:</p>
-    <div class="cmd-block">/commit<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <div class="setup-note"><strong>skill ideas to build over time:</strong> <code>/deploy</code>, <code>/review</code>, <code>/test</code>, <code>/scaffold</code> — anything you do more than twice is a candidate.</div>
-  </div>
-
-  <!-- STEP 7: Install GitHub CLI -->
-  <div class="setup-step">
-    <div class="setup-step-header">
-      <div class="setup-step-num command">7</div>
-      <div class="setup-step-title">install GitHub CLI</div>
-      <span class="setup-badge command">run command</span>
-    </div>
-    <p>the GitHub CLI (<code>gh</code>) lets Claude create repos, open PRs, manage issues, and push code — all from the terminal. without it, Claude can't interact with GitHub on your behalf.</p>
-    <div class="platform-tabs" data-group="gh">
-      <button class="platform-tab active" onclick="switchPlatform('gh','mac',this)">Mac</button>
-      <button class="platform-tab" onclick="switchPlatform('gh','win',this)">Windows</button>
-    </div>
-    <div class="platform-content active" data-group="gh" data-platform="mac">
-      <div class="cmd-block">brew install gh<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    </div>
-    <div class="platform-content" data-group="gh" data-platform="win">
-      <div class="cmd-block">winget install --id GitHub.cli<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    </div>
-    <p>then authenticate with your GitHub account:</p>
-    <div class="cmd-block">gh auth login<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <p>follow the prompts — choose HTTPS, authenticate via browser, and you're done.</p>
-  </div>
-
-  <!-- STEP 8: Create First Repo (Assignment) -->
+  <!-- STEP 5: Create First Repo (Assignment) -->
   <div class="setup-step" style="border-color: rgba(123, 237, 159, 0.3); background: linear-gradient(135deg, var(--card), rgba(123, 237, 159, 0.03));">
     <div class="setup-step-header">
-      <div class="setup-step-num claude">8</div>
-      <div class="setup-step-title">create your first repo — the assignment</div>
+      <div class="setup-step-num claude">5</div>
+      <div class="setup-step-title">your first project — the assignment</div>
       <span class="setup-badge claude">let claude do it</span>
     </div>
-    <p>this is your hands-on assignment. you're going to create a real GitHub repository using Claude — from init to first push. this verifies your entire setup works end-to-end.</p>
-    <p><strong>here's what to do:</strong></p>
-    <p>open Claude Code in your projects directory and give it this prompt:</p>
-    <div class="setup-prompt-block">"create a new project called 'hello-claude' — initialize a git repo, create a README.md that says this project was scaffolded by Claude Code, create a .claude directory with a basic CLAUDE.md, then create a GitHub repo under my account and push everything up"<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <p><strong>what Claude will do:</strong></p>
-    <ol style="margin: 12px 0 12px 32px; padding-left: 0;">
-      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">create the <code>hello-claude/</code> directory</li>
-      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">run <code>git init</code></li>
-      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">write <code>README.md</code> and <code>.claude/CLAUDE.md</code></li>
-      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">use <code>gh repo create</code> to make the repo on GitHub</li>
-      <li style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 6px;">commit and push</li>
-    </ol>
-    <p><strong>how to verify:</strong></p>
-    <div class="cmd-block">gh repo view hello-claude --web<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
-    <p>this should open your new repo in the browser. if you see your README and CLAUDE.md — you're set up and ready to build.</p>
-    <div class="setup-note"><strong>what you just learned:</strong> you didn't write any code. you didn't run git commands. you gave Claude a clear outcome ("create a repo, push it to GitHub") and it handled the implementation. that's the core workflow this entire course is about.</div>
+    <p>time to prove the whole setup works. you're going to create a real project and back it up to GitHub — without writing a single line of code or running a single git command yourself.</p>
+    <p>in your session, paste this prompt:</p>
+    <div class="setup-prompt-block">"create a new project called 'hello-claude' in this folder — initialize a git repo, add a README.md that says this project was scaffolded by Claude, then create a GitHub repo under my account and push everything up."<button class="cmd-copy" onclick="copyCmd(this)" title="copy">⧉</button></div>
+    <p>Claude will make the folder, set up git, write the README, create the repo on GitHub, and push. the first time it touches GitHub it'll walk you through connecting your account — just follow its prompts.</p>
+    <div class="setup-note"><strong>how to verify:</strong> ask Claude to "open the new repo on GitHub in my browser." if you see your <code>hello-claude</code> repo with its README — you're fully set up and ready to build.</div>
+    <div class="setup-note"><strong>what you just learned:</strong> you didn't write any code or run any git commands. you described an outcome ("make a project and push it to GitHub") and Claude handled the how. that's the core workflow this entire course is about.</div>
   </div>
 
   <div class="quiz" data-quiz="12a">
     <div class="quiz-label">check your understanding — 1 of 3</div>
-    <div class="quiz-question">where does CLAUDE.md need to live for Claude to automatically load it?</div>
+    <div class="quiz-question">why does the starter template go into your Projects folder?</div>
     <div class="quiz-options">
-      <button class="quiz-option" data-correct="false">in your home directory (~/.claude/CLAUDE.md)</button>
-      <button class="quiz-option" data-correct="true">in the .claude/ directory of whatever folder you launch Claude from</button>
-      <button class="quiz-option" data-correct="false">anywhere on your computer — Claude searches for it</button>
-      <button class="quiz-option" data-correct="false">in the VS Code settings folder</button>
+      <button class="quiz-option" data-correct="true">Claude loads the CLAUDE.md and skills from the .claude folder of whatever folder you open as your session — so putting it there makes them active</button>
+      <button class="quiz-option" data-correct="false">it has to live in your computer's home folder, where Claude always looks</button>
+      <button class="quiz-option" data-correct="false">it can go anywhere in Documents — Claude searches your whole drive</button>
+      <button class="quiz-option" data-correct="false">it goes inside the Claude app's own settings folder</button>
     </div>
-    <div class="quiz-explanation">CLAUDE.md is loaded from the .claude/ directory relative to where you start Claude. if you launch from ~/Documents/Projects, it looks for ~/Documents/Projects/.claude/CLAUDE.md. this is why picking a consistent launch directory matters.</div>
+    <div class="quiz-explanation">Claude reads CLAUDE.md and skills from the hidden .claude folder inside the folder you open as your session. that's why the template goes in your Projects folder: open a session there and it's automatically active. open a folder with no .claude and none of it loads.</div>
   </div>
 
   <div class="quiz" data-quiz="12b">
     <div class="quiz-label">check your understanding — 2 of 3</div>
-    <div class="quiz-question">what's the difference between a "run this command" step and a "let Claude do it" step?</div>
+    <div class="quiz-question">you open a brand-new project sub-folder as your session, but you only put the starter template in your top-level Projects folder. what happens?</div>
     <div class="quiz-options">
-      <button class="quiz-option" data-correct="false">there's no difference — Claude runs both</button>
-      <button class="quiz-option" data-correct="false">"run this command" is for installing things, "let Claude do it" is for coding</button>
-      <button class="quiz-option" data-correct="true">"run this command" is a specific terminal command you copy and execute — "let Claude do it" means you describe an outcome to Claude and it figures out the implementation</button>
-      <button class="quiz-option" data-correct="false">"let Claude do it" is faster than running commands manually</button>
+      <button class="quiz-option" data-correct="false">Claude automatically copies the template into every sub-folder</button>
+      <button class="quiz-option" data-correct="true">that session won't have the general CLAUDE.md or skills, because they aren't in the folder you opened</button>
+      <button class="quiz-option" data-correct="false">the template works everywhere on your computer once it's installed</button>
+      <button class="quiz-option" data-correct="false">Claude refuses to start the session</button>
     </div>
-    <div class="quiz-explanation">this is the core distinction from chapter 1: you describe outcomes, Claude handles implementation. terminal commands are for things that need to happen exactly one way (install X). letting Claude handle it is for things where the outcome matters more than the specific steps (create a repo with these files).</div>
+    <div class="quiz-explanation">the .claude folder only applies to the folder it lives in. a session opened in a sub-folder with no .claude won't inherit the top-level template. either open the Projects folder itself, or copy the template into the project sub-folder too.</div>
   </div>
 
   <div class="quiz" data-quiz="12c">
     <div class="quiz-label">check your understanding — 3 of 3</div>
-    <div class="quiz-question">you told Claude to create a repo and push it to GitHub, but it says <code>gh: command not found</code>. what went wrong?</div>
+    <div class="quiz-question">in the assignment, you create a GitHub repo without writing a single git command yourself. what's the key skill that made that work?</div>
     <div class="quiz-options">
-      <button class="quiz-option" data-correct="false">Claude doesn't support GitHub</button>
-      <button class="quiz-option" data-correct="false">you need to give Claude your GitHub password</button>
-      <button class="quiz-option" data-correct="true">the GitHub CLI (gh) isn't installed or isn't in your PATH — go back to step 7</button>
-      <button class="quiz-option" data-correct="false">you need to create the repo manually on github.com first</button>
+      <button class="quiz-option" data-correct="false">you memorized the exact git commands ahead of time</button>
+      <button class="quiz-option" data-correct="true">you described the outcome you wanted and let Claude handle the implementation</button>
+      <button class="quiz-option" data-correct="false">you installed every possible tool in advance</button>
+      <button class="quiz-option" data-correct="false">you wrote the code and Claude just reviewed it</button>
     </div>
-    <div class="quiz-explanation">Claude uses the tools available in your terminal. if gh isn't installed, Claude can't interact with GitHub. this is why the setup order matters — each step builds on the previous ones.</div>
+    <div class="quiz-explanation">you said what you wanted ("make a project and push it to GitHub") and Claude figured out the how. that outcome-over-implementation move is the core workflow this whole course is built around.</div>
   </div>
 
   <div class="key-points">
     <h4>setup checklist</h4>
     <ul>
-      <li>VS Code installed and running</li>
-      <li>Claude Code installed and authenticated</li>
-      <li>agent swarms enabled in settings</li>
-      <li>Chrome extension installed, /chrome working</li>
-      <li>CLAUDE.md created with your safety rails</li>
-      <li>first skill created and tested</li>
-      <li>GitHub CLI installed and authenticated</li>
-      <li>first repo created, committed, and pushed to GitHub</li>
+      <li>Claude desktop app installed and signed in</li>
+      <li>a Projects folder created in Documents</li>
+      <li>starter template unzipped into it (the hidden .claude folder)</li>
+      <li>first session opened on your Projects folder via the Code tab</li>
+      <li>first project created and pushed to GitHub (the assignment)</li>
     </ul>
   </div>
 
