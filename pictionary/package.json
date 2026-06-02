@@ -1,0 +1,26 @@
+{
+  "name": "robopictionary",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Online multiplayer Pictionary — draw the robot action, your team guesses it.",
+  "scripts": {
+    "dev": "concurrently -n web,party -c blue,magenta \"vite\" \"partykit dev\"",
+    "dev:web": "vite",
+    "dev:party": "partykit dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy:party": "partykit deploy"
+  },
+  "dependencies": {
+    "partysocket": "^1.0.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "partykit": "^0.0.111",
+    "vite": "^5.4.11"
+  }
+}
