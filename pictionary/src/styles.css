@@ -368,6 +368,20 @@ select {
   font-weight: 600;
   margin: 6px 0;
 }
+.bot-row {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+.btn.small {
+  padding: 7px 14px;
+  font-size: 13px;
+  box-shadow: 0 2px 0 var(--ink);
+  width: auto;
+}
+.btn.small:hover:not(:disabled) {
+  box-shadow: 0 3px 0 var(--ink);
+}
 
 /* ---- game layout ---- */
 .room {

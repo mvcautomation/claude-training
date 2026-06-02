@@ -57,9 +57,7 @@ export default function Room({ code, name, onLeave }) {
 // ---------------------------------------------------------------------------
 function Lobby({ state, me, isHost, socket, onLeave, connected }) {
   const [target, setTarget] = useState(state.targetScore || 5);
-  const counts = teamCounts(state.players);
-  const canStart = state.players.length >= state.minPlayers && counts[0] >= 1 && counts[1] >= 1;
-  // after rebalance both teams will have >=2 when total >=4, so total is the gate
+  const hasBots = state.players.some((p) => p.isBot);
   const enoughPlayers = state.players.length >= state.minPlayers;
 
   return (
@@ -76,6 +74,7 @@ function Lobby({ state, me, isHost, socket, onLeave, connected }) {
             {state.players.map((p) => (
               <li key={p.id} className="player-chip" style={{ "--c": TEAM_COLORS[p.team] }}>
                 <span className="dot" />
+                {p.isBot && "🤖 "}
                 {p.name}
                 {p.isHost && <span className="host-tag">host</span>}
                 {p.id === me?.id && <span className="you-tag">you</span>}
@@ -95,6 +94,16 @@ function Lobby({ state, me, isHost, socket, onLeave, connected }) {
               </select>
               <span>points wins</span>
             </label>
+            <div className="bot-row">
+              <button className="btn btn-ghost small" onClick={() => socket.send(JSON.stringify({ t: "addbot" }))}>
+                + add test bot
+              </button>
+              {hasBots && (
+                <button className="btn btn-ghost small" onClick={() => socket.send(JSON.stringify({ t: "rmbot" }))}>
+                  – remove bot
+                </button>
+              )}
+            </div>
             <button
               className="btn btn-primary big"
               disabled={!enoughPlayers}
@@ -102,7 +111,7 @@ function Lobby({ state, me, isHost, socket, onLeave, connected }) {
             >
               {enoughPlayers ? "start game" : `need ${state.minPlayers - state.players.length} more player(s)`}
             </button>
-            <p className="fineprint">players will be auto-split into two teams</p>
+            <p className="fineprint">players auto-split into two teams · bots draw & guess on their own</p>
           </div>
         ) : (
           <div className="host-controls">
@@ -269,7 +278,10 @@ function Sidebar({ state, me, drawer, onLeave }) {
               {byTeam[t].map((p) => (
                 <li key={p.id} className={p.isDrawer ? "drawing" : ""}>
                   <span className="dot" />
-                  <span className="pname">{p.name}</span>
+                  <span className="pname">
+                    {p.isBot && "🤖 "}
+                    {p.name}
+                  </span>
                   {p.id === me?.id && <span className="you-tag">you</span>}
                   {p.isDrawer && <span className="pen">✏️</span>}
                 </li>
@@ -435,9 +447,3 @@ function GameOver({ state, isHost, socket, onLeave }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-function teamCounts(players) {
-  const c = [0, 0];
-  for (const p of players) c[p.team]++;
-  return c;
-}

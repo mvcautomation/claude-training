@@ -3,7 +3,46 @@ import { WORDS } from "./words.js";
 const TURN_MS = 90_000; // 90 second timer per turn
 const ROUND_END_MS = 5_000; // reveal-the-word pause between turns
 const DEFAULT_TARGET = 5;
-const MIN_PLAYERS = 4; // need >=2 per team so a teammate can guess
+const MIN_PLAYERS = 2; // 2 is enough once you can add test bots to fill seats
+
+// ---- test-bot helpers -------------------------------------------------------
+const BOT_PALETTE = ["#1b1b1f", "#ff5a3c", "#3a6df0", "#3cba54", "#9b5de5", "#ff9f1c"];
+const BOT_GUESSES = [
+  "hmm…",
+  "is it a robot?",
+  "ooh i think i know",
+  "wait what is that",
+  "robot dancing??",
+  "no clue lol",
+  "10/10 drawing",
+  "a robot doing… something",
+  "is that an arm?",
+];
+const rand = (a, b) => a + Math.random() * (b - a);
+
+function makeScribble() {
+  const n = 2 + Math.floor(Math.random() * 3); // 2-4 strokes
+  const strokes = [];
+  for (let s = 0; s < n; s++) {
+    const color = BOT_PALETTE[Math.floor(Math.random() * BOT_PALETTE.length)];
+    const size = [4, 7, 12][Math.floor(Math.random() * 3)];
+    const points = [];
+    let x = rand(0.2, 0.8);
+    let y = rand(0.2, 0.8);
+    let ax = rand(-0.04, 0.04);
+    let ay = rand(-0.04, 0.04);
+    const steps = 8 + Math.floor(Math.random() * 12);
+    for (let i = 0; i < steps; i++) {
+      x = Math.min(0.95, Math.max(0.05, x + ax));
+      y = Math.min(0.95, Math.max(0.05, y + ay));
+      ax += rand(-0.02, 0.02);
+      ay += rand(-0.02, 0.02);
+      points.push([x, y]);
+    }
+    strokes.push({ tool: "brush", color, size, points });
+  }
+  return strokes;
+}
 
 /**
  * One server instance == one game room. The 4-digit code IS the room id.
@@ -41,6 +80,8 @@ export default class Pictionary {
 
     this._turnTimer = null;
     this._roundTimer = null;
+    this._botTimers = [];
+    this._botSeq = 0;
   }
 
   // ---- connection lifecycle ---------------------------------------------
@@ -64,7 +105,7 @@ export default class Pictionary {
     this.players.delete(conn.id);
 
     if (this.hostId === conn.id) {
-      const next = [...this.players.values()][0];
+      const next = [...this.players.values()].find((p) => !p.isBot);
       this.hostId = next ? next.id : null;
     }
 
@@ -94,6 +135,10 @@ export default class Pictionary {
         return this.onGuessed(sender.id);
       case "again":
         return this.playAgain(sender.id);
+      case "addbot":
+        return this.addBot(sender.id);
+      case "rmbot":
+        return this.removeBot(sender.id);
       case "d-start":
       case "d-point":
       case "d-end":
@@ -149,6 +194,12 @@ export default class Pictionary {
 
   startTurn() {
     this.clearTimers();
+    // if every human has left, stop the loop instead of letting bots run forever
+    if ([...this.room.getConnections()].length === 0) {
+      this.phase = "lobby";
+      this.drawerId = null;
+      return;
+    }
     const live = this.order.filter((id) => this.players.has(id));
     if (live.length === 0) {
       this.phase = "lobby";
@@ -167,6 +218,10 @@ export default class Pictionary {
     this._turnTimer = setTimeout(() => this.endTurn(false), TURN_MS);
     this.broadcastCanvasClear();
     this.broadcastState();
+
+    // bot behavior: bot draws + auto-resolves; on a human's turn bots heckle
+    if (this.players.get(this.drawerId)?.isBot) this.botPlayTurn(this.drawerId);
+    else this.botChatter();
   }
 
   endTurn(guessed, team) {
@@ -224,6 +279,87 @@ export default class Pictionary {
     this.turnEndsAt = null;
     this.broadcastCanvasClear();
     this.broadcastState();
+  }
+
+  // ---- test bots --------------------------------------------------------
+
+  addBot(id) {
+    if (id !== this.hostId || this.phase !== "lobby") return;
+    const bots = [...this.players.values()].filter((p) => p.isBot);
+    if (bots.length >= 7) return;
+    const n = ++this._botSeq;
+    const botId = "bot:" + n;
+    this.players.set(botId, { id: botId, name: "cpu-" + n, team: this.balancedTeam(), connected: true, isBot: true });
+    this.broadcastState();
+  }
+
+  removeBot(id) {
+    if (id !== this.hostId || this.phase !== "lobby") return;
+    const bots = [...this.players.values()].filter((p) => p.isBot);
+    const last = bots[bots.length - 1];
+    if (last) this.players.delete(last.id);
+    this.broadcastState();
+  }
+
+  // a bot drawer streams a random scribble, then auto-resolves its own turn
+  botPlayTurn(drawerId) {
+    const team = this.players.get(drawerId)?.team ?? 0;
+    const events = [];
+    for (const st of makeScribble()) {
+      events.push({ k: "start", st });
+      for (let i = 1; i < st.points.length; i++) events.push({ k: "point", p: st.points[i] });
+      events.push({ k: "end", st });
+    }
+    let i = 0;
+    const step = () => {
+      if (this.drawerId !== drawerId || this.phase !== "playing") return;
+      const e = events[i++];
+      if (!e) {
+        // done drawing — resolve a couple seconds later so guessers can react
+        this._botTimers.push(
+          setTimeout(() => {
+            if (this.drawerId === drawerId && this.phase === "playing") this.endTurn(true, team);
+          }, 2500)
+        );
+        return;
+      }
+      if (e.k === "start") {
+        this.pending = { tool: e.st.tool, color: e.st.color, size: e.st.size, points: [e.st.points[0]] };
+        this.room.broadcast(
+          JSON.stringify({ type: "draw", op: "start", tool: e.st.tool, color: e.st.color, size: e.st.size, x: e.st.points[0][0], y: e.st.points[0][1] })
+        );
+      } else if (e.k === "point") {
+        if (this.pending) this.pending.points.push(e.p);
+        this.room.broadcast(JSON.stringify({ type: "draw", op: "point", x: e.p[0], y: e.p[1] }));
+      } else {
+        if (this.pending) {
+          this.strokes.push(this.pending);
+          this.pending = null;
+        }
+        this.room.broadcast(JSON.stringify({ type: "draw", op: "end" }));
+      }
+      this._botTimers.push(setTimeout(step, 45));
+    };
+    this._botTimers.push(setTimeout(step, 700));
+  }
+
+  // bots throw a few guesses into chat while a human is drawing
+  botChatter() {
+    const bots = [...this.players.values()].filter((p) => p.isBot);
+    if (!bots.length) return;
+    const count = Math.min(bots.length, 1 + Math.floor(Math.random() * 2));
+    for (let i = 0; i < count; i++) {
+      const bot = bots[Math.floor(Math.random() * bots.length)];
+      const delay = 2500 + Math.random() * 9000;
+      this._botTimers.push(
+        setTimeout(() => {
+          if (this.phase !== "playing") return;
+          this.chat.push({ id: bot.id, name: bot.name, team: bot.team, text: BOT_GUESSES[Math.floor(Math.random() * BOT_GUESSES.length)] });
+          if (this.chat.length > 60) this.chat.shift();
+          this.broadcastState();
+        }, delay)
+      );
+    }
   }
 
   pickWord() {
@@ -300,6 +436,7 @@ export default class Pictionary {
       team: p.team,
       isHost: p.id === this.hostId,
       isDrawer: p.id === this.drawerId,
+      isBot: !!p.isBot,
     }));
 
     let word = null;
@@ -338,5 +475,7 @@ export default class Pictionary {
     if (this._roundTimer) clearTimeout(this._roundTimer);
     this._turnTimer = null;
     this._roundTimer = null;
+    this._botTimers.forEach(clearTimeout);
+    this._botTimers = [];
   }
 }
