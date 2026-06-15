@@ -1,6 +1,0 @@
-{
-  "$schema": "https://www.partykit.io/schema.json",
-  "name": "robopictionary",
-  "main": "party/server.js",
-  "compatibilityDate": "2024-11-01"
-}

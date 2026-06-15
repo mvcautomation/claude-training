@@ -1,4 +1,15 @@
+// Standalone Node WebSocket server for robopictionary.
+// Self-hosted on the Mac Mini behind a Cloudflare tunnel (wss://pictionary.ai-app.space).
+// One process, many rooms. The 4-digit game code is the room id.
+//
+// The browser connects with `partysocket` to /parties/main/<code>?name=<name>,
+// so we keep that path shape even though we're no longer on PartyKit.
+
+import { createServer } from "http";
+import { WebSocketServer } from "ws";
 import { WORDS } from "./words.js";
+
+const PORT = process.env.PORT || 3100;
 
 const TURN_MS = 90_000; // 90 second timer per turn
 const ROUND_END_MS = 5_000; // reveal-the-word pause between turns
@@ -44,23 +55,22 @@ function makeScribble() {
   return strokes;
 }
 
-/**
- * One server instance == one game room. The 4-digit code IS the room id.
- * All game state lives in memory and resets when the room empties.
- */
-export default class Pictionary {
-  constructor(room) {
-    this.room = room;
+// ---- one game room ----------------------------------------------------------
+class GameRoom {
+  constructor(id, onEmpty) {
+    this.id = id;
+    this.onEmpty = onEmpty;
+    this.connections = new Map(); // connId -> ws
+    this._connSeq = 0;
 
-    /** @type {Map<string, {id:string,name:string,team:0|1,connected:boolean}>} */
-    this.players = new Map();
+    this.players = new Map(); // connId -> {id,name,team,connected,isBot}
     this.hostId = null;
 
     this.phase = "lobby"; // lobby | playing | roundEnd | gameOver
     this.teams = [0, 0];
     this.targetScore = DEFAULT_TARGET;
 
-    this.order = []; // connection ids in draw rotation
+    this.order = [];
     this.turnIndex = 0;
     this.drawerId = null;
 
@@ -69,11 +79,10 @@ export default class Pictionary {
     this.turnEndsAt = null;
 
     this.chat = [];
-    this.lastResult = null; // {word, guessed, team}
-    this.winner = null; // team index
+    this.lastResult = null;
+    this.winner = null;
     this.recentWords = [];
 
-    // canvas (authoritative copy for late joiners / undo / clear)
     this.strokes = [];
     this.redo = [];
     this.pending = null;
@@ -84,86 +93,94 @@ export default class Pictionary {
     this._botSeq = 0;
   }
 
-  // ---- connection lifecycle ---------------------------------------------
-
-  onConnect(conn, ctx) {
-    const url = new URL(ctx.request.url);
-    const name = (url.searchParams.get("name") || "Player").slice(0, 20).trim() || "Player";
+  // ---- connection plumbing (replaces PartyKit's this.room.*) ----
+  addConnection(ws, name) {
+    const id = "c" + ++this._connSeq;
+    this.connections.set(id, ws);
     const team = this.balancedTeam();
-    this.players.set(conn.id, { id: conn.id, name, team, connected: true });
-    if (!this.hostId) this.hostId = conn.id;
-    // people who arrive mid-game still join the rotation
-    if (this.phase !== "lobby") this.order.push(conn.id);
-
-    this.sendCanvas(conn);
+    this.players.set(id, { id, name: (name || "Player").slice(0, 20).trim() || "Player", team, connected: true, isBot: false });
+    if (!this.hostId) this.hostId = id;
+    if (this.phase !== "lobby") this.order.push(id);
+    console.log(`[${this.id}] + ${name} (${id}) — ${this.connections.size} connected`);
+    this.send(id, this.canvasMsg());
     this.broadcastState();
+    return id;
   }
 
-  onClose(conn) {
-    const p = this.players.get(conn.id);
+  removeConnection(id) {
+    this.connections.delete(id);
+    const p = this.players.get(id);
     if (!p) return;
-    this.players.delete(conn.id);
+    this.players.delete(id);
+    console.log(`[${this.id}] - ${p.name} (${id}) — ${this.connections.size} connected`);
 
-    if (this.hostId === conn.id) {
-      const next = [...this.players.values()].find((p) => !p.isBot);
+    if (this.hostId === id) {
+      const next = [...this.players.values()].find((q) => !q.isBot);
       this.hostId = next ? next.id : null;
     }
 
-    if (this.phase === "playing" && this.drawerId === conn.id) {
-      this.endTurn(false); // drawer bailed — skip the turn
-    } else {
-      this.broadcastState();
+    if (this.connections.size === 0) {
+      this.clearTimers();
+      this.onEmpty?.();
+      return;
     }
+    if (this.phase === "playing" && this.drawerId === id) this.endTurn(false);
+    else this.broadcastState();
   }
 
-  onMessage(raw, sender) {
+  broadcast(str, excludeId) {
+    for (const [cid, ws] of this.connections) {
+      if (cid === excludeId) continue;
+      if (ws.readyState === 1) ws.send(str);
+    }
+  }
+  send(id, str) {
+    const ws = this.connections.get(id);
+    if (ws && ws.readyState === 1) ws.send(str);
+  }
+
+  handleMessage(id, raw) {
     let msg;
     try {
       msg = JSON.parse(raw);
     } catch {
       return;
     }
-    const p = this.players.get(sender.id);
+    const p = this.players.get(id);
     if (!p) return;
-
     switch (msg.t) {
       case "start":
-        return this.startGame(sender.id, msg);
+        return this.startGame(id, msg);
       case "chat":
         return this.onChat(p, msg.text);
       case "guessed":
-        return this.onGuessed(sender.id);
+        return this.onGuessed(id);
       case "again":
-        return this.playAgain(sender.id);
+        return this.playAgain(id);
       case "addbot":
-        return this.addBot(sender.id);
+        return this.addBot(id);
       case "rmbot":
-        return this.removeBot(sender.id);
+        return this.removeBot(id);
       case "d-start":
       case "d-point":
       case "d-end":
       case "d-undo":
       case "d-redo":
       case "d-clear":
-        if (sender.id !== this.drawerId || this.phase !== "playing") return;
-        return this.onDraw(msg, sender);
+        if (id !== this.drawerId || this.phase !== "playing") return;
+        return this.onDraw(msg, id);
     }
   }
 
-  // ---- teams & rotation -------------------------------------------------
-
+  // ---- teams & rotation ----
   balancedTeam() {
     const c = [0, 0];
     for (const p of this.players.values()) if (p.connected) c[p.team]++;
     return c[0] <= c[1] ? 0 : 1;
   }
-
   rebalance() {
-    // even split, alternating, so teams are equal or off-by-one
-    const active = [...this.players.values()];
-    active.forEach((p, i) => (p.team = i % 2));
+    [...this.players.values()].forEach((p, i) => (p.team = i % 2));
   }
-
   buildOrder() {
     const t0 = [...this.players.values()].filter((p) => p.team === 0).map((p) => p.id);
     const t1 = [...this.players.values()].filter((p) => p.team === 1).map((p) => p.id);
@@ -176,8 +193,7 @@ export default class Pictionary {
     return order;
   }
 
-  // ---- game flow --------------------------------------------------------
-
+  // ---- game flow ----
   startGame(id, msg) {
     if (id !== this.hostId || this.phase !== "lobby") return;
     if (this.players.size < MIN_PLAYERS) return;
@@ -189,13 +205,13 @@ export default class Pictionary {
     this.chat = [];
     this.order = this.buildOrder();
     this.turnIndex = 0;
+    console.log(`[${this.id}] game start — ${this.players.size} players, to ${this.targetScore}`);
     this.startTurn();
   }
 
   startTurn() {
     this.clearTimers();
-    // if every human has left, stop the loop instead of letting bots run forever
-    if ([...this.room.getConnections()].length === 0) {
+    if (this.connections.size === 0) {
       this.phase = "lobby";
       this.drawerId = null;
       return;
@@ -216,10 +232,10 @@ export default class Pictionary {
     this.phase = "playing";
     this.turnEndsAt = Date.now() + TURN_MS;
     this._turnTimer = setTimeout(() => this.endTurn(false), TURN_MS);
+    console.log(`[${this.id}] turn → ${this.players.get(this.drawerId)?.name}: "${this.word}"`);
     this.broadcastCanvasClear();
     this.broadcastState();
 
-    // bot behavior: bot draws + auto-resolves; on a human's turn bots heckle
     if (this.players.get(this.drawerId)?.isBot) this.botPlayTurn(this.drawerId);
     else this.botChatter();
   }
@@ -233,6 +249,7 @@ export default class Pictionary {
     } else {
       this.lastResult = { word: this.word, guessed: false, team: null };
     }
+    console.log(`[${this.id}] turn end — ${guessed ? "team " + team + " scored" : "unguessed"} (${this.teams[0]}-${this.teams[1]})`);
 
     if (this.teams[0] >= this.targetScore || this.teams[1] >= this.targetScore) {
       this.winner = this.teams[0] === this.teams[1] ? null : this.teams[0] > this.teams[1] ? 0 : 1;
@@ -242,7 +259,6 @@ export default class Pictionary {
       this.broadcastState();
       return;
     }
-
     this.phase = "roundEnd";
     this.turnEndsAt = null;
     this.broadcastState();
@@ -254,14 +270,13 @@ export default class Pictionary {
 
   onGuessed(id) {
     if (this.phase !== "playing" || id !== this.drawerId) return;
-    const team = this.players.get(id).team;
-    this.endTurn(true, team);
+    this.endTurn(true, this.players.get(id).team);
   }
 
   onChat(p, text) {
     text = String(text || "").slice(0, 140).trim();
     if (!text) return;
-    if (this.phase === "playing" && p.id === this.drawerId) return; // drawer can't guess
+    if (this.phase === "playing" && p.id === this.drawerId) return;
     this.chat.push({ id: p.id, name: p.name, team: p.team, text });
     if (this.chat.length > 60) this.chat.shift();
     this.broadcastState();
@@ -281,8 +296,7 @@ export default class Pictionary {
     this.broadcastState();
   }
 
-  // ---- test bots --------------------------------------------------------
-
+  // ---- test bots ----
   addBot(id) {
     if (id !== this.hostId || this.phase !== "lobby") return;
     const bots = [...this.players.values()].filter((p) => p.isBot);
@@ -292,7 +306,6 @@ export default class Pictionary {
     this.players.set(botId, { id: botId, name: "cpu-" + n, team: this.balancedTeam(), connected: true, isBot: true });
     this.broadcastState();
   }
-
   removeBot(id) {
     if (id !== this.hostId || this.phase !== "lobby") return;
     const bots = [...this.players.values()].filter((p) => p.isBot);
@@ -301,7 +314,6 @@ export default class Pictionary {
     this.broadcastState();
   }
 
-  // a bot drawer streams a random scribble, then auto-resolves its own turn
   botPlayTurn(drawerId) {
     const team = this.players.get(drawerId)?.team ?? 0;
     const events = [];
@@ -315,7 +327,6 @@ export default class Pictionary {
       if (this.drawerId !== drawerId || this.phase !== "playing") return;
       const e = events[i++];
       if (!e) {
-        // done drawing — resolve a couple seconds later so guessers can react
         this._botTimers.push(
           setTimeout(() => {
             if (this.drawerId === drawerId && this.phase === "playing") this.endTurn(true, team);
@@ -325,25 +336,22 @@ export default class Pictionary {
       }
       if (e.k === "start") {
         this.pending = { tool: e.st.tool, color: e.st.color, size: e.st.size, points: [e.st.points[0]] };
-        this.room.broadcast(
-          JSON.stringify({ type: "draw", op: "start", tool: e.st.tool, color: e.st.color, size: e.st.size, x: e.st.points[0][0], y: e.st.points[0][1] })
-        );
+        this.broadcast(JSON.stringify({ type: "draw", op: "start", tool: e.st.tool, color: e.st.color, size: e.st.size, x: e.st.points[0][0], y: e.st.points[0][1] }));
       } else if (e.k === "point") {
         if (this.pending) this.pending.points.push(e.p);
-        this.room.broadcast(JSON.stringify({ type: "draw", op: "point", x: e.p[0], y: e.p[1] }));
+        this.broadcast(JSON.stringify({ type: "draw", op: "point", x: e.p[0], y: e.p[1] }));
       } else {
         if (this.pending) {
           this.strokes.push(this.pending);
           this.pending = null;
         }
-        this.room.broadcast(JSON.stringify({ type: "draw", op: "end" }));
+        this.broadcast(JSON.stringify({ type: "draw", op: "end" }));
       }
       this._botTimers.push(setTimeout(step, 45));
     };
     this._botTimers.push(setTimeout(step, 700));
   }
 
-  // bots throw a few guesses into chat while a human is drawing
   botChatter() {
     const bots = [...this.players.values()].filter((p) => p.isBot);
     if (!bots.length) return;
@@ -374,28 +382,24 @@ export default class Pictionary {
     return w;
   }
 
-  // ---- drawing ----------------------------------------------------------
-
-  onDraw(msg, sender) {
+  // ---- drawing ----
+  onDraw(msg, senderId) {
     switch (msg.t) {
       case "d-start":
         this.pending = { tool: msg.tool, color: msg.color, size: msg.size, points: [[msg.x, msg.y]] };
         this.redo = [];
-        this.room.broadcast(
-          JSON.stringify({ type: "draw", op: "start", tool: msg.tool, color: msg.color, size: msg.size, x: msg.x, y: msg.y }),
-          [sender.id]
-        );
+        this.broadcast(JSON.stringify({ type: "draw", op: "start", tool: msg.tool, color: msg.color, size: msg.size, x: msg.x, y: msg.y }), senderId);
         break;
       case "d-point":
         if (this.pending) this.pending.points.push([msg.x, msg.y]);
-        this.room.broadcast(JSON.stringify({ type: "draw", op: "point", x: msg.x, y: msg.y }), [sender.id]);
+        this.broadcast(JSON.stringify({ type: "draw", op: "point", x: msg.x, y: msg.y }), senderId);
         break;
       case "d-end":
         if (this.pending) {
           this.strokes.push(this.pending);
           this.pending = null;
         }
-        this.room.broadcast(JSON.stringify({ type: "draw", op: "end" }), [sender.id]);
+        this.broadcast(JSON.stringify({ type: "draw", op: "end" }), senderId);
         break;
       case "d-undo":
         if (this.strokes.length) this.redo.push(this.strokes.pop());
@@ -414,19 +418,15 @@ export default class Pictionary {
     }
   }
 
-  // ---- broadcasting -----------------------------------------------------
-
+  // ---- broadcasting ----
   canvasMsg() {
     return JSON.stringify({ type: "canvas", strokes: this.strokes });
   }
-  sendCanvas(conn) {
-    conn.send(this.canvasMsg());
-  }
   broadcastCanvasAll() {
-    this.room.broadcast(this.canvasMsg());
+    this.broadcast(this.canvasMsg());
   }
   broadcastCanvasClear() {
-    this.room.broadcast(JSON.stringify({ type: "canvas", strokes: [] }));
+    this.broadcast(JSON.stringify({ type: "canvas", strokes: [] }));
   }
 
   stateFor(connId) {
@@ -438,15 +438,13 @@ export default class Pictionary {
       isDrawer: p.id === this.drawerId,
       isBot: !!p.isBot,
     }));
-
     let word = null;
     if (this.phase === "playing" && connId === this.drawerId) word = this.word;
     else if (this.phase === "roundEnd") word = this.lastResult?.word ?? null;
-
     return JSON.stringify({
       type: "state",
       you: connId,
-      code: this.room.id,
+      code: this.id,
       phase: this.phase,
       players,
       teams: this.teams,
@@ -463,11 +461,8 @@ export default class Pictionary {
       minPlayers: MIN_PLAYERS,
     });
   }
-
   broadcastState() {
-    for (const conn of this.room.getConnections()) {
-      conn.send(this.stateFor(conn.id));
-    }
+    for (const [cid, ws] of this.connections) if (ws.readyState === 1) ws.send(this.stateFor(cid));
   }
 
   clearTimers() {
@@ -479,3 +474,47 @@ export default class Pictionary {
     this._botTimers = [];
   }
 }
+
+// ---- http + ws server -------------------------------------------------------
+const rooms = new Map();
+
+const httpServer = createServer((req, res) => {
+  // health check / friendly response for non-websocket GETs (e.g. cloudflared probes)
+  res.writeHead(200, { "content-type": "text/plain" });
+  res.end(`robopictionary ws ok — ${rooms.size} room(s) active\n`);
+});
+
+const wss = new WebSocketServer({ server: httpServer });
+
+wss.on("connection", (ws, req) => {
+  // partysocket connects to /parties/main/<code>?name=<name>
+  const url = new URL(req.url, "http://localhost");
+  const parts = url.pathname.split("/").filter(Boolean);
+  const code = parts[parts.length - 1] || "lobby";
+  const name = url.searchParams.get("name") || "Player";
+
+  let room = rooms.get(code);
+  if (!room) {
+    room = new GameRoom(code, () => {
+      rooms.delete(code);
+      console.log(`[${code}] room closed — ${rooms.size} room(s) active`);
+    });
+    rooms.set(code, room);
+    console.log(`[${code}] room opened — ${rooms.size} room(s) active`);
+  }
+
+  const id = room.addConnection(ws, name);
+  ws.on("message", (data) => {
+    try {
+      room.handleMessage(id, data.toString());
+    } catch (err) {
+      console.error(`[${code}] message error:`, err);
+    }
+  });
+  ws.on("close", () => room.removeConnection(id));
+  ws.on("error", (err) => console.error(`[${code}] ws error:`, err.message));
+});
+
+httpServer.listen(PORT, () => {
+  console.log(`robopictionary server listening on :${PORT}`);
+});
