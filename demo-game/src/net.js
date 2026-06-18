@@ -1,14 +1,27 @@
-// Single-origin websocket client. Builds its URL from window.location so it
-// works identically on http://localhost and https://game.ai-app.space.
-export function connect(code, { onMessage, onOpen, onClose }) {
-  const proto = window.location.protocol === 'https:' ? 'wss' : 'ws'
-  const url = `${proto}://${window.location.host}/parties/main/${code}`
+// Thin WebSocket client. Same-origin: build the socket URL from window.location
+// (wss on https, ws on http) so there are no env vars / host config.
+export function socketUrl(code) {
+  const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+  return `${proto}//${window.location.host}/parties/main/${code}`
+}
+
+// A stable per-browser id so a refresh re-attaches to the same player slot.
+export function clientId() {
+  let id = localStorage.getItem('robodraw_cid')
+  if (!id) {
+    id = 'c_' + Math.random().toString(36).slice(2) + Date.now().toString(36)
+    localStorage.setItem('robodraw_cid', id)
+  }
+  return id
+}
+
+export function createConnection(code, { onMessage, onOpen, onClose }) {
   let ws
   let closed = false
   let retry = 0
 
-  function open() {
-    ws = new WebSocket(url)
+  function connect() {
+    ws = new WebSocket(socketUrl(code))
     ws.onopen = () => {
       retry = 0
       onOpen && onOpen()
@@ -24,20 +37,25 @@ export function connect(code, { onMessage, onOpen, onClose }) {
       onClose && onClose()
       if (!closed) {
         retry = Math.min(retry + 1, 6)
-        setTimeout(open, 400 * retry)
+        setTimeout(connect, 400 * retry)
       }
     }
     ws.onerror = () => ws.close()
   }
-  open()
+  connect()
 
   return {
-    send: (obj) => {
-      if (ws && ws.readyState === 1) ws.send(JSON.stringify(obj))
+    send(msg) {
+      if (ws && ws.readyState === 1) ws.send(JSON.stringify(msg))
     },
-    close: () => {
+    close() {
       closed = true
       ws && ws.close()
     },
   }
+}
+
+// 4-digit join code
+export function randomCode() {
+  return String(Math.floor(1000 + Math.random() * 9000))
 }

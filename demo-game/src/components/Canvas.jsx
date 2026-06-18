@@ -1,123 +1,251 @@
-import React, { useRef, useEffect, useImperativeHandle, forwardRef } from 'react'
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 
-// Fixed internal coordinate space — identical on every client so strokes line up.
-export const CW = 1600
-export const CH = 1000
+const COLORS = ['#1b1b2e', '#ff5d5d', '#12b5a5', '#f4a300', '#5b8def', '#8b5cf6', '#ffffff']
+const SIZES = [3, 6, 12, 22]
 
-const Canvas = forwardRef(function Canvas(
-  { isDrawer, color, size, tool, onStart, onPoint, onEnd },
-  ref
-) {
+// Drawing surface. Coordinates are normalized 0..1 so every client renders the
+// same picture regardless of screen size. The wrapper holds a fixed 4:3 aspect
+// ratio so the canvas never gets squashed when other panels grow.
+const Canvas = forwardRef(function Canvas({ isDrawer, onStroke, onLive, onUndo, onRedo, onClear, onReady }, ref) {
   const canvasRef = useRef(null)
-  const strokesRef = useRef([])
-  const localRef = useRef(null) // active local stroke while drawing
+  const ctxRef = useRef(null)
+  const committed = useRef([]) // [{id,tool,color,size,points}]
+  const live = useRef(new Map()) // id -> stroke in progress
+  const drawingRef = useRef(null) // current local stroke
+  const bufRef = useRef([]) // buffered local points awaiting raf flush
+  const rafRef = useRef(0)
 
-  function draw() {
-    const cv = canvasRef.current
-    if (!cv) return
-    const ctx = cv.getContext('2d')
-    ctx.clearRect(0, 0, CW, CH)
+  const [tool, setTool] = useState('brush')
+  const [color, setColor] = useState('#1b1b2e')
+  const [size, setSize] = useState(6)
+
+  const dims = () => {
+    const c = canvasRef.current
+    const rect = c.getBoundingClientRect()
+    return { w: rect.width, h: rect.height }
+  }
+
+  const strokeStyle = (ctx, s) => {
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
-    for (const s of strokesRef.current) {
-      if (!s.points || s.points.length === 0) continue
-      ctx.globalCompositeOperation = s.tool === 'eraser' ? 'destination-out' : 'source-over'
+    if (s.tool === 'eraser') {
+      ctx.globalCompositeOperation = 'destination-out'
+      ctx.strokeStyle = 'rgba(0,0,0,1)'
+    } else {
+      ctx.globalCompositeOperation = 'source-over'
       ctx.strokeStyle = s.color
-      ctx.lineWidth = s.size
-      ctx.beginPath()
-      ctx.moveTo(s.points[0].x, s.points[0].y)
-      if (s.points.length === 1) {
-        // dot
-        ctx.lineTo(s.points[0].x + 0.01, s.points[0].y + 0.01)
-      } else {
-        for (let i = 1; i < s.points.length; i++) ctx.lineTo(s.points[i].x, s.points[i].y)
-      }
-      ctx.stroke()
     }
-    ctx.globalCompositeOperation = 'source-over'
+    ctx.lineWidth = s.size
   }
 
-  useImperativeHandle(ref, () => ({
-    applyStart(stroke) {
-      strokesRef.current.push({
-        id: stroke.id,
-        color: stroke.color,
-        size: stroke.size,
-        tool: stroke.tool,
-        points: [stroke.point],
-      })
-      draw()
-    },
-    applyPoint(id, point) {
-      const s = strokesRef.current.find((k) => k.id === id)
-      if (s) {
-        s.points.push(point)
-        draw()
-      }
-    },
-    applyEnd() {},
-    setCanvas(strokes) {
-      strokesRef.current = (strokes || []).map((s) => ({ ...s, points: [...(s.points || [])] }))
-      draw()
-    },
-  }))
-
-  useEffect(() => {
-    draw()
+  const drawSegment = useCallback((s, from, to) => {
+    const ctx = ctxRef.current
+    if (!ctx) return
+    const { w, h } = dims()
+    strokeStyle(ctx, s)
+    ctx.beginPath()
+    if (from) ctx.moveTo(from.x * w, from.y * h)
+    else ctx.moveTo(to.x * w, to.y * h)
+    ctx.lineTo(to.x * w, to.y * h)
+    ctx.stroke()
+    // a dot for single taps
+    if (!from) {
+      ctx.beginPath()
+      ctx.arc(to.x * w, to.y * h, Math.max(0.5, s.size / 2), 0, Math.PI * 2)
+      ctx.fillStyle = s.tool === 'eraser' ? 'rgba(0,0,0,1)' : s.color
+      ctx.fill()
+    }
   }, [])
 
-  // ---- pointer handling (drawer only) ----
-  function toPoint(e) {
-    const cv = canvasRef.current
-    const rect = cv.getBoundingClientRect()
-    const x = ((e.clientX - rect.left) / rect.width) * CW
-    const y = ((e.clientY - rect.top) / rect.height) * CH
-    return { x: Math.max(0, Math.min(CW, x)), y: Math.max(0, Math.min(CH, y)) }
+  const drawWholeStroke = useCallback((s) => {
+    if (!s.points.length) return
+    for (let i = 0; i < s.points.length; i++) {
+      drawSegment(s, i > 0 ? s.points[i - 1] : null, s.points[i])
+    }
+  }, [drawSegment])
+
+  const redrawAll = useCallback(() => {
+    const ctx = ctxRef.current
+    const c = canvasRef.current
+    if (!ctx || !c) return
+    const { w, h } = dims()
+    ctx.globalCompositeOperation = 'source-over'
+    ctx.clearRect(0, 0, w, h)
+    for (const s of committed.current) drawWholeStroke(s)
+    for (const s of live.current.values()) drawWholeStroke(s)
+  }, [drawWholeStroke])
+
+  const setupCanvas = useCallback(() => {
+    const c = canvasRef.current
+    if (!c) return
+    const rect = c.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+    c.width = Math.round(rect.width * dpr)
+    c.height = Math.round(rect.height * dpr)
+    const ctx = c.getContext('2d')
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    ctxRef.current = ctx
+    redrawAll()
+  }, [redrawAll])
+
+  useEffect(() => {
+    setupCanvas()
+    const ro = new ResizeObserver(() => setupCanvas())
+    if (canvasRef.current) ro.observe(canvasRef.current)
+    onReady && onReady()
+    return () => ro.disconnect()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // Methods called by the parent when network messages arrive.
+  useImperativeHandle(ref, () => ({
+    applyCanvasState(strokes) {
+      committed.current = (strokes || []).map((s) => ({ ...s, points: [...s.points] }))
+      live.current.clear()
+      redrawAll()
+    },
+    applyCommit(stroke) {
+      // Live segments already drew this; just store for future redraws.
+      live.current.delete(stroke.id)
+      committed.current.push(stroke)
+    },
+    applyLive(seg) {
+      let s = live.current.get(seg.id)
+      if (!s) {
+        s = { id: seg.id, tool: seg.tool, color: seg.color, size: seg.size, points: [] }
+        live.current.set(seg.id, s)
+      }
+      for (const p of seg.points) {
+        const prev = s.points[s.points.length - 1]
+        s.points.push(p)
+        drawSegment(s, prev, p)
+      }
+    },
+  }), [drawSegment, redrawAll])
+
+  // --- local drawing (drawer only) ---
+  const pos = (e) => {
+    const c = canvasRef.current
+    const rect = c.getBoundingClientRect()
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top
+    return { x: Math.min(1, Math.max(0, cx / rect.width)), y: Math.min(1, Math.max(0, cy / rect.height)) }
   }
 
-  function down(e) {
+  const flush = useCallback(() => {
+    rafRef.current = 0
+    const d = drawingRef.current
+    if (!d || !bufRef.current.length) return
+    const pts = bufRef.current
+    bufRef.current = []
+    onLive && onLive({ id: d.id, tool: d.tool, color: d.color, size: d.size, points: pts })
+  }, [onLive])
+
+  const start = (e) => {
     if (!isDrawer) return
     e.preventDefault()
-    canvasRef.current.setPointerCapture(e.pointerId)
-    const id = `${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`
-    const pt = toPoint(e)
-    const stroke = { id, color, size, tool, point: pt }
-    localRef.current = { id }
-    strokesRef.current.push({ id, color, size, tool, points: [pt] })
-    draw()
-    onStart && onStart(stroke)
+    const p = pos(e)
+    const id = 's_' + Math.random().toString(36).slice(2)
+    const s = { id, tool, color, size, points: [p] }
+    drawingRef.current = s
+    drawSegment(s, null, p)
+    bufRef.current = [p]
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(flush)
   }
-  function move(e) {
-    if (!isDrawer || !localRef.current) return
-    const pt = toPoint(e)
-    const s = strokesRef.current.find((k) => k.id === localRef.current.id)
-    if (s) {
-      s.points.push(pt)
-      draw()
-    }
-    onPoint && onPoint(localRef.current.id, pt)
+
+  const move = (e) => {
+    const d = drawingRef.current
+    if (!isDrawer || !d) return
+    e.preventDefault()
+    const p = pos(e)
+    const prev = d.points[d.points.length - 1]
+    d.points.push(p)
+    drawSegment(d, prev, p)
+    bufRef.current.push(p)
+    if (!rafRef.current) rafRef.current = requestAnimationFrame(flush)
   }
-  function up() {
-    if (!isDrawer || !localRef.current) return
-    const id = localRef.current.id
-    localRef.current = null
-    onEnd && onEnd(id)
+
+  const end = () => {
+    const d = drawingRef.current
+    if (!isDrawer || !d) return
+    flush()
+    drawingRef.current = null
+    committed.current.push(d)
+    onStroke && onStroke(d)
   }
 
   return (
-    <div className="canvas-wrap">
-      <canvas
-        ref={canvasRef}
-        width={CW}
-        height={CH}
-        className={`canvas ${isDrawer ? 'is-drawer' : ''}`}
-        onPointerDown={down}
-        onPointerMove={move}
-        onPointerUp={up}
-        onPointerCancel={up}
-        onPointerLeave={up}
-      />
-      {!isDrawer && <div className="canvas-veil" aria-hidden="true" />}
+    <div className="canvas-area">
+      <div className={`canvas-wrap ${isDrawer ? 'is-drawer' : 'is-viewer'}`}>
+        <canvas
+          ref={canvasRef}
+          className="board"
+          onMouseDown={start}
+          onMouseMove={move}
+          onMouseUp={end}
+          onMouseLeave={end}
+          onTouchStart={start}
+          onTouchMove={move}
+          onTouchEnd={end}
+          style={{ cursor: isDrawer ? 'crosshair' : 'default', touchAction: 'none' }}
+        />
+        {!isDrawer && <div className="watch-badge">watching</div>}
+      </div>
+
+      {isDrawer && (
+        <div className="toolbar">
+          <div className="tb-group">
+            <button
+              className={`tb-btn ${tool === 'brush' ? 'on' : ''}`}
+              onClick={() => setTool('brush')}
+              title="Brush"
+            >✏️</button>
+            <button
+              className={`tb-btn ${tool === 'eraser' ? 'on' : ''}`}
+              onClick={() => setTool('eraser')}
+              title="Eraser"
+            >🧽</button>
+          </div>
+
+          <div className="tb-group swatches">
+            {COLORS.map((c) => (
+              <button
+                key={c}
+                className={`swatch ${color === c && tool === 'brush' ? 'on' : ''}`}
+                style={{ background: c, borderColor: c === '#ffffff' ? '#ccc' : c }}
+                onClick={() => { setColor(c); setTool('brush') }}
+                title={c}
+              />
+            ))}
+          </div>
+
+          <div className="tb-group sizes">
+            {SIZES.map((sz) => (
+              <button
+                key={sz}
+                className={`size-btn ${size === sz ? 'on' : ''}`}
+                onClick={() => setSize(sz)}
+                title={`${sz}px`}
+              >
+                <span className="dot" style={{ width: sz, height: sz }} />
+              </button>
+            ))}
+          </div>
+
+          <div className="tb-group">
+            <button className="tb-btn" onClick={onUndo} title="Undo">↶</button>
+            <button className="tb-btn" onClick={onRedo} title="Redo">↷</button>
+            <button className="tb-btn danger" onClick={onClear} title="Clear">🗑</button>
+          </div>
+        </div>
+      )}
     </div>
   )
 })

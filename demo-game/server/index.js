@@ -1,54 +1,50 @@
-import http from 'http'
-import fs from 'fs'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import http from 'node:http'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { WebSocketServer } from 'ws'
 import { WORDS } from './words.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const DIST = path.join(__dirname, '..', 'dist')
 const PORT = process.env.PORT || 3200
-const TURN_SECONDS = 90
-const RECONNECT_GRACE_MS = 45000
+const TURN_MS = 90_000
 
-// ---------------------------------------------------------------- logging ----
-function log(...args) {
-  // console.log so PM2 captures it
-  console.log(new Date().toISOString(), ...args)
-}
+const log = (...a) => console.log(new Date().toISOString(), ...a)
 
-// ---------------------------------------------------------- static server ----
+// ---------------------------------------------------------------------------
+// Static file server (serves the built Vite client from dist/)
+// ---------------------------------------------------------------------------
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
   '.svg': 'image/svg+xml',
+  '.json': 'application/json',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.ico': 'image/x-icon',
-  '.woff': 'font/woff',
   '.woff2': 'font/woff2',
 }
 
 function serveStatic(req, res) {
-  let urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname)
+  let urlPath = decodeURIComponent((req.url || '/').split('?')[0])
   if (urlPath === '/') urlPath = '/index.html'
   let filePath = path.join(DIST, urlPath)
-  // prevent path traversal
+  // Prevent path traversal
   if (!filePath.startsWith(DIST)) filePath = path.join(DIST, 'index.html')
 
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      // SPA fallback to index.html (so deep links work)
-      fs.readFile(path.join(DIST, 'index.html'), (err2, idx) => {
-        if (err2) {
-          res.writeHead(404, { 'Content-Type': 'text/plain' })
-          res.end('Not built yet. Run `npm run build`.')
+      // SPA fallback
+      fs.readFile(path.join(DIST, 'index.html'), (e2, html) => {
+        if (e2) {
+          res.writeHead(404)
+          res.end('Not found. Did you run `npm run build`?')
           return
         }
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
-        res.end(idx)
+        res.end(html)
       })
       return
     }
@@ -59,545 +55,552 @@ function serveStatic(req, res) {
 }
 
 const server = http.createServer((req, res) => {
-  if (req.url === '/healthz') {
-    res.writeHead(200, { 'Content-Type': 'text/plain' })
-    res.end('ok')
+  if (req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json' })
+    res.end(JSON.stringify({ ok: true, rooms: rooms.size }))
     return
   }
   serveStatic(req, res)
 })
 
-// ------------------------------------------------------------------ rooms ----
-/**
- * room = {
- *   code, players:[{id,name,team,isBot,isHost,connected,token}],
- *   conns: Map(playerId -> ws),
- *   phase:'lobby'|'playing'|'gameover',
- *   targetScore, scores:{A,B}, winner,
- *   currentDrawerId, currentWord, turnEndsAt,
- *   strokes:[], undone:[],
- *   timers:Set, graceTimers:Map(playerId->timeout)
- * }
- */
+// ---------------------------------------------------------------------------
+// Game state
+// ---------------------------------------------------------------------------
+/** @type {Map<string, Room>} */
 const rooms = new Map()
 
-const BOT_NAMES = ['Sprocket', 'Gizmo', 'Clank', 'Rusty', 'Beep', 'Boop', 'Cog', 'Widget', 'Bolt-E', 'Nuts', 'Volt', 'Pixel']
-const BOT_GUESSES = [
-  'is it dancing?', 'a robot for sure', 'backflip??', 'waving?', 'hmm tricky',
-  'charging up?', 'running!', 'is it jumping', 'ooh i see it', 'yoga pose?',
-  'is that a kite', 'cooking?', 'guitar!', 'doing a flip', 'sleeping?',
-  'high five!', 'flexing?', 'skateboard', 'reading a book', 'meditating',
+const TEAM_NAMES = { A: 'Team Bolt', B: 'Team Volt' }
+const BOT_NAMES = [
+  'BeepBot', 'GuessTron', 'Sketch-9', 'Cognito', 'Pixel', 'Doodlebot',
+  'Circuit', 'Widget', 'Nova-7', 'Clank', 'Bolt Jr', 'Gizmo',
+]
+const WRONG_GUESSES = [
+  'a dog?', 'is that a house', 'robot eating?', 'a spaceship!', 'dancing??',
+  'pizza', 'a cat lol', 'robot running', 'no idea haha', 'a tree?',
+  'jumping?', 'umm a car', 'robot waving', 'sleeping robot', 'a hat',
+  'is it sports', 'looks like a fish', 'flying?', 'a guitar maybe',
 ]
 
-let idCounter = 1
-const newId = (p) => `${p}_${idCounter++}_${Math.floor(performance.now()).toString(36)}`
+let pidCounter = 1
+const newId = () => `p${pidCounter++}`
 
 function makeRoom(code) {
   const room = {
     code,
-    players: [],
-    conns: new Map(),
-    phase: 'lobby',
-    targetScore: 5,
+    phase: 'lobby', // 'lobby' | 'playing' | 'over'
+    hostId: null,
+    winTarget: 5,
     scores: { A: 0, B: 0 },
-    winner: null,
-    currentDrawerId: null,
-    currentWord: null,
+    players: new Map(), // id -> player
+    sockets: new Map(), // id -> ws (human only)
+    turnOrder: [], // array of player ids in rotation
+    drawerId: null,
+    word: null,
+    recentWords: [],
     turnEndsAt: 0,
-    strokes: [],
-    undone: [],
-    timers: new Set(),
-    graceTimers: new Map(),
+    winner: null,
+    strokes: [], // committed strokes [{id, tool, color, size, points:[{x,y}]}]
+    redo: [],
+    chat: [], // last messages
+    timers: [], // pending setTimeout handles (turn timer + bot timers)
   }
   rooms.set(code, room)
-  log(`[room ${code}] created`)
+  log(`ROOM created ${code}`)
   return room
 }
 
-function smallerTeam(room) {
-  const a = room.players.filter((p) => p.team === 'A').length
-  const b = room.players.filter((p) => p.team === 'B').length
-  return b < a ? 'B' : 'A'
+function getRoom(code) {
+  return rooms.get(code) || makeRoom(code)
 }
 
-function maskWord(word) {
-  if (!word) return ''
-  return word
+function clearTimers(room) {
+  for (const t of room.timers) clearTimeout(t)
+  room.timers = []
+}
+
+function later(room, fn, ms) {
+  const t = setTimeout(() => {
+    room.timers = room.timers.filter((x) => x !== t)
+    try { fn() } catch (e) { log('timer error', e) }
+  }, ms)
+  room.timers.push(t)
+  return t
+}
+
+function teamCounts(room) {
+  let a = 0, b = 0
+  for (const p of room.players.values()) {
+    if (p.team === 'A') a++
+    else if (p.team === 'B') b++
+  }
+  return { a, b }
+}
+
+function assignTeam(room) {
+  const { a, b } = teamCounts(room)
+  return a <= b ? 'A' : 'B'
+}
+
+function maskWord(w) {
+  return w
     .split(' ')
-    .map((w) => w.replace(/[a-z0-9]/gi, '_').split('').join(' '))
+    .map((part) => part.split('').map(() => '_').join(' '))
     .join('   ')
 }
 
-// ---------------------------------------------------------------- senders ----
-function sendJSON(ws, obj) {
-  if (ws && ws.readyState === 1) ws.send(JSON.stringify(obj))
-}
-function broadcast(room, obj, exceptId = null) {
-  const msg = JSON.stringify(obj)
-  for (const [pid, ws] of room.conns) {
-    if (pid === exceptId) continue
-    if (ws.readyState === 1) ws.send(msg)
-  }
-}
-function teamBroadcast(room, team, obj) {
-  const msg = JSON.stringify(obj)
-  for (const p of room.players) {
-    if (p.team !== team) continue
-    const ws = room.conns.get(p.id)
-    if (ws && ws.readyState === 1) ws.send(msg)
-  }
-}
-
-function publicState(room) {
-  return {
-    type: 'state',
-    code: room.code,
-    phase: room.phase,
-    targetScore: room.targetScore,
-    scores: room.scores,
-    winner: room.winner,
-    hostId: room.players.find((p) => p.isHost)?.id || null,
-    currentDrawerId: room.currentDrawerId,
-    turnEndsAt: room.turnEndsAt,
-    turnSeconds: TURN_SECONDS,
-    maskedWord: room.phase === 'playing' ? maskWord(room.currentWord) : '',
-    wordLength: room.currentWord ? room.currentWord.length : 0,
-    players: room.players.map((p) => ({
+function publicPlayers(room) {
+  return room.turnOrder
+    .map((id) => room.players.get(id))
+    .filter(Boolean)
+    .map((p) => ({
       id: p.id,
       name: p.name,
       team: p.team,
       isBot: p.isBot,
-      isHost: p.isHost,
       connected: p.connected,
-    })),
+    }))
+}
+
+function buildState(room, viewerId) {
+  const isDrawer = viewerId && viewerId === room.drawerId
+  return {
+    type: 'state',
+    you: viewerId,
+    room: {
+      code: room.code,
+      phase: room.phase,
+      hostId: room.hostId,
+      winTarget: room.winTarget,
+      scores: room.scores,
+      teamNames: TEAM_NAMES,
+      players: publicPlayers(room),
+      drawerId: room.drawerId,
+      drawerTeam: room.drawerId ? room.players.get(room.drawerId)?.team : null,
+      turnEndsAt: room.turnEndsAt,
+      turnMs: TURN_MS,
+      winner: room.winner,
+      myWord: isDrawer ? room.word : null,
+      wordMask: room.word ? maskWord(room.word) : null,
+      wordLen: room.word ? room.word.replace(/ /g, '').length : 0,
+    },
   }
 }
 
-function pushState(room) {
-  broadcast(room, publicState(room))
-  // drawer gets the real word privately
-  if (room.phase === 'playing' && room.currentDrawerId) {
-    const ws = room.conns.get(room.currentDrawerId)
-    sendJSON(ws, { type: 'word', word: room.currentWord })
+function send(ws, msg) {
+  if (ws && ws.readyState === 1) ws.send(JSON.stringify(msg))
+}
+
+function broadcast(room, msg, exceptId = null) {
+  for (const [id, ws] of room.sockets) {
+    if (id === exceptId) continue
+    send(ws, msg)
   }
 }
 
-// ------------------------------------------------------------- turn timers ----
-function clearTurnTimers(room) {
-  for (const t of room.timers) clearTimeout(t)
-  room.timers.clear()
-}
-function addTimer(room, fn, ms) {
-  const t = setTimeout(() => {
-    room.timers.delete(t)
-    fn()
-  }, ms)
-  room.timers.add(t)
-  return t
+// Send personalized state to every human (drawer sees the word, others don't)
+function broadcastState(room) {
+  for (const [id, ws] of room.sockets) {
+    send(ws, buildState(room, id))
+  }
 }
 
-// ----------------------------------------------------------- game control ----
-function startGame(room, targetScore) {
-  if (room.players.length < 2) return
-  room.phase = 'playing'
-  room.targetScore = [3, 5, 10].includes(targetScore) ? targetScore : 5
+function pushChat(room, message) {
+  const msg = { id: newId(), ...message }
+  room.chat.push(msg)
+  if (room.chat.length > 80) room.chat.shift()
+  broadcast(room, { type: 'chat', message: msg })
+  return msg
+}
+
+// ---------------------------------------------------------------------------
+// Turn / scoring flow
+// ---------------------------------------------------------------------------
+function connectedPlayerIds(room) {
+  return room.turnOrder.filter((id) => {
+    const p = room.players.get(id)
+    return p && (p.isBot || p.connected)
+  })
+}
+
+function startGame(room, winTarget) {
+  room.winTarget = [3, 5, 10].includes(winTarget) ? winTarget : 5
   room.scores = { A: 0, B: 0 }
   room.winner = null
-  room.currentDrawerId = null
-  log(`[room ${room.code}] game started, target=${room.targetScore}, players=${room.players.length}`)
+  room.phase = 'playing'
+  // Start rotation at first connected player
+  room.drawerCursor = -1
+  log(`GAME start ${room.code} target=${room.winTarget} players=${room.turnOrder.length}`)
+  pushChat(room, { kind: 'system', text: `Game on! First to ${room.winTarget} wins.` })
   startTurn(room)
-}
-
-function nextDrawerId(room) {
-  const ids = room.players.map((p) => p.id)
-  if (ids.length === 0) return null
-  const i = ids.indexOf(room.currentDrawerId)
-  return ids[(i + 1) % ids.length]
 }
 
 function startTurn(room) {
-  clearTurnTimers(room)
-  room.strokes = []
-  room.undone = []
-  const drawerId = nextDrawerId(room)
-  if (!drawerId) return
-  room.currentDrawerId = drawerId
-  room.currentWord = WORDS[Math.floor(Math.random() * WORDS.length)]
-  room.turnEndsAt = Date.now() + TURN_SECONDS * 1000
-
-  const drawer = room.players.find((p) => p.id === drawerId)
-  log(`[room ${room.code}] turn start -> drawer=${drawer?.name} (${drawer?.team}) word="${room.currentWord}"`)
-
-  broadcast(room, { type: 'canvas', strokes: [] })
-  pushState(room)
-
-  // server-authoritative turn timer
-  addTimer(room, () => {
-    log(`[room ${room.code}] turn timed out (no points)`)
-    endTurn(room, null)
-  }, TURN_SECONDS * 1000)
-
-  // bot behaviour
-  if (drawer?.isBot) {
-    botDraw(room, drawer.id)
-    const resolveIn = 9000 + Math.floor(Math.random() * 7000)
-    addTimer(room, () => {
-      if (room.currentDrawerId === drawer.id && room.phase === 'playing') {
-        log(`[room ${room.code}] bot ${drawer.name} auto-resolved its turn`)
-        endTurn(room, drawer.team)
-      }
-    }, resolveIn)
-  } else {
-    // bot teammates heckle/guess in chat while a human draws
-    scheduleBotGuesses(room, drawer)
-  }
-}
-
-function endTurn(room, scoringTeam) {
-  clearTurnTimers(room)
-  if (scoringTeam) {
-    room.scores[scoringTeam]++
-    log(`[room ${room.code}] point -> team ${scoringTeam} (A:${room.scores.A} B:${room.scores.B})`)
-    if (room.scores[scoringTeam] >= room.targetScore) {
-      room.phase = 'gameover'
-      room.winner = scoringTeam
-      room.currentDrawerId = null
-      room.currentWord = null
-      log(`[room ${room.code}] GAME OVER — team ${scoringTeam} wins`)
-      pushState(room)
-      return
-    }
-  }
-  if (room.players.length < 2) {
+  clearTimers(room)
+  const ids = connectedPlayerIds(room)
+  if (ids.length < 2) {
+    // not enough players to continue
     room.phase = 'lobby'
-    room.currentDrawerId = null
-    room.currentWord = null
-    pushState(room)
+    room.drawerId = null
+    room.word = null
+    pushChat(room, { kind: 'system', text: 'Not enough players — back to the lobby.' })
+    broadcastState(room)
     return
   }
-  startTurn(room)
-}
-
-// --------------------------------------------------------------- bot logic ----
-function rand(min, max) {
-  return min + Math.random() * (max - min)
-}
-
-function botDraw(room, botId) {
-  // produce a few doodle strokes, streamed so humans see it appear
-  const strokeCount = 3 + Math.floor(Math.random() * 3)
-  let delay = 600
-  for (let s = 0; s < strokeCount; s++) {
-    const id = newId('s')
-    const color = ['#16161d', '#2d5bff', '#ff5c39', '#16a36b'][s % 4]
-    const size = [6, 10, 16][s % 3]
-    let x = rand(250, 1350)
-    let y = rand(150, 850)
-    const steps = 8 + Math.floor(Math.random() * 10)
-    const startDelay = delay
-    addTimer(room, () => {
-      if (room.currentDrawerId !== botId) return
-      room.strokes.push({ id, color, size, tool: 'brush', points: [{ x, y }] })
-      broadcast(room, { type: 'drawStart', stroke: { id, color, size, tool: 'brush', point: { x, y } } })
-    }, startDelay)
-    for (let i = 0; i < steps; i++) {
-      x = Math.max(40, Math.min(1560, x + rand(-120, 120)))
-      y = Math.max(40, Math.min(960, y + rand(-90, 90)))
-      const px = x, py = y
-      addTimer(room, () => {
-        if (room.currentDrawerId !== botId) return
-        const stroke = room.strokes.find((k) => k.id === id)
-        if (stroke) stroke.points.push({ x: px, y: py })
-        broadcast(room, { type: 'drawPoint', id, point: { x: px, y: py } })
-      }, startDelay + 120 + i * 110)
-    }
-    delay = startDelay + 120 + steps * 110 + 250
+  // advance cursor to next connected player
+  let next = (room.drawerCursor ?? -1)
+  for (let i = 0; i < room.turnOrder.length + 1; i++) {
+    next = (next + 1) % room.turnOrder.length
+    const p = room.players.get(room.turnOrder[next])
+    if (p && (p.isBot || p.connected)) break
   }
+  room.drawerCursor = next
+  room.drawerId = room.turnOrder[next]
+  room.word = pickWord(room)
+  room.strokes = []
+  room.redo = []
+  room.turnEndsAt = Date.now() + TURN_MS
+
+  const drawer = room.players.get(room.drawerId)
+  log(`TURN start ${room.code} drawer=${drawer.name}(${drawer.team}) word="${room.word}"`)
+  broadcast(room, { type: 'canvasState', strokes: [] })
+  broadcastState(room)
+  pushChat(room, {
+    kind: 'system',
+    text: `${drawer.name} is drawing for ${TEAM_NAMES[drawer.team]}!`,
+  })
+
+  // turn timer (unguessed -> rotate, no points)
+  later(room, () => {
+    pushChat(room, { kind: 'system', text: `Time! The answer was "${room.word}". No points.` })
+    nextTurn(room)
+  }, TURN_MS)
+
+  if (drawer.isBot) scheduleBotDrawer(room)
+  scheduleBotGuessers(room)
 }
 
-function scheduleBotGuesses(room, drawer) {
+function pickWord(room) {
+  const pool = WORDS.filter((w) => !room.recentWords.includes(w))
+  const list = pool.length ? pool : WORDS
+  const w = list[Math.floor(Math.random() * list.length)]
+  room.recentWords.push(w)
+  if (room.recentWords.length > 25) room.recentWords.shift()
+  return w
+}
+
+function awardPoint(room, byName) {
+  if (room.phase !== 'playing' || !room.drawerId) return
+  const drawer = room.players.get(room.drawerId)
   if (!drawer) return
-  const botTeammates = room.players.filter(
-    (p) => p.isBot && p.team === drawer.team && p.id !== drawer.id
-  )
-  if (botTeammates.length === 0) return
-  let t = 2500
-  for (let i = 0; i < 8; i++) {
-    const when = t
-    addTimer(room, () => {
-      if (room.currentDrawerId !== drawer.id || room.phase !== 'playing') return
-      const bot = botTeammates[Math.floor(Math.random() * botTeammates.length)]
-      const text = BOT_GUESSES[Math.floor(Math.random() * BOT_GUESSES.length)]
-      teamBroadcast(room, drawer.team, {
-        type: 'chat',
-        id: newId('m'),
-        name: bot.name,
-        team: bot.team,
-        text,
-        bot: true,
-      })
-    }, when)
-    t += rand(2800, 5200)
+  const team = drawer.team
+  room.scores[team]++
+  log(`SCORE ${room.code} ${TEAM_NAMES[team]}=${room.scores[team]} word="${room.word}"`)
+  pushChat(room, {
+    kind: 'correct',
+    text: `✅ ${TEAM_NAMES[team]} got it! "${room.word}" +1`,
+  })
+  if (room.scores[team] >= room.winTarget) {
+    endGame(room, team)
+    return
   }
+  nextTurn(room)
 }
 
+function nextTurn(room) {
+  clearTimers(room)
+  // small pause between turns
+  room.drawerId = null
+  room.word = null
+  broadcastState(room)
+  later(room, () => startTurn(room), 2200)
+}
+
+function endGame(room, team) {
+  clearTimers(room)
+  room.phase = 'over'
+  room.winner = team
+  room.drawerId = null
+  room.word = null
+  log(`GAME over ${room.code} winner=${TEAM_NAMES[team]}`)
+  pushChat(room, { kind: 'system', text: `🏆 ${TEAM_NAMES[team]} wins the game!` })
+  broadcastState(room)
+}
+
+function resetToLobby(room) {
+  clearTimers(room)
+  room.phase = 'lobby'
+  room.winner = null
+  room.scores = { A: 0, B: 0 }
+  room.drawerId = null
+  room.word = null
+  room.strokes = []
+  room.redo = []
+  broadcast(room, { type: 'canvasState', strokes: [] })
+  broadcastState(room)
+}
+
+// ---------------------------------------------------------------------------
+// Bots
+// ---------------------------------------------------------------------------
 function addBot(room) {
-  const used = new Set(room.players.map((p) => p.name))
-  const name = BOT_NAMES.find((n) => !used.has(n)) || `Bot-${room.players.length}`
-  const bot = {
-    id: newId('p'),
-    name,
-    team: smallerTeam(room),
-    isBot: true,
-    isHost: false,
-    connected: true,
-    token: newId('t'),
-  }
-  room.players.push(bot)
-  log(`[room ${room.code}] +bot ${name} (team ${bot.team})`)
-  // if a human is currently drawing, let the new bot start guessing too
-  if (room.phase === 'playing') {
-    const drawer = room.players.find((p) => p.id === room.currentDrawerId)
-    if (drawer && !drawer.isBot) scheduleBotGuesses(room, drawer)
-  }
-  pushState(room)
+  const used = new Set([...room.players.values()].map((p) => p.name))
+  const name = BOT_NAMES.find((n) => !used.has(n)) || `Bot ${room.players.size}`
+  const id = newId()
+  const team = assignTeam(room)
+  room.players.set(id, { id, name, team, isBot: true, connected: true })
+  room.turnOrder.push(id)
+  log(`BOT added ${room.code} ${name} (${team})`)
+  broadcastState(room)
 }
 
-// ----------------------------------------------------------- connections ----
+function teammatesOf(room, drawerId) {
+  const drawer = room.players.get(drawerId)
+  if (!drawer) return []
+  return [...room.players.values()].filter(
+    (p) => p.team === drawer.team && p.id !== drawerId && (p.isBot || p.connected)
+  )
+}
+
+// A bot drawer scribbles some random strokes, then resolves the turn.
+function scheduleBotDrawer(room) {
+  const drawerId = room.drawerId
+  const colors = ['#1b1b2e', '#ff5d5d', '#12b5a5', '#f4a300', '#5b8def']
+  let strokeCount = 3 + Math.floor(Math.random() * 4)
+  let delay = 600
+
+  for (let s = 0; s < strokeCount; s++) {
+    later(room, () => {
+      if (room.drawerId !== drawerId) return
+      const id = `bs${newId()}`
+      const color = colors[Math.floor(Math.random() * colors.length)]
+      const size = 3 + Math.floor(Math.random() * 8)
+      const cx = 0.2 + Math.random() * 0.6
+      const cy = 0.2 + Math.random() * 0.6
+      const pts = []
+      const steps = 6 + Math.floor(Math.random() * 10)
+      for (let i = 0; i < steps; i++) {
+        pts.push({
+          x: Math.min(0.98, Math.max(0.02, cx + (Math.random() - 0.5) * 0.3)),
+          y: Math.min(0.98, Math.max(0.02, cy + (Math.random() - 0.5) * 0.3)),
+        })
+      }
+      const stroke = { id, tool: 'brush', color, size, points: pts }
+      room.strokes.push(stroke)
+      broadcast(room, { type: 'drawStroke', stroke })
+    }, delay)
+    delay += 700 + Math.floor(Math.random() * 600)
+  }
+
+  // Resolve: ~78% chance the bot's team "guesses it", else let the timer run out.
+  const willScore = Math.random() < 0.78
+  if (willScore) {
+    const resolveAt = delay + 1500 + Math.floor(Math.random() * 3500)
+    later(room, () => {
+      if (room.drawerId !== drawerId || room.phase !== 'playing') return
+      const mates = teammatesOf(room, drawerId)
+      const guesser = mates.find((m) => m.isBot) || mates[0]
+      if (guesser) pushChat(room, { kind: 'guess', name: guesser.name, team: guesser.team, text: room.word })
+      awardPoint(room, guesser?.name)
+    }, resolveAt)
+  }
+}
+
+// Bots on the drawer's team occasionally post wrong guesses for flavor.
+function scheduleBotGuessers(room) {
+  const drawerId = room.drawerId
+  const mates = teammatesOf(room, drawerId).filter((m) => m.isBot)
+  if (!mates.length) return
+  let delay = 1500
+  const rounds = 2 + Math.floor(Math.random() * 4)
+  for (let i = 0; i < rounds; i++) {
+    later(room, () => {
+      if (room.drawerId !== drawerId || room.phase !== 'playing') return
+      const bot = mates[Math.floor(Math.random() * mates.length)]
+      const guess = WRONG_GUESSES[Math.floor(Math.random() * WRONG_GUESSES.length)]
+      pushChat(room, { kind: 'guess', name: bot.name, team: bot.team, text: guess })
+    }, delay)
+    delay += 2500 + Math.floor(Math.random() * 4000)
+  }
+}
+
+// ---------------------------------------------------------------------------
+// WebSocket handling
+// ---------------------------------------------------------------------------
 const wss = new WebSocketServer({ noServer: true })
 
 server.on('upgrade', (req, socket, head) => {
-  const url = new URL(req.url, 'http://localhost')
-  const parts = url.pathname.split('/').filter(Boolean)
-  // expect /parties/main/<code>
-  if (parts[0] !== 'parties' || parts[1] !== 'main' || !parts[2]) {
+  // Expect path /parties/main/<code>
+  const url = req.url || ''
+  const m = url.match(/\/parties\/main\/([^/?]+)/)
+  if (!m) {
     socket.destroy()
     return
   }
-  const code = parts[2]
+  const code = m[1].slice(0, 8)
   wss.handleUpgrade(req, socket, head, (ws) => {
-    handleConnection(ws, code)
+    wss.emit('connection', ws, req, code)
   })
 })
 
-function handleConnection(ws, code) {
-  log(`[room ${code}] socket connected`)
+wss.on('connection', (ws, req, code) => {
+  const room = getRoom(code)
+  ws._roomCode = code
+  ws._pid = null
+  log(`WS connect ${code} (sockets=${room.sockets.size})`)
+
   ws.on('message', (raw) => {
-    let msg
-    try {
-      msg = JSON.parse(raw.toString())
-    } catch {
-      return
-    }
-    routeMessage(ws, code, msg)
+    let data
+    try { data = JSON.parse(raw.toString()) } catch { return }
+    handleMessage(room, ws, data)
   })
-  ws.on('close', () => onClose(ws))
-  ws.on('error', () => {})
-}
 
-function onClose(ws) {
-  const room = rooms.get(ws._code)
-  if (!room) return
-  const player = room.players.find((p) => p.id === ws._playerId)
-  if (!player) return
-  player.connected = false
-  room.conns.delete(player.id)
-  log(`[room ${room.code}] ${player.name} disconnected (grace ${RECONNECT_GRACE_MS}ms)`)
-
-  // if the drawer dropped, don't stall the round
-  if (room.phase === 'playing' && room.currentDrawerId === player.id && room.players.length > 1) {
-    endTurn(room, null)
-  } else {
-    pushState(room)
-  }
-
-  // remove after grace unless they reconnect
-  const g = setTimeout(() => {
-    removePlayer(room, player.id)
-  }, RECONNECT_GRACE_MS)
-  room.graceTimers.set(player.id, g)
-}
-
-function removePlayer(room, playerId) {
-  const idx = room.players.findIndex((p) => p.id === playerId)
-  if (idx === -1) return
-  const [player] = room.players.splice(idx, 1)
-  room.conns.delete(playerId)
-  const gt = room.graceTimers.get(playerId)
-  if (gt) {
-    clearTimeout(gt)
-    room.graceTimers.delete(playerId)
-  }
-  log(`[room ${room.code}] ${player.name} removed`)
-
-  // reassign host
-  if (player.isHost) {
-    const next = room.players.find((p) => !p.isBot) || room.players[0]
-    if (next) next.isHost = true
-  }
-
-  if (room.players.length === 0) {
-    clearTurnTimers(room)
-    for (const t of room.graceTimers.values()) clearTimeout(t)
-    rooms.delete(room.code)
-    log(`[room ${room.code}] empty — dropped`)
-    return
-  }
-
-  if (room.phase === 'playing' && room.currentDrawerId === playerId) {
-    endTurn(room, null)
-  } else {
-    pushState(room)
-  }
-}
-
-function routeMessage(ws, code, msg) {
-  let room = rooms.get(code)
-
-  if (msg.type === 'join') {
-    if (!room) room = makeRoom(code)
-    // reconnect by token?
-    let player = msg.token ? room.players.find((p) => p.token === msg.token) : null
-    if (player) {
-      const gt = room.graceTimers.get(player.id)
-      if (gt) {
-        clearTimeout(gt)
-        room.graceTimers.delete(player.id)
+  ws.on('close', () => {
+    const pid = ws._pid
+    if (!pid) return
+    const p = room.players.get(pid)
+    room.sockets.delete(pid)
+    if (p) {
+      p.connected = false
+      log(`WS close ${code} ${p.name} left`)
+      pushChat(room, { kind: 'system', text: `${p.name} left.` })
+      // If the drawer left mid-turn, move on.
+      if (room.phase === 'playing' && room.drawerId === pid) {
+        nextTurn(room)
+      } else {
+        broadcastState(room)
       }
-      player.connected = true
-      if (msg.name) player.name = String(msg.name).slice(0, 20)
-      log(`[room ${code}] ${player.name} reconnected`)
-    } else {
-      player = {
-        id: newId('p'),
-        name: String(msg.name || 'Player').slice(0, 20) || 'Player',
-        team: smallerTeam(room),
-        isBot: false,
-        isHost: room.players.length === 0,
-        connected: true,
-        token: msg.token || newId('t'),
-      }
-      room.players.push(player)
-      log(`[room ${code}] ${player.name} joined (team ${player.team}${player.isHost ? ', host' : ''})`)
     }
-    ws._playerId = player.id
-    ws._code = code
-    room.conns.set(player.id, ws)
-    sendJSON(ws, { type: 'welcome', playerId: player.id, token: player.token, code })
-    sendJSON(ws, { type: 'canvas', strokes: room.strokes })
-    sendJSON(ws, publicState(room))
-    if (room.phase === 'playing' && room.currentDrawerId === player.id) {
-      sendJSON(ws, { type: 'word', word: room.currentWord })
+    // Drop room when no human sockets remain.
+    if (room.sockets.size === 0) {
+      clearTimers(room)
+      rooms.delete(code)
+      log(`ROOM dropped ${code} (empty)`)
     }
-    pushState(room)
-    return
-  }
+  })
+})
 
-  if (!room) return
-  const player = room.players.find((p) => p.id === ws._playerId)
-  if (!player) return
-  const isHost = player.isHost
-  const isDrawer = room.currentDrawerId === player.id
-
-  switch (msg.type) {
-    case 'startGame':
-      if (isHost && room.phase === 'lobby') startGame(room, msg.targetScore)
-      break
-
-    case 'addBot':
-      if (isHost) addBot(room)
-      break
-
-    case 'setTarget':
-      if (isHost && room.phase === 'lobby' && [3, 5, 10].includes(msg.targetScore)) {
-        room.targetScore = msg.targetScore
-        pushState(room)
+function handleMessage(room, ws, data) {
+  switch (data.type) {
+    case 'join': {
+      const name = String(data.name || 'Player').slice(0, 18).trim() || 'Player'
+      // Reattach by clientId if this browser was already a player in the room.
+      let player = null
+      if (data.clientId) {
+        player = [...room.players.values()].find((p) => p.clientId === data.clientId && !p.isBot)
       }
+      if (player) {
+        player.connected = true
+        player.name = name
+      } else {
+        const id = newId()
+        const team = assignTeam(room)
+        player = { id, name, team, isBot: false, connected: true, clientId: data.clientId || null }
+        room.players.set(id, player)
+        room.turnOrder.push(id)
+      }
+      if (!room.hostId) room.hostId = player.id
+      ws._pid = player.id
+      room.sockets.set(player.id, ws)
+      log(`JOIN ${room.code} ${player.name} (${player.team}) host=${room.hostId === player.id}`)
+      pushChat(room, { kind: 'system', text: `${player.name} joined ${TEAM_NAMES[player.team]}.` })
+      // Send full sync to the new client.
+      send(ws, buildState(room, player.id))
+      send(ws, { type: 'chatHistory', messages: room.chat })
+      send(ws, { type: 'canvasState', strokes: room.strokes })
+      broadcastState(room)
       break
+    }
 
-    case 'guessedIt':
-      if (isDrawer && room.phase === 'playing') endTurn(room, player.team)
+    case 'addBot': {
+      if (room.players.size >= 12) return
+      addBot(room)
       break
+    }
 
-    case 'chat': {
-      if (room.phase !== 'playing') break
-      const drawer = room.players.find((p) => p.id === room.currentDrawerId)
-      if (!drawer) break
-      // only the drawer's teammates (not the drawer) may guess
-      if (player.team !== drawer.team || player.id === drawer.id) break
-      const text = String(msg.text || '').slice(0, 120).trim()
-      if (!text) break
-      teamBroadcast(room, drawer.team, {
-        type: 'chat',
-        id: newId('m'),
-        name: player.name,
-        team: player.team,
-        text,
-      })
+    case 'start': {
+      if (ws._pid !== room.hostId) return
+      if (connectedPlayerIds(room).length < 2) return
+      startGame(room, Number(data.winTarget))
+      break
+    }
+
+    case 'playAgain': {
+      if (ws._pid !== room.hostId) return
+      resetToLobby(room)
+      break
+    }
+
+    case 'setTarget': {
+      if (ws._pid !== room.hostId) return
+      if ([3, 5, 10].includes(Number(data.winTarget))) {
+        room.winTarget = Number(data.winTarget)
+        broadcastState(room)
+      }
       break
     }
 
     // ---- drawing (drawer only) ----
-    case 'drawStart':
-      if (!isDrawer || !msg.stroke) break
-      room.undone = []
-      room.strokes.push({
-        id: msg.stroke.id,
-        color: msg.stroke.color,
-        size: msg.stroke.size,
-        tool: msg.stroke.tool,
-        points: [msg.stroke.point],
-      })
-      broadcast(room, { type: 'drawStart', stroke: msg.stroke }, player.id)
+    case 'drawStroke': {
+      if (ws._pid !== room.drawerId) return
+      const s = data.stroke
+      if (!s || !Array.isArray(s.points)) return
+      const stroke = {
+        id: String(s.id || newId()),
+        tool: s.tool === 'eraser' ? 'eraser' : 'brush',
+        color: String(s.color || '#1b1b2e').slice(0, 9),
+        size: Math.min(60, Math.max(1, Number(s.size) || 4)),
+        points: s.points.slice(0, 1000).map((p) => ({ x: +p.x, y: +p.y })),
+      }
+      room.strokes.push(stroke)
+      room.redo = []
+      broadcast(room, { type: 'drawStroke', stroke }, ws._pid)
       break
-
-    case 'drawPoint': {
-      if (!isDrawer) break
-      const stroke = room.strokes.find((k) => k.id === msg.id)
-      if (stroke) stroke.points.push(msg.point)
-      broadcast(room, { type: 'drawPoint', id: msg.id, point: msg.point }, player.id)
+    }
+    case 'drawLive': {
+      // optional live segment relay for smoothness (not stored)
+      if (ws._pid !== room.drawerId) return
+      broadcast(room, { type: 'drawLive', seg: data.seg }, ws._pid)
+      break
+    }
+    case 'undo': {
+      if (ws._pid !== room.drawerId) return
+      if (room.strokes.length) {
+        room.redo.push(room.strokes.pop())
+        broadcast(room, { type: 'canvasState', strokes: room.strokes })
+      }
+      break
+    }
+    case 'redo': {
+      if (ws._pid !== room.drawerId) return
+      if (room.redo.length) {
+        room.strokes.push(room.redo.pop())
+        broadcast(room, { type: 'canvasState', strokes: room.strokes })
+      }
+      break
+    }
+    case 'clear': {
+      if (ws._pid !== room.drawerId) return
+      room.strokes = []
+      room.redo = []
+      broadcast(room, { type: 'canvasState', strokes: [] })
       break
     }
 
-    case 'drawEnd':
-      if (!isDrawer) break
-      broadcast(room, { type: 'drawEnd', id: msg.id }, player.id)
+    // ---- chat / guessing ----
+    case 'chat': {
+      const p = room.players.get(ws._pid)
+      if (!p) return
+      const text = String(data.text || '').slice(0, 120).trim()
+      if (!text) return
+      pushChat(room, { kind: 'guess', name: p.name, team: p.team, text })
       break
+    }
 
-    case 'undo':
-      if (!isDrawer) break
-      if (room.strokes.length) room.undone.push(room.strokes.pop())
-      broadcast(room, { type: 'canvas', strokes: room.strokes })
+    case 'guessedIt': {
+      if (ws._pid !== room.drawerId) return
+      awardPoint(room, null)
       break
-
-    case 'redo':
-      if (!isDrawer) break
-      if (room.undone.length) room.strokes.push(room.undone.pop())
-      broadcast(room, { type: 'canvas', strokes: room.strokes })
-      break
-
-    case 'clear':
-      if (!isDrawer) break
-      room.strokes = []
-      room.undone = []
-      broadcast(room, { type: 'canvas', strokes: [] })
-      break
-
-    case 'playAgain':
-      if (isHost && room.phase === 'gameover') {
-        room.phase = 'lobby'
-        room.scores = { A: 0, B: 0 }
-        room.winner = null
-        room.currentDrawerId = null
-        room.currentWord = null
-        room.strokes = []
-        room.undone = []
-        clearTurnTimers(room)
-        log(`[room ${room.code}] reset to lobby (play again)`)
-        broadcast(room, { type: 'canvas', strokes: [] })
-        pushState(room)
-      }
-      break
+    }
 
     default:
       break
@@ -605,5 +608,5 @@ function routeMessage(ws, code, msg) {
 }
 
 server.listen(PORT, () => {
-  log(`ROBO·DRAW server listening on :${PORT}  (static: ${DIST})`)
+  log(`ROBO·DRAW server listening on :${PORT}  (serving ${DIST})`)
 })
