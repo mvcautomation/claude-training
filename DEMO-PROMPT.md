@@ -13,7 +13,7 @@ step is push + Mac Mini pull.
 
 ---
 
-Build me a live online multiplayer Pictionary game and deploy it to a public URL — all in one shot. Do NOT ask clarifying questions; make reasonable choices and keep going until it's actually playable at the live URL.
+Build me a live online multiplayer Pictionary game and deploy it to a public URL — all in one shot. Only ask questions if the current plan isn't working or if you're unclear about something.
 
 **The game**
 - Anyone starts a game and gets a 4-digit join code. Others join with the code and pick a display name, then enter.
@@ -38,5 +38,6 @@ Build me a live online multiplayer Pictionary game and deploy it to a public URL
   2. `ssh bill-remote 'cd ~/Documents/GitHub/claude-training && git pull && cd demo-game && npm install && npm run build && (pm2 delete demo-game 2>/dev/null; PORT=3200 pm2 start server/index.js --name demo-game --time) && pm2 save'`
 - The Cloudflare tunnel hostname **`https://game.ai-app.space` → `localhost:3200`** is ALREADY wired (DNS + tunnel ingress done). **Do NOT touch Cloudflare, DNS, the tunnel, PartyKit, or Vercel.**
 - Finish by verifying `https://game.ai-app.space` serves the game and a real `wss://` connection works, then give me the shareable URL.
+- Note: on first attempt it created a drawing area that got compressed as more players typed in the chat and the chat expanded, especially on mobile.
 
-Don't ask me anything — build it, deploy it, verify it, and hand me the link.
+Only ask questions if you're blocked and the current plan doesn't work — otherwise, build it, deploy it, verify it, and hand me the link.
