@@ -7,11 +7,12 @@ description: Stage all changes, write a clear commit message describing what cha
 
 When invoked:
 
-1. Run `git status` and `git diff` to see what actually changed.
+1. Run `git status` and `git diff` to see what actually changed. Make sure no secrets (`.env` files, keys, tokens) are about to be committed.
 2. Stage all changes (`git add -A`).
 3. Write a concise commit message: a short summary line describing *what* changed and *why*: specific, not generic. If there's meaningful detail, add a short body.
 4. Commit, then push to the current branch.
-5. If the push fails because of a conflict, do NOT force push. Pull first, resolve, then push normally, and tell the user what happened.
+5. If the push fails because of a conflict, do NOT force push, rebase, or reset. Pull, merge, resolve, then push normally, and tell the user what happened.
+6. Never rewrite history that has already been pushed (force push, rebase, amend, `reset --hard`) without the user's explicit approval for that one action. Never skip checks with `--no-verify`.
 
 Good messages: "fix login redirect on mobile Safari", "add email notification for updated docs".
 Bad messages: "updates", "fixed stuff", "wip".
