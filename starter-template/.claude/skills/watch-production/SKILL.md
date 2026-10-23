@@ -11,7 +11,7 @@ Make sure the user decides about:
 
 1. **The critical path**: the two or three things that must always work (sign in, book, pay, load the main screen).
 2. **How often** to check, and **where alerts go** (email, Slack, text). Only alert on failure.
-3. **Where the check runs**: a cloud scheduled task keeps running with the laptop closed; a session `/loop` does not.
+3. **Where the check runs**: a cloud scheduled task keeps running with the laptop closed; a session `/loop` does not. A cloud task works from a GitHub repo and can only reach allowed sites, so add the app's domain to its environment's network access.
 4. **Test accounts and data** the check can use without touching real users or sending real messages to real people.
 5. **Vendor limits**: credits, quotas or billing that can run out silently (SMS, AI APIs, email). Alert before they hit zero.
 6. **What to do when it fails**: alert only, or also open a task with the logs attached.

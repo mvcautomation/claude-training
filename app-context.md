@@ -14,7 +14,7 @@ claude-training/
 ├── starter-template/
 │   └── .claude/                # Source for the zip — generic CLAUDE.md + 3 skills
 │       ├── CLAUDE.md           # Beginner safety rails (normal case, NOT dtcmvp lowercase)
-│       └── skills/             # commit, update-docs (ch7), brainstorm (ch4) — each a SKILL.md
+│       └── skills/             # commit, update-docs, brainstorm, kickoff, adversarial-review, hosting, watch-production (each a short SKILL.md)
 ├── claude-code-101.md       # Source markdown for the conceptual content
 ├── method0.md - method6.md  # Supplementary methodology docs (dtcmvp team workflows)
 └── app-context.md           # This file
@@ -51,7 +51,7 @@ A self-contained single HTML file with no dependencies or build process. Open it
 - `.setup-note` — blue info callout box
 - `.setup-legend` — color-coded legend for step types
 
-### Chapter Structure (12 chapters + hero)
+### Chapter Structure (hero + Part 1: ch1-12 + Part 2: ch13-21)
 
 | ID | Chapter | Content |
 |----|---------|---------|
@@ -67,22 +67,31 @@ A self-contained single HTML file with no dependencies or build process. Open it
 | 9 | Common Mistakes | 7 traps teams fall into |
 | 10 | The Investment That Compounds | Why scaffolding matters more than code |
 | 11 | GitHub Essentials | Commits, push/pull, repos, solo vs team workflows |
-| 12 | Environment Setup | Desktop-app-first 5-step flow: install Claude desktop app (claude.com/download), make a Projects folder, download+unzip the starter template (`app/starter-template.zip`), open a session via Code tab → local → folder, then the first-repo assignment. Manual/let-claude step types only (no terminal "command" steps). |
+| 12 | Environment Setup (end of Part 1; next button goes to 13) | Desktop-app-first 5-step flow: install Claude desktop app (claude.com/download), make a Projects folder, download+unzip the starter template (`app/starter-template.zip`), open a session via Code tab → local → folder, then the first-repo assignment. Manual/let-claude step types only (no terminal "command" steps). |
+| 13 | The Kickoff Brief | Goal, convictions, look and feel, standing permissions, stop condition, blocked-decision default. Kickoff is a starting point; touch, play, adjust is expected |
+| 14 | Artifacts: Review by Looking | Decision cards, one republished page per session, screenshots over descriptions |
+| 15 | Unattended Work and Loops | /loop vs desktop scheduled vs cloud scheduled tasks (what survives a closed laptop), stop conditions, cost |
+| 16 | Adversarial Agents | Code reviewer, persona testers, rule checker; /code-review, /adversarial-review; make review a gate |
+| 17 | Adversarial Prompting | Questions that make Claude argue against itself ("what did you not prove?") |
+| 18 | Parallel Sessions | Only once the app's shape is settled; worktrees, shared checklists, direct session messages |
+| 19 | Watching Production | Scheduled checks of the critical path, alerts on failure only, vendor credit alerts |
+| 20 | Where Your App Lives | Vercel vs home server + Cloudflare Tunnel vs droplet vs short-lived container |
+| 21 | Capstone: Ship Something | Six-step build using the kit; holds the final score card |
 
 Writing style: standard English capitalization (Title Case for headers/subtitles-as-titles/TOC/chapter labels, sentence case for body, quizzes, and callouts; proper nouns capitalized) and NO em dashes anywhere. The earlier dtcmvp-style all-lowercase + em-dash voice was fully removed (Peter: "the lowercase thing is dtcmvp brand only"). Keep new content in this same standard-English, em-dash-free style. Literal text inside `<code>`, `.cmd-block`, and `.setup-prompt-block` (commands, filenames, example prompts) is intentionally left in casual lowercase.
 
 ### JavaScript Architecture
-- `TOTAL_CHAPTERS = 12`, `TOTAL_QUIZZES = 36`
+- `TOTAL_CHAPTERS = 21`, `TOTAL_QUIZZES = 63`
 - `goTo(n)` — navigates to chapter n, updates progress, saves to localStorage
 - `updateNav()` — updates progress bar and chapter dot navigation (right sidebar)
 - Quiz handling via event listeners on `.quiz-option` buttons, answers stored in `quizAnswers` object
 - `copyCmd(btn)` — copies terminal command/prompt text to clipboard
 - `switchPlatform(group, platform, tab)` — toggles Mac/Windows content sections
-- Score card (`#final-score`) renders on the last chapter (12) showing quiz accuracy; `updateFinalScore()` gates on `currentChapter === TOTAL_CHAPTERS`
+- Score card (`#final-score`) renders on the last chapter (21) showing quiz accuracy; `updateFinalScore()` gates on `currentChapter === TOTAL_CHAPTERS`
 
 ### Quiz ID Convention
 - Format: `{chapter}{letter}` — e.g., `9a`, `9b`, `9c`
-- 3 quizzes per chapter, 36 total (chapters 1-12, letters a-c)
+- 3 quizzes per chapter, 63 total (chapters 1-21, letters a-c)
 - Quiz state persists in localStorage across sessions
 
 ### Navigation
@@ -105,9 +114,11 @@ Writing style: standard English capitalization (Title Case for headers/subtitles
 9. Update `score-total` display to match new `TOTAL_QUIZZES`
 
 ## Current state / open items
-_Last updated: 2026-06-01_
+_Last updated: 2026-10-23_
 
-- **Course is complete and shipped.** 12 chapters / 36 quizzes (3 per chapter), all in standard-English / em-dash-free style. Everything verified live (render, prev/next + dot + TOC nav on desktop and mobile, quiz scoring, final-score card on ch12, zip download, no console errors) and pushed to `main` (`github.com/mvcautomation/claude-training`). No known broken behavior.
-- **Starter template:** `starter-template/.claude/` is the **source of truth** (CLAUDE.md + commit/update-docs/brainstorm skills, all em-dash-free). `app/starter-template.zip` is built from it with the command in the Repo Structure block above. Do NOT edit inside `app/.claude/` — an unzip-and-edit-there workflow caused drift earlier (that stray dir has been removed).
+- **Two-part course (2026-10-23).** Part 1 (ch1-12) is the original course plus real-world stories from Peter's builds (Hiders Seekers, Long Time No See, Treadmill, Apprentices, anonymized as "a builder"), taste and human-only steps (ch2), hooks (ch5), the six-phase workflow with "play and adjust" (ch6), one session per release (ch7), "what wasn't proven" (ch8), new traps (ch9), and an expanded irreversible-git-commands section plus worktrees (ch11). Part 2 (ch13-21) is new. 63 quizzes. TOC shows Part headers (`.toc-part`).
+- **Peter's positions the course must keep** (from his 2026-10-23 review): hands-on "touch, play, adjust" is part of building, not a failed kickoff; parallel sessions (second platform, promo video) wait until the app's shape is settled; git dangers stay in full; keep varied metaphors and add real examples alongside them.
+- **Feature facts in Part 2 are dated "checked October 2026".** Re-verify loops, scheduled tasks, /code-review, artifacts and hosting limits against code.claude.com and provider pages before each cohort.
+- **Starter template:** `starter-template/.claude/` is the **source of truth** (CLAUDE.md + seven skills: commit, update-docs, brainstorm, kickoff, adversarial-review, hosting, watch-production; all em-dash-free). Skills are deliberately short: they make sure the user decides on things rather than teaching facts the agent already knows. Don't name a skill `review` (collides with the built-in /review alias). `app/starter-template.zip` is built from it with the command in the Repo Structure block above. Do NOT edit inside `app/.claude/` — an unzip-and-edit-there workflow caused drift earlier (that stray dir has been removed).
 - **Preview/dev server:** served via the `claude-training` config in the repo-root `.claude/launch.json` (`npx http-server claude-training/app -p 8099`). Static file, so any local HTTP server over `app/` works.
 - **Watch-outs for future edits:** (1) ch12's desktop-app steps describe a specific UI flow (Code tab → start new session → local → select folder) provided by Peter — re-verify if the desktop app UI changes. (2) When adding/removing chapters, update BOTH nav arrays (`labels` + `chapterTitles`) and the localStorage key if quiz IDs shift. (3) Keep literal command/prompt text in `<code>`/`.cmd-block`/`.setup-prompt-block` in casual lowercase; everything else is standard English.

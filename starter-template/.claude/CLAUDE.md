@@ -4,7 +4,7 @@ This file is loaded at the start of every Claude Code session in this folder. It
 
 ## Safety rails (don't cross these)
 
-- Never use `git push --force` or rewrite git history (rebase pushed commits, amend pushed commits, `git reset --hard`) without my explicit approval for that one action. "It's my own branch" is not an exception.
+- Never run a git command that rewrites history or discards work without my explicit approval for that one action: `push --force`, `reset --hard`, rebasing or amending pushed commits, `checkout -- .`, `restore .`, `stash drop`, `stash clear`, `clean -fd`, `branch -D`. "It's my own branch" is not an exception.
 - If a push is refused, pull and merge. Never force it, and never skip checks with `--no-verify`.
 - Never delete anything that can't be recovered. When in doubt, ask first.
 - Always commit working changes before moving on, so nothing gets lost.

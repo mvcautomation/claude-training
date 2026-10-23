@@ -11,13 +11,10 @@ Make sure the user decides about:
 
 1. **What has to run**: pages only, an API that answers requests, something that runs all the time (a bot, a websocket server, a scheduler), or a job that runs and exits.
 2. **Commercial or personal**: Vercel's free plan is for non-commercial use.
-3. **Vercel** fits sites and request-driven APIs. Bring up its limits before choosing it: functions have a time limit, there's no disk that persists, and no always-on processes.
-4. **A home server** (a Mac Mini or old laptop with a Cloudflare Tunnel) costs almost nothing per month. Bring up that it goes down with the home's power or internet, that the machine must stay awake, that backups are the user's job, and that anyone with the link can reach it unless access is restricted.
-5. **A droplet** (a small rented Linux server) is cheap per month and always on. Bring up that the user owns the upkeep: security updates, firewall, SSH keys, backups.
-6. **A short-lived container** fits jobs that run and exit. Nothing is kept between runs.
-7. **Where the data lives** and how it's backed up, whichever host is chosen.
-8. **Secrets**: kept in env files or the host's settings, never in git or chat.
-9. **Domain and DNS**: who owns the domain and where it's managed.
-10. **Cost at expected usage**, and what happens to users if it goes down.
+3. **The options and their tradeoffs**, raised before choosing: Vercel, a home server (such as a Mac Mini) behind a Cloudflare Tunnel, a rented droplet, and a short-lived container. For each, bring up its limits, the upkeep the user takes on, what it costs, and what users see when it goes down. Check current terms; Vercel added always-on workers in October 2026.
+4. **Where the data lives** and how it's backed up, whichever host is chosen.
+5. **Secrets**: kept in env files or the host's settings, never in git or chat.
+6. **Domain and DNS**: who owns the domain and where it's managed.
+7. **Cost at expected usage**, and what happens to users if it goes down.
 
 Once decided, set it up step by step, explain each step in plain English, write the setup into the project's docs so it can be rebuilt, and test a deploy end to end.

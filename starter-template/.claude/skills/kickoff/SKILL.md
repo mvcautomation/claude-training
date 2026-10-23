@@ -12,7 +12,7 @@ Before building, make sure the user has decided on each of these. Ask only about
 1. **The goal** in their words: who it's for and the one thing it must do well.
 2. **Convictions** they already hold (things that are not up for debate).
 3. **Look and feel**: a reference app, site or mood. Without one you will guess, and the first version will get restyled.
-4. **What you may do without asking**: commit, push, deploy, spend money (up to what amount), send messages, create accounts.
+4. **What you may do without asking**: commit, push, deploy, spend money (up to what amount), send messages, create accounts. For a long unattended run, the session also needs auto mode, or it will stop at the first command that needs approval; for "keep going until X", suggest `/goal X`.
 5. **When to stop**: what "done for this round" means.
 6. **When you're blocked on a decision**: stop and wait, or take your own recommendation, note it, and keep going.
 7. **What you'll need from them**: list the accounts, keys, payments or approvals only a human can provide that you can see so far. More will come up as the app takes shape; raise each one as soon as you spot it.

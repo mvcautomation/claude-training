@@ -12,7 +12,7 @@ When invoked:
 3. Write a concise commit message: a short summary line describing *what* changed and *why*: specific, not generic. If there's meaningful detail, add a short body.
 4. Commit, then push to the current branch.
 5. If the push fails because of a conflict, do NOT force push, rebase, or reset. Pull, merge, resolve, then push normally, and tell the user what happened.
-6. Never rewrite history that has already been pushed (force push, rebase, amend, `reset --hard`) without the user's explicit approval for that one action. Never skip checks with `--no-verify`.
+6. Never run anything that rewrites history or discards work without the user's explicit approval for that one action: force push, `reset --hard`, rebasing or amending pushed commits, `checkout -- .`, `restore .`, `stash drop`/`clear`, `clean -fd`, `branch -D`. Never skip checks with `--no-verify`.
 
 Good messages: "fix login redirect on mobile Safari", "add email notification for updated docs".
 Bad messages: "updates", "fixed stuff", "wip".
