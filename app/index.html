@@ -238,11 +238,11 @@
     <h4>Chapters</h4>
     <ul>
       <li>The mindset shift: you're running a team, not using a tool</li>
-      <li>What you bring: the five irreplaceable human contributions</li>
+      <li>What you bring: the human contributions AI can't replace</li>
       <li>How Claude actually works: a plain-english look under the hood</li>
       <li>Talking to AI: how specificity changes everything</li>
       <li>The three layers of memory: how AI remembers</li>
-      <li>The workflow: orient, plan, build, verify, document</li>
+      <li>The workflow: kick off, plan, build, check, play and adjust, document</li>
       <li>Managing context: protect working memory, never lose your work</li>
       <li>Debugging with AI: when things go wrong</li>
       <li>Common mistakes: the traps everyone falls into</li>
@@ -291,6 +291,12 @@
     <p class="lesson">The human's contribution wasn't code. It was direction, context, and quality control.</p>
   </div>
 
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>A builder had an old browser game: hide-and-seek on a map, played on phones. In about three hours of their own time, spread over one evening and the next morning, Claude rebuilt the game server, wrote native iPhone and Android versions, tested them against each other with scripted bot players on simulators, and prepared both app store submissions. The builder's messages were short. They said what to keep ("keep the always-on meter"), what they believed ("multiplayer by default is a strong conviction of mine"), and which option to pick when Claude laid out choices.</p>
+    <p class="lesson">One person, one evening, three platforms. The leverage came from direction and convictions, not from typing code.</p>
+  </div>
+
   <div class="quiz" data-quiz="1a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">What's the primary role of the human when building software with AI?</div>
@@ -337,7 +343,7 @@
 <div class="chapter" id="chapter-2">
   <div class="chapter-header">
     <div class="chapter-number">Chapter 2</div>
-    <div class="chapter-title">The Five Things Only You Can Do</div>
+    <div class="chapter-title">The Things Only You Can Do</div>
     <div class="chapter-subtitle">What you bring to the collaboration that AI cannot replace</div>
   </div>
   <div class="content-block"><h3>1. Direction</h3><p>The AI can build anything. It cannot decide <em>what</em> to build. That's you.</p></div>
@@ -351,7 +357,7 @@
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
     <h4>The GPS</h4>
-    <p>AI is like a GPS that's usually right but sometimes confidently drives you into a lake. Your job is to look out the window. When the AI says "the issue is X," ask: "how confident are you?" (forces honesty), "why X but not Y?" (tests the logic), and "what would prove you wrong?" (reveals blind spots).</p>
+    <p>AI is like a GPS that's usually right but sometimes confidently drives you into a lake. Your job is to look out the window. When the AI says "the issue is X," ask: "how confident are you?" (makes it admit when it is guessing), "why X but not Y?" (tests the logic), and "what would prove you wrong?" (reveals blind spots).</p>
   </div>
   <div class="content-block"><h3>4. Risk Awareness</h3><p>The AI optimizes for completing the task. You optimize for not destroying what's already working. You're the one who says "what happens to the 47 existing bookings when we make this change?"</p></div>
   <div class="content-block"><h3>5. Verification</h3><p>The most dangerous phrase in AI-assisted development: <strong>"it looks like it worked."</strong></p></div>
@@ -359,6 +365,15 @@
     <div class="story-label">from the field</div>
     <p>A team's data scraper ran for 3 straight days, reporting success each time. Zero records collected. The API had silently returned empty results when credits ran out. No error, no warning, just "success" with nothing inside.</p>
     <p class="lesson">Verification means checking the actual output, not just the exit code. Query the database. Open the calendar. Load the page on your phone.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>6. Taste</h3>
+    <p>Claude can make something that works. Whether it feels right is your call. In one app build, the first version worked end to end within half an hour, and the builder's first reaction was "kinda boring and cold." The next several rounds were all taste: warmer colors, drawings that fit, a candle on the table that looked too romantic for a friends' get-together. None of that shows up in a test. It shows up when a person holds the phone.</p>
+  </div>
+  <div class="content-block">
+    <h3>7. The Doors Only a Human Can Open</h3>
+    <p>Some steps need a real person by design: creating an Apple or Google developer account, agreeing to a contract, entering a payment card, filling in privacy forms in a store console, and publishing an Android app's first production release. Claude can tell you exactly what to click, and can often do everything around it, but it can't open those doors for you. Knowing which steps are yours keeps a project from stalling while Claude waits.</p>
   </div>
 
   <div class="quiz" data-quiz="2a">
@@ -484,6 +499,12 @@
     </ul>
   </div>
 
+  <div class="content-block">
+    <h3>It Grades Its Own Homework Generously</h3>
+    <p>The same instinct that makes Claude finish a sentence confidently makes it report its own work confidently. "Dark mode works" can arrive while a drawing on that very screen is broken. It isn't lying. It checked what it thought to check and filled the gaps with the most plausible story: that the rest is fine too.</p>
+    <p>Two fixes, both covered later in the course: ask it to list what it did <em>not</em> prove, and have a separate agent, one that didn't build the thing, look for problems.</p>
+  </div>
+
   <div class="quiz" data-quiz="3a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">Claude gives you a confident answer with a specific citation, but you've never heard of the source. What's the safest assumption?</div>
@@ -582,7 +603,7 @@
 
   <div class="content-block">
     <h3>You Shape What's Probable</h3>
-    <p>Remember from the last chapter: Claude produces the <em>most probable</em> response. Here's the powerful part: <strong>you control what's probable</strong> by how you ask. The framing of your request quietly decides the shape of what comes back.</p>
+    <p>Remember from the last chapter: Claude produces the <em>most probable</em> response. Here's the powerful part: <strong>you control what's probable</strong> by how you ask. The framing of your request decides the shape of what comes back.</p>
     <p>Same plan, three framings, three different shapes:</p>
     <p><strong>"what do you think of this plan?"</strong>: leans agreeable. A soft question makes a soft, reassuring answer the most probable one.</p>
     <p><strong>"be brutally honest and tear this apart"</strong>: over-corrects. It will manufacture pushback to fit the frame, sometimes inventing problems that aren't real. (though if you have to err one way, this usually beats the yes-man trap.)</p>
@@ -592,6 +613,17 @@
     <div class="metaphor-label">mental model</div>
     <h4>The Constant Question</h4>
     <p>Make this a habit every time you talk to an AI: <strong>"what's the healthiest shape for the response i actually need (not the one i want) and how do i ask so that becomes the most probable answer?"</strong> That single question, asked before you hit enter, quietly upgrades everything the AI hands back to you.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Correct with a Conviction, Not Just a "No"</h3>
+    <p>When Claude recommends something you disagree with, a bare "no" fixes one decision. A "no" with the belief behind it fixes every later decision that belief touches.</p>
+    <div class="comparison">
+      <div class="comparison-bad"><div class="comparison-label">bare no</div><p>"no, keep the meter."</p></div>
+      <div class="comparison-good"><div class="comparison-label">no with a conviction</div><p>"no, keep the always-on meter. in play testing the hider had the advantage. and building software costs almost nothing now, so i want long-term fixes, not quick patches."</p></div>
+    </div>
+    <p>One builder's message like the second one overturned three of Claude's recommendations at once, each for a stated reason. Claude then applied the same principle to choices nobody had discussed yet.</p>
+    <p><strong>And don't worry about polish.</strong> Typos, lowercase and voice dictation are fine. Claude reads intent well. What makes a prompt good is the information in it, not the wording.</p>
   </div>
 
   <div class="quiz" data-quiz="4a">
@@ -608,7 +640,7 @@
 
   <div class="quiz" data-quiz="4b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
-    <div class="quiz-question">You want honest, balanced feedback on a plan you're personally attached to. Which framing is most likely to get it?</div>
+    <div class="quiz-question">You want balanced feedback on a plan you're personally attached to. Which framing is most likely to get it?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">"what do you think of this plan?"</button>
       <button class="quiz-option" data-correct="false">"be brutally honest and tear this plan apart"</button>
@@ -654,6 +686,16 @@
     <div class="story-label">from the field</div>
     <p>A team kept their AI configuration in a shared git repository. When one person improved a skill document (adding a missing deployment step that had caused an outage), the other team member got the fix on their next git pull. One 5-minute documentation update prevented a class of errors permanently.</p>
     <p class="lesson">Documentation for the AI pays back more than code. A 30-minute skill doc saves 15 minutes per conversation, forever.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>Skills Get Better Every Time Something Goes Wrong</h3>
+    <p>The best skills are checklists that grow. One builder kept a skill for submitting apps to the App Store. Every rejection, from any of their apps, became a new line in it: the missing privacy file, the debug switch left in, the "block user" button Apple requires for apps where people see each other's posts. A new app now gets audited against every past rejection before it's submitted.</p>
+  </div>
+  <div class="content-block">
+    <h3>One More Layer: Hooks, for Rules That Must Never Slip</h3>
+    <p>Rules, skills and memory are all things Claude <em>reads</em>. Most of the time it follows them. A <strong>hook</strong> is different: a small script the computer runs automatically at a set moment, such as before a command runs or when Claude finishes a turn. Claude can't forget a hook, because the computer runs it, not Claude.</p>
+    <p>Use hooks sparingly, for the few rules where "usually" isn't good enough: block a force push, run the tests before anything is submitted, send a notification when a long job finishes. You don't write them yourself. Ask Claude: "make a hook that blocks X."</p>
   </div>
 
   <div class="quiz" data-quiz="5a">
@@ -703,14 +745,16 @@
   <div class="chapter-header">
     <div class="chapter-number">Chapter 6</div>
     <div class="chapter-title">The Workflow</div>
-    <div class="chapter-subtitle">Orient → plan → build → verify → document</div>
+    <div class="chapter-subtitle">Kick off → plan → build → check → play and adjust → document</div>
   </div>
-  <div class="content-block"><h3>Phase 1: Orient</h3><p>State what you want to accomplish. Be specific. The AI automatically loads your rules, relevant skills, and memory.</p></div>
+  <div class="content-block"><h3>Phase 1: Kick Off</h3><p>Say what you want and who it's for, in your own words. Add what you already believe (the things that aren't up for debate), what Claude may do without asking, and what "done for now" means. The AI automatically loads your rules, relevant skills, and memory. The starter kit's <code>/kickoff</code> skill walks you through this in a few minutes.</p></div>
   <div class="content-block"><h3>Phase 2: Plan</h3><p>For anything beyond a simple fix, ask the AI to lay out its approach before it starts. You review it, not for code quality, but for missing requirements, edge cases, and things the AI doesn't know. This is just a conversation; you don't need a special "mode" for it. Talk it through, steer it, and only then say "go."</p></div>
   <div class="metaphor"><div class="metaphor-label">mental model</div><h4>The Blueprint Review</h4><p>You're the building owner reviewing the architect's blueprints. You don't need to know how to calculate load-bearing requirements, but you do need to say "there's no bathroom on this floor" and "the front door opens into a wall."</p></div>
   <div class="content-block"><h3>Phase 3: Build</h3><p>The AI writes code, creates files, runs commands, deploys. Check in at milestones, not after every line. Stay available for questions. Correct mistakes early.</p></div>
-  <div class="content-block"><h3>Phase 4: Verify</h3><p>This is where most people drop the ball. Test the feature on a real device. Check the database. Verify the deployment. Test edge cases.</p></div>
-  <div class="content-block"><h3>Phase 5: Document</h3><p>Update your skill docs and memory with what you learned. The next conversation starts with accurate context instead of stale docs.</p></div>
+  <div class="content-block"><h3>Phase 4: Check</h3><p>Claude can test a great deal itself now: it can click through your app in a simulator, load your site in a browser, and run scripted test players. Ask it to, and ask what it did not prove. For anything important, have a second agent that didn't build it look for problems (Part 2 covers this).</p></div>
+  <div class="content-block"><h3>Phase 5: Play and Adjust</h3><p>Now you use it, on your own phone, as a real user would. This is where most of the good ideas come from. You can't imagine everything you'll want before you've held the thing, and you shouldn't try. In one app build, a whole onboarding redesign, a better way to pick times, and a contact search all came from the builder simply using the app. Touch it, play with it, tell Claude what felt wrong, and go around again.</p></div>
+  <div class="metaphor"><div class="metaphor-label">mental model</div><h4>The Test Kitchen</h4><p>A chef doesn't finalize a menu on paper. They cook the dish, taste it, add salt, cook it again. The recipe on paper was a starting point. Your first plan is the same: a good starting point that gets better each time you taste the result.</p></div>
+  <div class="content-block"><h3>Phase 6: Document</h3><p>Update your skill docs and memory with what you learned. The next conversation starts with accurate context instead of stale docs.</p></div>
   <div class="story">
     <div class="story-label">from the field</div>
     <p>A team migrating off a third-party calendar integration followed the workflow precisely: oriented (credentials getting revoked), planned (phased migration with "mirror mode" testing), built (replaced piece by piece), verified (manually checked Google Calendar, caught a PST/PDT time bug), documented (updated infra skill). The migration shipped cleanly because every phase got its due attention.</p>
@@ -768,7 +812,7 @@
   </div>
 
   <div class="content-block">
-    <p>Every conversation with Claude happens inside a "context window": a limited amount of working memory that holds everything said so far. It is not infinite. As a conversation grows, the window fills up, and at some point the oldest details get summarized or quietly dropped to make room. This is called <em>compaction</em>.</p>
+    <p>Every conversation with Claude happens inside a "context window": a limited amount of working memory that holds everything said so far. It is not infinite. As a conversation grows, the window fills up, and at some point the oldest details get summarized or dropped to make room. This is called <em>compaction</em>.</p>
     <p>And when you start a fresh conversation, or clear the current one, the slate is wiped completely. Anything that lived only in that chat is gone.</p>
   </div>
 
@@ -833,6 +877,12 @@
     </ul>
   </div>
 
+  <div class="content-block">
+    <h3>Start Fresh More Often Than Feels Natural</h3>
+    <p>It's tempting to keep one conversation open for a project's whole life, because it "knows everything." It doesn't. A conversation that has been compacted four times holds four summaries of summaries, and details blur with each one. One builder kept a single session going for two months across an app's launch and four releases. By the end they were asking it "am I using Plivo? I forget," and it couldn't reliably say either. A guess one part of the conversation had made ("these don't sync on purpose, for privacy") had hardened into a rule nobody decided.</p>
+    <p><strong>A good rhythm:</strong> one session per feature or release. Before you close it, capture what matters (the habit above). Then the next session starts by reading your project doc, and it knows more than the old session did, because the doc holds decisions while the old session only held summaries.</p>
+  </div>
+
   <div class="quiz" data-quiz="7a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">You've been working with Claude for two hours and notice it seems to have "forgotten" something you discussed early on. What most likely happened?</div>
@@ -891,8 +941,15 @@
     <p class="lesson">Two questions ("how confident?" and "why this and not that?") saved hours of debugging the wrong thing.</p>
   </div>
   <div class="content-block"><h3>Rule 3: Check Current State Before Changing Anything</h3><p>Before modifying a system, ask "is it even working right now?" One team discovered their monthly script had been silently failing for a month, not because they went looking for problems, but because they asked "did it already run?" before deploying new code. This habit of checking current state before modifying it catches infrastructure rot that would otherwise compound silently.</p></div>
-  <div class="content-block"><h3>Rule 4: Give AI Access to the Real System</h3><p>Teams that give AI SSH access to servers debug 3x faster. Instead of "run this, paste output, wait, repeat," the AI checks logs and queries databases directly.</p></div>
-  <div class="content-block"><h3>Rule 5: Screenshots Are Underrated</h3><p>The AI can read screenshots. "it shows no data" + screenshot is 10x more useful than "it's not working" because the AI sees the URL, page state, and error messages simultaneously.</p></div>
+  <div class="content-block"><h3>Rule 4: Give AI Access to the Real System</h3><p>Teams that give AI access to their servers debug far faster. Instead of "run this, paste output, wait, repeat," the AI checks logs and queries databases directly.</p></div>
+  <div class="content-block"><h3>Rule 5: Screenshots Are Underrated</h3><p>The AI can read screenshots. "it shows no data" + screenshot is far more useful than "it's not working" because the AI sees the URL, page state, and error messages simultaneously.</p></div>
+
+  <div class="content-block"><h3>Rule 6: Ask What Wasn't Proven</h3><p>When Claude reports that something works, ask: "what did you not prove?" The answer is often surprising. Common gaps: it tested on one device when the bug only appears with two people, it used a test mode that doesn't send real text messages, or it couldn't see the on-screen keyboard covering a button.</p></div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>An app's phone sign-in was tested overnight and reported as "verified end to end." The test ran in the text-message provider's sandbox mode, where no real message is sent. After launch, the provider turned out to need an expensive plan for real messages, and sign-in broke for real users. Nobody noticed for about two weeks, until the builder hit an error by chance.</p>
+    <p class="lesson">"Verified" meant "verified in sandbox." Ask what wasn't proven, and set up a daily check of the live app (Part 2 shows how).</p>
+  </div>
 
   <div class="quiz" data-quiz="8a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
@@ -951,6 +1008,10 @@
   <div class="content-block"><h3>Trap 6: Naming Things for Yourself Instead of the Future</h3><p>"Discovery Tier" makes sense today. "TAM Discovery Tier" makes sense six months from now when nobody remembers what "discovery" referred to. Name database fields, variables, and features for the person who doesn't have your current context.</p></div>
   <div class="content-block"><h3>Trap 7: Trying to Predict Everything Upfront</h3><p>Build the core, test it, discover what's missing, iterate. Real requirements emerge from real usage.</p></div>
   <div class="metaphor"><div class="metaphor-label">mental model</div><h4>The Pottery Wheel</h4><p>You don't design a perfect vase on paper and then execute. You throw clay, shape it, see how it looks, adjust. The first pass gives you the form. Iterations give you the art. Software works the same way.</p></div>
+
+  <div class="content-block"><h3>Trap 8: A Guess That Becomes a Rule</h3><p>Claude infers something ("this is probably private on purpose"), writes it into a doc, and a later session treats it as a decision. When something feels like an odd constraint, ask: "is this a real requirement, or one a Claude session assumed?"</p></div>
+  <div class="content-block"><h3>Trap 9: Accepting a Blocker That Sounds Official</h3><p>"We need the company developer account first" cost one team twelve days. When they finally asked "is there no way to ship this sooner?", it shipped the same evening on an account they already had. Before you wait on anything outside your control, ask: "what's the fastest path if I accept some tradeoff?"</p></div>
+  <div class="content-block"><h3>Trap 10: Pasting Passwords and Keys into the Chat</h3><p>Anything in the conversation can be repeated in summaries and logs. Put keys in the project's environment file (Claude will tell you which one) and never in a message.</p></div>
 
   <div class="quiz" data-quiz="9a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
@@ -1031,6 +1092,12 @@
       <li>Push back when the AI sounds confident but might be guessing</li>
       <li>Front-load requirements as bullet lists before the AI starts building</li>
     </ul>
+  </div>
+
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>The first time one builder submitted an iPhone app, getting through Apple's console took days of clicking. Along the way Claude wrote a small script that talks to Apple's systems directly, and the builder saved the steps as a skill. On a later app, the same steps took minutes: Claude reused the script, created the store listing, uploaded screenshots and sent the build to review. A similar script made the Android store just as quick.</p>
+    <p class="lesson">Every hard step you save once is a fast step in every future project.</p>
   </div>
 
   <div class="quiz" data-quiz="10a">
@@ -1175,6 +1242,23 @@
     <p>Claude can handle all of this for you. "create a feature branch called add-notifications, build the feature, commit, push, and open a PR." Claude will do every step. But you need to understand the flow so you can tell Claude which workflow to use and catch it if it tries to push directly to main on a team project.</p>
   </div>
 
+  <div class="content-block">
+    <h3>The Commands That Can't Be Undone</h3>
+    <p>Force push is the famous one, but it has relatives. Each of these can destroy work with no undo, and an AI trying to be helpful will sometimes reach for them when something gets stuck:</p>
+    <ul>
+      <li><code>git push --force</code>: overwrites what's on GitHub with your copy.</li>
+      <li><code>git reset --hard</code>: throws away every uncommitted change on your machine.</li>
+      <li><code>git rebase</code> or <code>git commit --amend</code> on commits you already pushed: rewrites shared history, so everyone else's copy stops matching.</li>
+      <li><code>git clean -fd</code> and <code>git branch -D</code>: delete files and branches outright.</li>
+      <li><code>--no-verify</code>: skips the safety checks a project set up on purpose.</li>
+    </ul>
+    <p>The rule in your CLAUDE.md should cover all of them: <strong>never run anything that rewrites history or deletes work without asking me first, every time.</strong> "It's my own branch" and "nothing will be lost" are not exceptions. When a push is refused, pull and merge.</p>
+  </div>
+  <div class="content-block">
+    <h3>Worktrees: When Two Claudes Work on One Project</h3>
+    <p>Once you run more than one Claude session on the same project (Part 2 covers when), they can trip over each other's half-finished changes. A <strong>worktree</strong> gives each session its own copy of the project on its own branch, all linked to one repo. Each session commits in its own space, and you merge the finished work back. This is also where "solo means push straight to main" stops being true: even working alone, two sessions are a team.</p>
+  </div>
+
   <div class="quiz" data-quiz="11a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">How often should you commit your work?</div>
@@ -1297,7 +1381,7 @@
       <div class="setup-step-title">Add the starter template</div>
       <span class="setup-badge manual">manual</span>
     </div>
-    <p>We've put together a starter pack so you don't begin from scratch: a ready-made <code>CLAUDE.md</code> with sensible safety rails, plus three handy skills (<code>/commit</code>, <code>/update-docs</code>, and <code>/brainstorm</code>) that put the lessons from this course into practice.</p>
+    <p>We've put together a starter pack so you don't begin from scratch: a ready-made <code>CLAUDE.md</code> with sensible safety rails, plus seven skills that put the lessons from this course into practice: <code>/commit</code>, <code>/update-docs</code> and <code>/brainstorm</code> for everyday work, and <code>/kickoff</code>, <code>/adversarial-review</code>, <code>/hosting</code> and <code>/watch-production</code>, which Part 2 explains.</p>
     <p><a href="starter-template.zip" download style="color: var(--green); font-family: 'Space Mono', monospace; text-decoration: underline;">⬇ download starter-template.zip</a></p>
     <p>Move the downloaded zip <strong>into your Projects folder</strong>, then double-click it to unzip. It drops a folder named <code>.claude</code> right where it needs to be.</p>
     <div class="setup-note"><strong>don't see the <code>.claude</code> folder?</strong> That's normal: folders starting with a dot are hidden. You don't need to see it; Claude finds it automatically. (on Mac you can reveal hidden files with <code>Cmd + Shift + .</code> if you're curious.)</div>
