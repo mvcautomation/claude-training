@@ -53,7 +53,7 @@
   .start-btn { display: inline-block; padding: 14px 36px; background: var(--green); color: var(--bg); font-weight: 600; font-size: 1rem; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-family: 'Space Grotesk', sans-serif; }
   .start-btn:hover { background: #00ff99; box-shadow: 0 0 24px rgba(0, 255, 136, 0.3); transform: translateY(-1px); }
 
-  .chapter-dots { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 50; }
+  .chapter-dots { position: fixed; right: 24px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 7px; z-index: 50; }
   .chapter-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: all 0.3s; border: none; position: relative; }
   .chapter-dot.active { background: var(--green); box-shadow: 0 0 8px rgba(123, 237, 159, 0.5); }
   .chapter-dot.completed { background: var(--green); opacity: 0.5; }
@@ -186,6 +186,7 @@
   .toc-overlay.open .toc-panel { transform: translateX(0); }
   .toc-panel h4 { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--green); text-transform: uppercase; letter-spacing: 2px; margin: 0 10px 10px; }
   .toc-item { display: flex; align-items: baseline; gap: 10px; width: 100%; text-align: left; background: transparent; border: none; border-radius: 8px; padding: 10px 12px; cursor: pointer; color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; transition: all 0.15s; }
+  .toc-part { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); padding: 14px 12px 4px; }
   .toc-item:hover { background: rgba(255,255,255,0.05); color: var(--text); }
   .toc-item.active { background: rgba(123, 237, 159, 0.1); color: var(--green); }
   .toc-num { font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--text-muted); min-width: 18px; flex-shrink: 0; }
@@ -232,10 +233,10 @@
   <div class="content-block" style="margin-top: 40px;">
     <h3>What You'll Learn</h3>
     <p>This is not a tool tutorial. It's a framework for a new kind of working relationship, one where you bring judgment, context, and direction while AI handles implementation at superhuman speed.</p>
-    <p>12 chapters. ~45 minutes. 36 quizzes to make it stick.</p>
+    <p>Two parts. Part 1 (12 chapters, about 45 minutes) gets you working with Claude and set up. Part 2 (9 chapters, about 35 minutes) teaches you to hand Claude whole pieces of work: kickoffs, unattended builds, reviewer agents, and keeping a live app healthy. 63 quizzes to make it stick.</p>
   </div>
   <div class="key-points">
-    <h4>Chapters</h4>
+    <h4>Part 1: Working with Claude</h4>
     <ul>
       <li>The mindset shift: you're running a team, not using a tool</li>
       <li>What you bring: the human contributions AI can't replace</li>
@@ -249,6 +250,20 @@
       <li>The investment that compounds: building your scaffolding</li>
       <li>GitHub essentials: commits, pushing, repos, and staying safe</li>
       <li>Environment setup: install your tools and create your first repo</li>
+    </ul>
+  </div>
+  <div class="key-points">
+    <h4>Part 2: Shipping with a Crew</h4>
+    <ul>
+      <li>The kickoff brief: start a build so Claude can keep going without you</li>
+      <li>Artifacts: review by looking, decide with a tap</li>
+      <li>Unattended work and loops: what keeps running when you close the laptop</li>
+      <li>Adversarial agents: a second Claude that tries to break it</li>
+      <li>Adversarial prompting: questions that make Claude argue against itself</li>
+      <li>Parallel sessions: more than one Claude at a time, and when not to</li>
+      <li>Watching production: find out it's broken before users do</li>
+      <li>Where your app lives: Vercel, a home server, a rented server, or a container</li>
+      <li>Capstone: ship something, start to finish</li>
     </ul>
   </div>
 </div>
@@ -471,7 +486,7 @@
   <div class="content-block">
     <h3>Why It's Weirdly Bad at Counting and Math</h3>
     <p>Claude can explain advanced calculus but might miscount the letters in a word or botch a simple multiplication. Two reasons:</p>
-    <p><strong>it doesn't see individual digits the way you do.</strong> Text gets chopped into chunks called "tokens" before Claude ever sees it. A number like 1,000,000 might arrive as a couple of clumps rather than seven separate digits, so carrying and place-value get garbled.</p>
+    <p><strong>it doesn't see individual digits the way you do.</strong> Text gets chopped into chunks called "tokens" before Claude ever sees it. A number like 1,000,000 might reach Claude as a couple of clumps rather than seven separate digits, so carrying and place-value get garbled.</p>
     <p><strong>it has no scratch paper.</strong> When it answers "in its head," it's predicting the answer directly, with nowhere to work out the steps. Force it to show its working (or better, have it write a quick script) and accuracy jumps, because now the computer does real arithmetic instead of the model guessing the result.</p>
   </div>
   <div class="setup-note"><strong>the takeaway:</strong> for anything that has to be exactly right (totals, large datasets, precise counts) ask Claude to write a script and run it, rather than working it out inside the conversation. Let the computer calculate; let Claude orchestrate.</div>
@@ -501,7 +516,7 @@
 
   <div class="content-block">
     <h3>It Grades Its Own Homework Generously</h3>
-    <p>The same instinct that makes Claude finish a sentence confidently makes it report its own work confidently. "Dark mode works" can arrive while a drawing on that very screen is broken. It isn't lying. It checked what it thought to check and filled the gaps with the most plausible story: that the rest is fine too.</p>
+    <p>The same instinct that makes Claude finish a sentence confidently makes it report its own work confidently. It can report "dark mode works" while a drawing on that very screen is broken. It isn't lying. It checked what it thought to check and filled the gaps with the most plausible story: that the rest is fine too.</p>
     <p>Two fixes, both covered later in the course: ask it to list what it did <em>not</em> prove, and have a separate agent, one that didn't build the thing, look for problems.</p>
   </div>
 
@@ -612,7 +627,7 @@
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
     <h4>The Constant Question</h4>
-    <p>Make this a habit every time you talk to an AI: <strong>"what's the healthiest shape for the response i actually need (not the one i want) and how do i ask so that becomes the most probable answer?"</strong> That single question, asked before you hit enter, quietly upgrades everything the AI hands back to you.</p>
+    <p>Make this a habit every time you talk to an AI: <strong>"what's the healthiest shape for the response i actually need (not the one i want) and how do i ask so that becomes the most probable answer?"</strong> That single question, asked before you hit enter, upgrades everything the AI hands back to you.</p>
   </div>
 
   <div class="content-block">
@@ -647,7 +662,7 @@
       <button class="quiz-option" data-correct="true">"tell me where this plan is solid and where i'm off"</button>
       <button class="quiz-option" data-correct="false">"this plan is good, right?"</button>
     </div>
-    <div class="quiz-explanation">Claude returns the most probable response, and your framing shapes what's probable. A soft question gets a soft, agreeable answer; "brutally honest" can over-correct and manufacture problems that aren't real. Asking for both what's solid and what's off makes balanced, honest feedback the most likely shape. Ask for the response you need, not the one you want.</div>
+    <div class="quiz-explanation">Claude returns the most probable response, and your framing shapes what's probable. A soft question gets a soft, agreeable answer; "brutally honest" can over-correct and manufacture problems that aren't real. Asking for both what's solid and what's off makes balanced feedback the most likely shape. Ask for the response you need, not the one you want.</div>
   </div>
 
   <div class="quiz" data-quiz="4c">
@@ -1467,6 +1482,722 @@
     </ul>
   </div>
 
+  <div class="content-block" style="text-align: center; margin-top: 48px;">
+    <p style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">That's Part 1. You're set up, and everything so far (rules, skills, memory, the workflow) you can now practice for real. Build something small, then come back for Part 2: handing Claude bigger pieces of work.</p>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(11)">← back</button>
+    <button class="btn-next" onclick="goTo(13)">start Part 2 →</button>
+  </div>
+</div>
+
+
+<!-- ==================== PART 2 ==================== -->
+<!-- ==================== CH 13: KICKOFF ==================== -->
+<div class="chapter" id="chapter-13">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 13</div>
+    <div class="chapter-title">The Kickoff Brief</div>
+    <div class="chapter-subtitle">Start a build so Claude can keep working without stopping to ask</div>
+  </div>
+  <div class="content-block">
+    <p>Part 1 taught you to work with Claude one request at a time. Part 2 is about handing over bigger pieces: a whole first version built while you're at dinner, a review run by agents you never talk to, a check that runs every morning on its own. All of it starts with how you hand the work over.</p>
+    <p>When Claude stalls in the middle of a long build, the cause is usually small. It needs permission it wasn't given ("can I deploy?"), a choice nobody made ("which name?"), or something only a human can provide ("I need the account ID"). A two-minute kickoff removes most of those stops before they happen.</p>
+  </div>
+  <div class="content-block">
+    <h3>What Goes in a Kickoff</h3>
+    <ol>
+      <li><strong>The goal</strong>: who it's for and the one thing it must do well.</li>
+      <li><strong>Your convictions</strong>: what isn't up for debate ("multiplayer only, no bots").</li>
+      <li><strong>Look and feel</strong>: an app or site you like. Without one, Claude guesses, and you'll likely restyle.</li>
+      <li><strong>What Claude may do without asking</strong>: commit, deploy, spend up to some amount, message whom.</li>
+      <li><strong>When to stop</strong>: what "done for this round" means.</li>
+      <li><strong>What to do when blocked on a choice</strong>: wait for you, or take its own recommendation, note it, and keep going.</li>
+      <li><strong>What it will need from you</strong>: accounts, keys, approvals it can already see coming.</li>
+    </ol>
+    <p>You don't have to remember the list. The starter kit's <code>/kickoff</code> skill asks you about whichever items you skipped.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>The Note for the House-Sitter</h4>
+    <p>Before a trip you leave a note: the dog eats twice a day, the plumber's number is on the fridge, spend what you need on groceries, call me only if something's on fire. A good note doesn't predict every event. It gives the sitter enough to handle most of them without phoning you, and says what to do with the rest.</p>
+  </div>
+  <div class="content-block">
+    <h3>A Kickoff Is a Starting Point, Not a Spec</h3>
+    <p>You will change your mind once you hold the thing. That's how building works, not a sign the kickoff failed. In one app, the builder only thought of phone-number sign-in after using the first version, and onboarding was redesigned twice after playing with it. Those changes were the point of building quickly. The kickoff's job is to get a real first version into your hands fast, so the adjusting can start.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>A team asked Claude to build an internal tool overnight. Hours later it was still waiting for permission to deploy, which the builder thought they had already given. They wrote one standing rule into their project instructions: "deploy without waiting after a clean review." Every later build ran straight through.</p>
+    <p class="lesson">Permission you give once, in writing, is permission you never have to give again at midnight.</p>
+  </div>
+
+  <div class="quiz" data-quiz="13a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">You start an overnight build and come back to find Claude stopped at 11pm asking "should the app be called Hangout or Get-Together?" What kickoff line would have prevented the stall?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">"Use the best name."</button>
+      <button class="quiz-option" data-correct="true">"If you're blocked on a choice, take your recommendation, note it, and keep going."</button>
+      <button class="quiz-option" data-correct="false">"Don't ask me any questions."</button>
+      <button class="quiz-option" data-correct="false">"Work faster."</button>
+    </div>
+    <div class="quiz-explanation">A default for blocked decisions lets Claude keep moving while leaving you a record of what it chose, so you can reverse it in the morning. "Don't ask questions" removes the record too.</div>
+  </div>
+
+  <div class="quiz" data-quiz="13b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">After using your app for a day, you realize you want a completely different sign-in method. What does that say about your kickoff?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">It failed. You should have planned sign-in fully up front.</button>
+      <button class="quiz-option" data-correct="false">You should start the project over.</button>
+      <button class="quiz-option" data-correct="true">Nothing bad. Hands-on use is supposed to change your mind, and getting there quickly was the kickoff's job.</button>
+      <button class="quiz-option" data-correct="false">You should stop changing requirements.</button>
+    </div>
+    <div class="quiz-explanation">Touch, play, adjust is part of building. A kickoff exists to get a real version into your hands fast so those discoveries happen early.</div>
+  </div>
+
+  <div class="quiz" data-quiz="13c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">Which of these belongs in a kickoff as a standing permission?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">"Costs under $5 are fine without asking."</button>
+      <button class="quiz-option" data-correct="false">"Use React."</button>
+      <button class="quiz-option" data-correct="false">"Be careful."</button>
+      <button class="quiz-option" data-correct="false">"Make it good."</button>
+    </div>
+    <div class="quiz-explanation">A spending ceiling is a concrete permission Claude can act on. "Be careful" and "make it good" give it nothing to decide with, and naming a framework is an implementation choice, not a permission.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(12)">← back</button>
+    <button class="btn-next" onclick="goTo(14)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 14: ARTIFACTS ==================== -->
+<div class="chapter" id="chapter-14">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 14</div>
+    <div class="chapter-title">Artifacts: Review by Looking</div>
+    <div class="chapter-subtitle">Make decisions from pictures and buttons, not walls of text</div>
+  </div>
+  <div class="content-block">
+    <p>Claude can publish a web page from your session, called an <strong>artifact</strong>. It lives at a private link on claude.ai that you can open on your laptop or phone, and Claude updates the same link as work goes on. You can share it when you choose.</p>
+    <p>This changes how you review. Instead of reading five paragraphs about three design options, you look at three mockups side by side, read one line of recommendation, and tap a button.</p>
+  </div>
+  <div class="content-block">
+    <h3>What to Ask For</h3>
+    <ul>
+      <li><strong>Decision cards</strong>: "put the options on an artifact with mockups, what each costs, and your recommendation."</li>
+      <li><strong>A running log</strong>: one page per session, newest update on top, so you can catch up from your phone.</li>
+      <li><strong>Screenshots, not descriptions</strong>: "show me the screen" beats "the screen now shows."</li>
+      <li><strong>Comparisons as tables</strong>: anything with more than two options.</li>
+    </ul>
+    <p>Ask Claude to republish to the same page each time, so the link stays the same and your artifact gallery becomes an index of everything you have going.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>Paint Swatches</h4>
+    <p>Nobody picks a wall color from a written description of "a warm, slightly muted green." You hold three swatches against the wall and point. Artifacts are swatches for software decisions.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>During a nine-hour app build, Claude published 43 updates to a single artifact: a plan, then decision cards with drawings, screenshots from the simulator, and comparisons of names. Most of the builder's replies were a single tap on a suggested answer. They could follow along from their phone while away from the desk.</p>
+    <p class="lesson">The less reading a decision takes, the more decisions you can make in a day.</p>
+  </div>
+  <div class="setup-note">Artifacts need a paid Claude plan and a claude.ai sign-in. Checked October 2026; features in this part change often, so confirm in Claude's docs.</div>
+
+  <div class="quiz" data-quiz="14a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">Claude describes three layouts for your home screen in four paragraphs. What's the better request?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">"Pick one for me."</button>
+      <button class="quiz-option" data-correct="true">"Show the three layouts as mockups side by side on an artifact, with your recommendation."</button>
+      <button class="quiz-option" data-correct="false">"Describe them in more detail."</button>
+      <button class="quiz-option" data-correct="false">"Build all three."</button>
+    </div>
+    <div class="quiz-explanation">A visual decision deserves a visual comparison. Mockups take Claude seconds and let you decide in one glance.</div>
+  </div>
+
+  <div class="quiz" data-quiz="14b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">Why ask Claude to republish to the same artifact rather than make a new one each time?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">The link stays the same, so you can keep one tab or bookmark and always see the latest</button>
+      <button class="quiz-option" data-correct="false">New artifacts cost extra</button>
+      <button class="quiz-option" data-correct="false">Claude can only make one artifact</button>
+      <button class="quiz-option" data-correct="false">It doesn't matter</button>
+    </div>
+    <div class="quiz-explanation">One stable link per session means you always know where to look, from any device.</div>
+  </div>
+
+  <div class="quiz" data-quiz="14c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">Claude says "the login screen now matches the design." What should you ask for?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Nothing. It said it matches.</button>
+      <button class="quiz-option" data-correct="false">The code for the login screen</button>
+      <button class="quiz-option" data-correct="true">A screenshot of the login screen next to the design</button>
+      <button class="quiz-option" data-correct="false">A longer description</button>
+    </div>
+    <div class="quiz-explanation">Side by side, a mismatch is obvious to you even when Claude missed it.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(13)">← back</button>
+    <button class="btn-next" onclick="goTo(15)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 15: UNATTENDED ==================== -->
+<div class="chapter" id="chapter-15">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 15</div>
+    <div class="chapter-title">Unattended Work and Loops</div>
+    <div class="chapter-subtitle">Let Claude keep going while you're away, and know what stops it</div>
+  </div>
+  <div class="content-block">
+    <p>Claude can work for hours without you: building, testing, fixing what the tests find, and building again. What lets it do that is mostly the kickoff from the last chapter: permission, a stop condition, and a default for decisions. On top of that, Claude Code has three ways to run work on a schedule or on repeat, and they differ in one way that matters: <strong>what happens when you close your laptop.</strong></p>
+  </div>
+  <div class="content-block">
+    <h3>The Three Kinds</h3>
+    <div class="comparison">
+      <div class="comparison-bad"><div class="comparison-label">/loop</div><p>Repeats a task inside your current session, on a timer or at Claude's own pace ("/loop until done"). Stops when the session or the computer stops.</p></div>
+      <div class="comparison-good"><div class="comparison-label">cloud scheduled task</div><p>Runs on Anthropic's servers on a schedule, even with your laptop closed. Set up from the Scheduled page in the desktop app, at claude.ai/code, or with /schedule.</p></div>
+    </div>
+    <p>In between sits a <strong>desktop scheduled task</strong>: it runs on your computer on a schedule, but only while the app is open and the computer is awake. Use it when the job needs files on your machine.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>The Slow Cooker</h4>
+    <p>A slow cooker lets you leave the kitchen for hours, but only if it stays plugged in. <code>/loop</code> is a slow cooker plugged into your laptop: close the lid and dinner stops cooking. A cloud scheduled task is a meal-delivery subscription: it shows up whether you're home or not.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>A builder left a long data-recovery job running under <code>/loop</code> and closed their laptop to change locations. The job died with the session. It had to be moved onto a server and started again.</p>
+    <p class="lesson">Before you walk away, ask: "does this need my laptop to stay on?"</p>
+  </div>
+  <div class="content-block">
+    <h3>Every Unattended Run Needs</h3>
+    <ul>
+      <li><strong>A stop condition</strong>: "until the app runs in the simulator against two players," not just "until done."</li>
+      <li><strong>Permission for what it will hit</strong>: commits, deploys, spending.</li>
+      <li><strong>A plan for blocked decisions</strong>, or the run ends on a question and sits idle until you're back.</li>
+      <li><strong>A way to reach you</strong>: a notification or a message when it finishes or truly needs you.</li>
+    </ul>
+  </div>
+  <div class="content-block">
+    <h3>Watch the Bill</h3>
+    <p>Long unattended runs and many agents at once use a lot of your plan's capacity. Start with one run on something small, see what it costs, then scale up.</p>
+  </div>
+
+  <div class="quiz" data-quiz="15a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">You want a check to run every morning even when your laptop is closed. Which should you use?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">/loop</button>
+      <button class="quiz-option" data-correct="false">A desktop scheduled task</button>
+      <button class="quiz-option" data-correct="true">A cloud scheduled task</button>
+      <button class="quiz-option" data-correct="false">A very long session</button>
+    </div>
+    <div class="quiz-explanation">Only the cloud version runs without your computer. /loop dies with the session, and desktop tasks need the app open and the computer awake.</div>
+  </div>
+
+  <div class="quiz" data-quiz="15b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">You start "/loop until done" at 10pm and come back at 7am to find it stopped at 10:40pm with a question. What was missing?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">A faster model</button>
+      <button class="quiz-option" data-correct="true">A rule for what to do when blocked on a decision</button>
+      <button class="quiz-option" data-correct="false">More memory</button>
+      <button class="quiz-option" data-correct="false">Nothing, that's how loops work</button>
+    </div>
+    <div class="quiz-explanation">A loop ends on a question unless you've told it what to do with questions. "Take your recommendation and keep going" would have bought you eight hours of work.</div>
+  </div>
+
+  <div class="quiz" data-quiz="15c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">Which is the best stop condition for an unattended build?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">"until it's good"</button>
+      <button class="quiz-option" data-correct="false">"for a few hours"</button>
+      <button class="quiz-option" data-correct="true">"until the game runs in two simulators and a full round plays to the end"</button>
+      <button class="quiz-option" data-correct="false">"until you're tired"</button>
+    </div>
+    <div class="quiz-explanation">A stop condition Claude can check for itself lets it know when it's finished, and tells you exactly what you'll find when you come back.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(14)">← back</button>
+    <button class="btn-next" onclick="goTo(16)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 16: ADVERSARIAL AGENTS ==================== -->
+<div class="chapter" id="chapter-16">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 16</div>
+    <div class="chapter-title">Adversarial Agents</div>
+    <div class="chapter-subtitle">Have a second Claude, one that didn't build it, try to break it</div>
+  </div>
+  <div class="content-block">
+    <p>Chapter 3 explained that Claude grades its own work generously. The fix is the same one publishers, hospitals and courts use: a second reviewer whose only job is to find what's wrong, with no stake in the first answer.</p>
+    <p>In Claude Code that reviewer is a separate agent. It starts fresh, reads the work, and reports problems. Because it didn't write the code, it has no story to protect.</p>
+  </div>
+  <div class="content-block">
+    <h3>Three Kinds of Reviewer</h3>
+    <ul>
+      <li><strong>Code reviewer</strong>: bugs, security holes, data loss, things that break existing users. <code>/code-review</code> runs one on your recent changes; <code>/code-review ultra</code> sends a larger team of reviewers in the cloud for big changes, at extra cost.</li>
+      <li><strong>Persona tester</strong>: an agent told to be a specific person and get stuck. A first-time user. An App Store reviewer. A player trying to cheat. A customer in a hurry.</li>
+      <li><strong>Rule checker</strong>: compares the work to your written rules, a store's guidelines, or your writing style.</li>
+    </ul>
+    <p>The starter kit's <code>/adversarial-review</code> skill runs all three, has each finding double-checked, and ends with a list of what nobody tested.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>The Writer and the Editor</h4>
+    <p>A writer can't see their own typos because they read what they meant to write. An editor reads what's on the page. The two are equally skilled; what makes the editor useful is that they didn't write it.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>The Second Opinion</h4>
+    <p>For a big diagnosis you see a second doctor, and you don't show them the first doctor's conclusion. You want their read, not their agreement. Give a reviewer the work, not your theory about it.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>One team ran a review before every deploy of a meeting-notes tool. The reviewers caught that making one call private could erase another meeting's recording, and that tasks were still being filed from calls marked private. On another app, an overnight review found and fixed 19 real bugs before launch. Two other apps built the same month skipped review. One shipped without a "block user" feature that Apple requires; the other shipped without half-hour start times that real users needed on day one.</p>
+    <p class="lesson">Make review a step that happens every time something ships, not something you remember to do.</p>
+  </div>
+  <div class="content-block">
+    <h3>Make It Automatic</h3>
+    <p>Put review where you can't skip it: a line in your release skill ("run /adversarial-review before uploading"), or a hook that blocks a submit command until a review has run. A gate you have to remember is a gate you'll forget.</p>
+  </div>
+
+  <div class="quiz" data-quiz="16a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">Why is a separate agent better at reviewing than asking the same session "please double-check your work"?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Separate agents are smarter</button>
+      <button class="quiz-option" data-correct="true">It didn't build the work, so it reads what's there instead of what was intended</button>
+      <button class="quiz-option" data-correct="false">It's faster</button>
+      <button class="quiz-option" data-correct="false">It isn't better</button>
+    </div>
+    <div class="quiz-explanation">The building session already believes its work is right. A fresh reviewer has no story to defend.</div>
+  </div>
+
+  <div class="quiz" data-quiz="16b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">You're about to submit a social app to the App Store. Which reviewer persona would most likely catch a rejection?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">A reviewer focused on variable names</button>
+      <button class="quiz-option" data-correct="true">An agent playing an App Store reviewer, checking against Apple's guidelines</button>
+      <button class="quiz-option" data-correct="false">An agent that praises the design</button>
+      <button class="quiz-option" data-correct="false">No reviewer; Apple will tell you</button>
+    </div>
+    <div class="quiz-explanation">Apple's reviewers check guidelines, like requiring a way to block abusive users. An agent playing that role catches the same things days earlier.</div>
+  </div>
+
+  <div class="quiz" data-quiz="16c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">What should you give a reviewer agent?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Your theory of what's probably wrong</button>
+      <button class="quiz-option" data-correct="false">The builder's summary saying everything works</button>
+      <button class="quiz-option" data-correct="true">The work itself and what to judge it against</button>
+      <button class="quiz-option" data-correct="false">Nothing, it figures it out</button>
+    </div>
+    <div class="quiz-explanation">Handing over your conclusion invites agreement. Give it the work and the standard, and let it form its own view.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(15)">← back</button>
+    <button class="btn-next" onclick="goTo(17)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 17: ADVERSARIAL PROMPTING ==================== -->
+<div class="chapter" id="chapter-17">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 17</div>
+    <div class="chapter-title">Adversarial Prompting</div>
+    <div class="chapter-subtitle">Questions that make Claude argue against itself</div>
+  </div>
+  <div class="content-block">
+    <p>You don't always need a separate agent. Often the right question in the same conversation is enough to shift Claude from defending its answer to testing it. Chapter 4 showed that your framing decides what's probable. These questions make problems the probable answer.</p>
+  </div>
+  <div class="content-block">
+    <h3>Questions Worth Keeping Handy</h3>
+    <ul>
+      <li><strong>"What did you not prove?"</strong> Gets the list of untested parts.</li>
+      <li><strong>"Argue against your own recommendation."</strong> Brings out the costs it skipped.</li>
+      <li><strong>"Is this a real constraint, or one a Claude session assumed?"</strong> Catches guesses that hardened into rules.</li>
+      <li><strong>"What's the fastest path if I accept some tradeoff?"</strong> Breaks through blockers that sound official.</li>
+      <li><strong>"What would a first-time user get stuck on?"</strong> Puts it in a user's shoes.</li>
+      <li><strong>"Where is this solid and where am I off?"</strong> Balanced feedback on your own idea.</li>
+      <li><strong>"Which of these do you agree with, and which do you push back on?"</strong> For outside advice you don't want applied blindly.</li>
+    </ul>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>The Debate Coach</h4>
+    <p>A debate coach makes students argue the side they disagree with. Not because that side is right, but because you only understand your own position once you've made the best case against it.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>A builder noticed their app kept a list private between two people and asked: "Are we correcting toward a random privacy rule that some Claude session made up, or toward Apple's requirements?" It turned out an earlier session had guessed the privacy reason and written it into the project notes as fact. The question uncovered a bug that had shipped because of that guess.</p>
+    <p class="lesson">When a constraint feels odd, ask where it came from.</p>
+  </div>
+
+  <div class="quiz" data-quiz="17a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">A friend sends you ten suggestions for your app. What's the best way to bring them to Claude?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">"Implement all of these."</button>
+      <button class="quiz-option" data-correct="true">"Which of these do you agree with, which do you push back on, and why?"</button>
+      <button class="quiz-option" data-correct="false">"Are these good?"</button>
+      <button class="quiz-option" data-correct="false">Don't share them</button>
+    </div>
+    <div class="quiz-explanation">Asking for agreement and pushback item by item gets a judgment, not a to-do list. "Are these good?" invites a yes.</div>
+  </div>
+
+  <div class="quiz" data-quiz="17b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">Claude says you must wait for a company developer account before anyone else can install your app. What's the best next question?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">"How long will that take?"</button>
+      <button class="quiz-option" data-correct="false">"OK, let me know when it's ready."</button>
+      <button class="quiz-option" data-correct="true">"What's the fastest way to get it to them if I accept some tradeoff?"</button>
+      <button class="quiz-option" data-correct="false">"Can you hurry?"</button>
+    </div>
+    <div class="quiz-explanation">That question once turned a twelve-day wait into a same-evening release using an account the builder already had.</div>
+  </div>
+
+  <div class="quiz" data-quiz="17c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">Claude reports "sign-in verified end to end." Which question is most likely to reveal a hidden gap?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">"What did you not prove?"</button>
+      <button class="quiz-option" data-correct="false">"Great, are you sure?"</button>
+      <button class="quiz-option" data-correct="false">"Can you verify it again?"</button>
+      <button class="quiz-option" data-correct="false">"Did it work?"</button>
+    </div>
+    <div class="quiz-explanation">"Are you sure?" invites another yes. "What did you not prove?" asks for a list, and the list is where gaps like "it ran in sandbox mode" show up.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(16)">← back</button>
+    <button class="btn-next" onclick="goTo(18)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 18: PARALLEL ==================== -->
+<div class="chapter" id="chapter-18">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 18</div>
+    <div class="chapter-title">Parallel Sessions</div>
+    <div class="chapter-subtitle">More than one Claude at a time, and when that's a mistake</div>
+  </div>
+  <div class="content-block">
+    <p>You can run several Claude sessions at once: one on the iPhone app, one on the Android app, one on the website. In the desktop app each is a row in the sidebar, and you can view two side by side. Sessions can also message each other.</p>
+    <p>This is powerful and easy to misuse. Parallel work only helps when the pieces don't depend on each other's unfinished decisions.</p>
+  </div>
+  <div class="content-block">
+    <h3>Wait Until the Shape Is Settled</h3>
+    <p>Early in a project, almost everything depends on decisions you haven't made yet, because you haven't played with the thing yet. Start an Android version or a promo video then, and it copies a version of the app that's about to change. One builder had a promo video made the same evening as the first version. Within a day the app gained half-hour start times and a new way to pick dates, and the video was out of date.</p>
+    <p><strong>Good times to split:</strong> the app's core is settled and you're porting it to a second platform; two features touch different parts of the code; a research question runs while you build.</p>
+    <p><strong>Bad times:</strong> you're still deciding what the app is; two sessions would edit the same files; one piece needs the other's result.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>Two Cooks, One Recipe</h4>
+    <p>Two cooks speed up a dinner when the recipe is written. If the head chef is still tasting and changing the sauce, the second cook preparing the plating is preparing for a dish that won't exist.</p>
+  </div>
+  <div class="content-block">
+    <h3>Keep Them Out of Each Other's Way</h3>
+    <ul>
+      <li>Give each session its own <strong>worktree</strong> (Chapter 11), so their changes don't collide.</li>
+      <li>Keep a shared checklist file when two sessions must stay in step, like iPhone and Android versions of the same release.</li>
+      <li>Let sessions message each other directly rather than relaying through a third.</li>
+      <li>Watch shared resources. Two sessions deploying to the same server can undo each other's work.</li>
+    </ul>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>Once an app's first release was out, one builder ran its iPhone and Android versions in two sessions. The Android session kept a checklist of every iPhone change and worked through it; the builder could tell it "start on the 1.4 changes" and it picked them up. A third session that tried to relay messages between them only added confusion and was dropped.</p>
+    <p class="lesson">Parallel sessions work best after release, when the target is fixed.</p>
+  </div>
+
+  <div class="quiz" data-quiz="18a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">Your app's first version is an hour old and you're still trying it out. Should you start the Android port in a parallel session?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Yes, always parallelize as early as possible</button>
+      <button class="quiz-option" data-correct="true">Not yet. The app's shape will change as you use it, and the port would copy a moving target</button>
+      <button class="quiz-option" data-correct="false">Yes, but only on weekends</button>
+      <button class="quiz-option" data-correct="false">Never port to Android</button>
+    </div>
+    <div class="quiz-explanation">Parallel work pays off once the thing being copied is settled. Until then, each change you make means redoing work in the other session.</div>
+  </div>
+
+  <div class="quiz" data-quiz="18b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">Two sessions are working in the same project folder and keep overwriting each other's changes. What's the fix?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">Give each session its own worktree</button>
+      <button class="quiz-option" data-correct="false">Tell them to type faster</button>
+      <button class="quiz-option" data-correct="false">Use one session only, forever</button>
+      <button class="quiz-option" data-correct="false">Force push to settle it</button>
+    </div>
+    <div class="quiz-explanation">A worktree gives each session its own copy and branch, linked to one repo, so they never edit the same files at the same moment. And never force push.</div>
+  </div>
+
+  <div class="quiz" data-quiz="18c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">Which pair of tasks is the best fit for two parallel sessions?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Designing the home screen and building the home screen</button>
+      <button class="quiz-option" data-correct="true">Researching payment providers while building the settings page</button>
+      <button class="quiz-option" data-correct="false">Two sessions editing the same login file</button>
+      <button class="quiz-option" data-correct="false">Building a feature and writing its marketing video before it's tested</button>
+    </div>
+    <div class="quiz-explanation">Research and an unrelated feature don't depend on each other. The other pairs either share files or need one result before the other can start.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(17)">← back</button>
+    <button class="btn-next" onclick="goTo(19)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 19: PRODUCTION ==================== -->
+<div class="chapter" id="chapter-19">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 19</div>
+    <div class="chapter-title">Watching Production</div>
+    <div class="chapter-subtitle">Find out it's broken before your users tell you</div>
+  </div>
+  <div class="content-block">
+    <p>Once real people use your app, "it worked when we tested it" stops being enough. Vendors change prices, credits run out, a server restarts and doesn't come back. The app can be broken for days while every status page says green.</p>
+    <p>The fix is a small automatic check that does what a user does, once a day or once an hour, and tells you only when it fails.</p>
+  </div>
+  <div class="content-block">
+    <h3>What to Decide</h3>
+    <ul>
+      <li><strong>The critical path</strong>: the two or three things that must always work. Sign in. Book. Pay.</li>
+      <li><strong>Where it runs</strong>: a cloud scheduled task (Chapter 15), so it keeps running with your laptop closed.</li>
+      <li><strong>Test accounts</strong> it can use without touching real users or sending real messages to real people.</li>
+      <li><strong>Where alerts go</strong>: email, Slack or a text, and only on failure.</li>
+      <li><strong>Vendor limits</strong>: credits and quotas that run out silently. Alert before they hit zero.</li>
+    </ul>
+    <p>The starter kit's <code>/watch-production</code> skill walks you through these and sets the check up.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>The Smoke Detector</h4>
+    <p>You don't sit in each room sniffing for smoke. A detector checks constantly, stays silent while nothing's wrong, and is impossible to ignore when something is.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>An app's phone sign-in broke for real users because the text-message provider required a far more expensive plan than expected. It stayed broken for about two weeks. On another tool, live transcription stopped mid-week when the AI provider's prepaid credits ran out. In both cases, a daily check that signed in or ran one short test would have caught it within a day.</p>
+    <p class="lesson">Test the path a user takes, on a schedule, and alert on failure.</p>
+  </div>
+
+  <div class="quiz" data-quiz="19a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">What should a daily production check actually do?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Confirm the server responds with "OK"</button>
+      <button class="quiz-option" data-correct="true">Go through a real user step, like signing in with a test account, and confirm it succeeds</button>
+      <button class="quiz-option" data-correct="false">Email you every morning that all is well</button>
+      <button class="quiz-option" data-correct="false">Count the lines of code</button>
+    </div>
+    <div class="quiz-explanation">A server can answer "OK" while sign-in is broken. Only a check that does what users do will catch what users would hit.</div>
+  </div>
+
+  <div class="quiz" data-quiz="19b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">Why should alerts go out only on failure?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">Daily "all good" messages train you to ignore the alerts, including the one that matters</button>
+      <button class="quiz-option" data-correct="false">Success messages cost money</button>
+      <button class="quiz-option" data-correct="false">It doesn't matter</button>
+      <button class="quiz-option" data-correct="false">Claude can't send success messages</button>
+    </div>
+    <div class="quiz-explanation">If every message is noise, you'll stop reading them, and the real failure gets swiped away with the rest.</div>
+  </div>
+
+  <div class="quiz" data-quiz="19c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">Your app depends on an AI service with prepaid credits. What should the check also watch?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">The service's homepage</button>
+      <button class="quiz-option" data-correct="false">Nothing; credits never run out</button>
+      <button class="quiz-option" data-correct="true">The remaining balance, with an alert before it reaches zero</button>
+      <button class="quiz-option" data-correct="false">The weather</button>
+    </div>
+    <div class="quiz-explanation">Running out of credits fails without warning. An early alert turns an outage into a top-up.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(18)">← back</button>
+    <button class="btn-next" onclick="goTo(20)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 20: HOSTING ==================== -->
+<div class="chapter" id="chapter-20">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 20</div>
+    <div class="chapter-title">Where Your App Lives</div>
+    <div class="chapter-subtitle">Vercel, a home server, a rented server, or a container, and how to choose</div>
+  </div>
+  <div class="content-block">
+    <p>Anything other people use has to run on a computer that's on and reachable. You have four realistic choices. Claude can set up any of them for you; your job is to pick, because each one trades money for something else: uptime, upkeep, or limits.</p>
+  </div>
+  <div class="content-block">
+    <h3>The Four Options</h3>
+    <ul>
+      <li><strong>Vercel</strong> (a hosting service for websites): you push code and it's live. Great for sites and for APIs that answer a request and finish. Limits: each request has a time limit, there's no disk that keeps files between requests, and nothing can run all the time (no always-on bots or live connections). The free plan is for personal, non-commercial use.</li>
+      <li><strong>A home server</strong> (a Mac Mini or old laptop) behind a <strong>Cloudflare Tunnel</strong>: Cloudflare's free tool makes a machine at home reachable at your domain without opening your home network. It costs almost nothing per month and can run anything, all the time. The tradeoffs: it goes down when your power or internet does, the machine must stay awake, backups are your job, and anyone with the link can reach it unless you add a login in front.</li>
+      <li><strong>A droplet</strong> (a small rented Linux server from DigitalOcean, from a few dollars a month): always on, runs anything, sits in a data center. The tradeoff is upkeep: security updates, a firewall, keys for logging in, and backups are yours.</li>
+      <li><strong>A short-lived container</strong>: a fresh machine that starts, runs a job, and disappears. Good for jobs that run and exit, like processing a file. Nothing is kept between runs.</li>
+    </ul>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>Where to Open a Shop</h4>
+    <p>Vercel is a booth in a managed market: set up in minutes, cleaned for you, but you follow the market's rules and close when it closes. A home server is selling from your own garage: no rent, but if your power goes out, so does the shop. A droplet is renting a storefront: open all hours, your rules, your repairs. A container is a food truck that parks, serves one rush, and drives off.</p>
+  </div>
+  <div class="content-block">
+    <h3>Decide These, Whichever You Pick</h3>
+    <ul>
+      <li>Where the data lives, and how it's backed up.</li>
+      <li>Where passwords and keys are stored (the host's settings or an environment file, never git or chat).</li>
+      <li>Who owns the domain name, and where it's managed.</li>
+      <li>What it costs at the usage you expect, and what users see if it goes down.</li>
+    </ul>
+    <p>The starter kit's <code>/hosting</code> skill makes sure each of these comes up before you choose, then sets up your pick step by step. Prices and limits change, so it checks the providers' current pages.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>One builder runs many small apps and services from a single Mac Mini at home, each reached through a Cloudflare Tunnel, with marketing sites on Vercel. A new app's server goes live the same afternoon for no added monthly cost. The tradeoff showed up once: a power outage took several apps down at the same time.</p>
+    <p class="lesson">Cheap hosting is a real option. Choose it knowing what happens when the lights go out.</p>
+  </div>
+
+  <div class="quiz" data-quiz="20a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">Your app needs a chat bot that stays connected around the clock. Which option fits worst?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">Vercel</button>
+      <button class="quiz-option" data-correct="false">A droplet</button>
+      <button class="quiz-option" data-correct="false">A home server with a Cloudflare Tunnel</button>
+      <button class="quiz-option" data-correct="false">They're all the same</button>
+    </div>
+    <div class="quiz-explanation">Vercel runs code per request with a time limit, so it can't keep a process running all the time. A droplet or home server can.</div>
+  </div>
+
+  <div class="quiz" data-quiz="20b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">What's the main risk of hosting on a Mac Mini at home?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">It's too expensive</button>
+      <button class="quiz-option" data-correct="true">It goes down when your home's power or internet does</button>
+      <button class="quiz-option" data-correct="false">It can't run websites</button>
+      <button class="quiz-option" data-correct="false">Cloudflare Tunnel costs a lot</button>
+    </div>
+    <div class="quiz-explanation">A home server is cheap and flexible, but it shares your house's power and internet. Decide whether your users can live with that.</div>
+  </div>
+
+  <div class="quiz" data-quiz="20c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">You're launching a paid app. Why might Vercel's free plan be the wrong pick?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">It's too slow</button>
+      <button class="quiz-option" data-correct="false">It doesn't support websites</button>
+      <button class="quiz-option" data-correct="true">The free plan is for personal, non-commercial use</button>
+      <button class="quiz-option" data-correct="false">It has no limits</button>
+    </div>
+    <div class="quiz-explanation">A business using Vercel needs a paid plan. Check the current terms before you launch.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(19)">← back</button>
+    <button class="btn-next" onclick="goTo(21)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 21: CAPSTONE ==================== -->
+<div class="chapter" id="chapter-21">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 21</div>
+    <div class="chapter-title">Capstone: Ship Something</div>
+    <div class="chapter-subtitle">One small project, start to finish, using everything from Part 2</div>
+  </div>
+  <div class="content-block">
+    <p>Pick something small that a real person would use: a sign-up page for an event, a tracker for your kids' chores, a page that answers one question for your customers. Then run the whole loop once. Note the time you start.</p>
+  </div>
+  <div class="setup-step">
+    <div class="setup-step-header"><div class="setup-step-num claude">1</div><div class="setup-step-title">Kick off</div><span class="setup-badge claude">let claude do it</span></div>
+    <p>Run <code>/kickoff</code> and answer its questions. Include a stop condition, a spending limit, and what to do when blocked.</p>
+  </div>
+  <div class="setup-step">
+    <div class="setup-step-header"><div class="setup-step-num manual">2</div><div class="setup-step-title">Decide on an artifact</div><span class="setup-badge manual">manual</span></div>
+    <p>Ask for the main choices (look, name, hosting) as an artifact with mockups and a recommendation. Pick.</p>
+  </div>
+  <div class="setup-step">
+    <div class="setup-step-header"><div class="setup-step-num claude">3</div><div class="setup-step-title">Let it build unattended</div><span class="setup-badge claude">let claude do it</span></div>
+    <p>Say "build and test this unattended, /loop until done." Walk away for a while.</p>
+  </div>
+  <div class="setup-step">
+    <div class="setup-step-header"><div class="setup-step-num claude">4</div><div class="setup-step-title">Review it</div><span class="setup-badge claude">let claude do it</span></div>
+    <p>Run <code>/adversarial-review</code>. Read the confirmed problems and the "not proven" list.</p>
+  </div>
+  <div class="setup-step">
+    <div class="setup-step-header"><div class="setup-step-num manual">5</div><div class="setup-step-title">Play and adjust</div><span class="setup-badge manual">manual</span></div>
+    <p>Use it on your own phone. Check the "not proven" items yourself. Tell Claude what felt wrong and go around again, as many times as it takes.</p>
+  </div>
+  <div class="setup-step">
+    <div class="setup-step-header"><div class="setup-step-num claude">6</div><div class="setup-step-title">Ship, watch, document</div><span class="setup-badge claude">let claude do it</span></div>
+    <p>Put it live with <code>/hosting</code>, set up <code>/watch-production</code>, and run <code>/update-docs</code>. Note the time you finish.</p>
+  </div>
+
+  <div class="quiz" data-quiz="21a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">In the capstone, who uses the app on a real phone?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Nobody; the simulator is enough</button>
+      <button class="quiz-option" data-correct="true">You do, including the items on the "not proven" list</button>
+      <button class="quiz-option" data-correct="false">Only the reviewer agent</button>
+      <button class="quiz-option" data-correct="false">Your first customer</button>
+    </div>
+    <div class="quiz-explanation">Claude tests a lot, but real texts, push notifications and how it feels in the hand are yours to check.</div>
+  </div>
+
+  <div class="quiz" data-quiz="21b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">Halfway through, you realize you want a different layout. What do you do?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="true">Tell Claude and go around the loop again; adjusting after hands-on use is expected</button>
+      <button class="quiz-option" data-correct="false">Start a new project</button>
+      <button class="quiz-option" data-correct="false">Keep the old layout because the kickoff said so</button>
+      <button class="quiz-option" data-correct="false">Rewrite the kickoff from scratch</button>
+    </div>
+    <div class="quiz-explanation">Play and adjust is a step in the loop, not a deviation from it.</div>
+  </div>
+
+  <div class="quiz" data-quiz="21c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">The review finds a problem, and Claude offers to force push the fix to save time. What do you say?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Fine, it's a small project</button>
+      <button class="quiz-option" data-correct="false">Fine, it's my own branch</button>
+      <button class="quiz-option" data-correct="true">No. Commit the fix normally and push; if the push is refused, pull and merge</button>
+      <button class="quiz-option" data-correct="false">Delete the repo and start over</button>
+    </div>
+    <div class="quiz-explanation">There's no project small enough for a force push to be safe. A normal commit costs seconds and can't destroy anything.</div>
+  </div>
+
   <!-- FINAL SCORE: rendered dynamically -->
   <div class="score-card" id="final-score" style="display: none;">
     <div class="score-number" id="score-pct">0%</div>
@@ -1477,18 +2208,18 @@
         <div class="score-stat-label">correct</div>
       </div>
       <div class="score-stat">
-        <div class="score-stat-num" id="score-total">36</div>
+        <div class="score-stat-num" id="score-total">63</div>
         <div class="score-stat-label">questions</div>
       </div>
     </div>
   </div>
 
   <div class="content-block" style="text-align: center; margin-top: 48px;">
-    <p style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">You're set up. Everything from the course (rules, skills, memory, workflows) you can now practice for real. Go build something.</p>
+    <p style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">How long did it take, from kickoff to a live page someone else used? Write that number down. It will shrink every time you go around.</p>
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(11)">← back</button>
+    <button class="btn-prev" onclick="goTo(20)">← back</button>
     <button class="btn-next" onclick="goTo(0)">start over →</button>
   </div>
 </div>
@@ -1496,8 +2227,8 @@
 </div><!-- /main -->
 
 <script>
-const TOTAL_CHAPTERS = 12;
-const TOTAL_QUIZZES = 36;
+const TOTAL_CHAPTERS = 21;
+const TOTAL_QUIZZES = 63;
 let currentChapter = 0;
 let quizAnswers = {};
 let visitedChapters = new Set([0]);
@@ -1540,7 +2271,7 @@ function updateNav() {
 
   const dotsContainer = document.getElementById('chapter-dots');
   dotsContainer.innerHTML = '';
-  const labels = ['Home','Mindset','What You Bring','How Claude Works','Specificity','Memory Layers','Workflow','Managing Context','Debugging','Common Traps','Compounding','Git Essentials','Setup'];
+  const labels = ['Home','Mindset','What You Bring','How Claude Works','Specificity','Memory Layers','Workflow','Managing Context','Debugging','Common Traps','Compounding','Git Essentials','Setup','Kickoff Brief','Artifacts','Unattended Work','Adversarial Agents','Adversarial Prompting','Parallel Sessions','Watching Production','Hosting','Capstone'];
   for (let i = 0; i <= TOTAL_CHAPTERS; i++) {
     const dot = document.createElement('button');
     dot.className = 'chapter-dot';
@@ -1556,12 +2287,18 @@ function updateNav() {
 }
 
 // Table of contents (jump-to-any-chapter menu)
-const chapterTitles = ['Introduction','The Mindset Shift','What You Bring','How Claude Actually Works','Talking to AI','The Three Layers of Memory','The Workflow','Managing Context','Debugging with AI','Common Mistakes','The Investment That Compounds','GitHub Essentials','Environment Setup'];
+const chapterTitles = ['Introduction','The Mindset Shift','What You Bring','How Claude Actually Works','Talking to AI','The Three Layers of Memory','The Workflow','Managing Context','Debugging with AI','Common Mistakes','The Investment That Compounds','GitHub Essentials','Environment Setup','The Kickoff Brief','Artifacts: Review by Looking','Unattended Work and Loops','Adversarial Agents','Adversarial Prompting','Parallel Sessions','Watching Production','Where Your App Lives','Capstone: Ship Something'];
 
 function buildTOC() {
   const list = document.getElementById('toc-list');
   list.innerHTML = '';
   for (let i = 0; i <= TOTAL_CHAPTERS; i++) {
+    if (i === 1 || i === 13) {
+      const head = document.createElement('div');
+      head.className = 'toc-part';
+      head.textContent = i === 1 ? 'Part 1: Working with Claude' : 'Part 2: Shipping with a Crew';
+      list.appendChild(head);
+    }
     const btn = document.createElement('button');
     btn.className = 'toc-item' + (i === currentChapter ? ' active' : '');
     const num = document.createElement('span');
