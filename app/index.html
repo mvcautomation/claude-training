@@ -1505,38 +1505,39 @@
     <div class="chapter-subtitle">A huge working memory, swarms of agents, and loops, and what they do together</div>
   </div>
   <div class="content-block">
-    <p>Part 1 taught you to work with Claude one request at a time. Three capabilities changed what one person can do with it. Each removes a limit that used to keep you involved in every step. Together, they turn "you're running a team" from a metaphor into a plain description of your day.</p>
+    <p>Part 1 taught you to work with Claude one request at a time. Three capabilities changed what one person can do with it. Each removes a limit that used to keep you involved in every step.</p>
   </div>
 
   <div class="content-block">
     <h3>1. The Desk Got Huge</h3>
-    <p>Chapter 7 compared Claude's working memory to a desk. Current models have a desk of about 1 million tokens, roughly 750,000 words. That's enough to hold an entire app's code across several platforms, plus hours of conversation about it, at the same time.</p>
-    <p>This matters because a model that can see the whole problem stops guessing about the parts it can't see. Change a game rule, and the server, the iPhone app, the Android app and the website all get the same change, because all four are in view.</p>
+    <p>Chapter 7 compared Claude's working memory to a desk. Recent Claude models in Claude Code have a desk of about 1 million tokens by default, roughly 750,000 words. That's enough to hold an entire app's code across several platforms, plus hours of conversation about it, at the same time.</p>
+    <p>A model that can see the whole problem stops guessing about the parts it can't see. Change a game rule, and the server, the iPhone app, the Android app and the website all get the same change, because all four are in view.</p>
   </div>
   <div class="story">
     <div class="story-label">from the field</div>
-    <p>A builder rebuilt a multiplayer game across four codebases (server, web, iPhone, Android) in one session. It never had to compact. When the iPhone version needed a physics fix, Claude wrote shared test data that all three apps had to pass, so players moved identically on every device.</p>
+    <p>A builder rebuilt a multiplayer game across four codebases (server, web, iPhone, Android) in one session. It never had to compact. When the iPhone version needed a physics fix, Claude wrote shared test data that the web, iPhone and Android apps all had to pass, so players moved identically on every device.</p>
     <p class="lesson">A bigger desk means fewer guesses about the parts that are out of sight.</p>
   </div>
   <div class="setup-note"><strong>still not a filing cabinet:</strong> a huge desk makes it tempting to keep one session going for weeks. It still compacts eventually, and summaries of summaries blur decisions. Use the big window to hold a whole problem at once, and start a fresh session for each release, with your docs carrying what was decided.</div>
 
   <div class="content-block">
     <h3>2. Swarms: One Request, Many Workers</h3>
-    <p>Chapter 7 introduced subagents as a way to keep your main conversation tidy. That's the smallest thing they do. A <strong>swarm</strong> is many subagents working at once, each starting fresh with its own full-size desk. That makes them a force multiplier in three ways:</p>
+    <p>Chapter 7 introduced subagents as a way to keep your main conversation tidy. A <strong>swarm</strong> is many subagents working at once, each starting fresh with its own desk. One request gets the work of many, in three ways:</p>
     <ul>
-      <li><strong>Building in parallel.</strong> Ten agents build ten parts of an app at the same time, each in its own copy of the code, and a lead agent fits the parts together.</li>
+      <li><strong>Building in parallel.</strong> Ten agents build ten parts of an app at the same time, each in its own copy of the code (ask for worktrees, Chapter 11), and a lead agent fits the parts together.</li>
       <li><strong>Checking with fresh eyes.</strong> Reviewers that didn't write the code look for what's wrong (Chapter 17).</li>
-      <li><strong>Reading everything to answer a broad question.</strong> This is the one most people miss.</li>
+      <li><strong>Reading everything to answer a broad question.</strong></li>
     </ul>
   </div>
   <div class="content-block">
     <h3>Why Swarms Beat Search for Broad Questions</h3>
-    <p>The common way to point AI at a large pile of documents is a search system (often called RAG, short for retrieval-augmented generation). It finds the passages whose meaning is closest to the words of your question and hands the AI only those. That works well for narrow questions: "what did we promise Acme about delivery dates?" The passages about Acme and delivery dates exist, and search finds them.</p>
-    <p>It fails on broad questions that need judgment, because the answer isn't written anywhere as such. No sentence in a sales call says "sales opportunity." A customer mentions they're opening a second warehouse. A prospect asks whether you integrate with a tool they're switching to. Someone complains about a competitor's pricing. Spotting those takes reading the whole conversation and understanding it, and search has nothing to match on.</p>
-    <p>A swarm reads instead of searching. Split six months of meeting transcripts across dozens of agents. Each reads its share in full and reports what it found in the same format. A final agent merges the reports into categories with examples and counts.</p>
+    <p>The usual way to point AI at a big pile of documents is a search system, often called RAG (short for retrieval-augmented generation). Ahead of time, it cuts every document into short chunks and stores a fingerprint of each chunk's meaning. When you ask a question, it pulls the 5 to 20 chunks whose meaning sits closest to your question and gives the AI only those. It handles different wording well: ask about "delivery dates" and it also finds "we'll ship by the 15th."</p>
+    <p>Its weakness is that it looks once, at a handful of chunks chosen by how much they resemble your question. That works when you know what you're looking for: "what did we promise Acme about delivery dates?" It can't help when you don't. <strong>Search can only find what you can describe.</strong> It will never bring back a kind of opportunity you didn't think to ask about, because every lookup starts from your description.</p>
+    <p>A swarm reads instead of looking things up. Split six months of meeting transcripts across dozens of agents. Each reads its share in full, with judgment, and reports what it found in the same format. A final agent merges the reports into categories with examples and counts. The categories come out of the reading: a customer mentioning a second location, a prospect switching to a tool you could integrate with, repeated grumbling about a competitor's pricing. No one had to know those categories existed before asking. One builder ran this over their sales calls and got back kinds of opportunities they would never have thought to search for.</p>
+    <p><strong>The rule:</strong> use search when you know what you're looking for. Use a swarm when you don't know what you'll find.</p>
   </div>
   <div class="comparison">
-    <div class="comparison-bad"><div class="comparison-label">search can't do this</div><p>"find passages about sales opportunities"</p></div>
+    <div class="comparison-bad"><div class="comparison-label">search misses most of this</div><p>"find passages about follow-ups, cross-sells, upsells and objections." Returns the passages that resemble those words, and misses the remark about a second location.</p></div>
     <div class="comparison-good"><div class="comparison-label">a swarm can</div><p>"use a swarm to read every meeting transcript from the past 6 months and identify categories of sales signals from prospects and existing customers: chances to follow up, cross-sell, upsell, handle objections, and anything else you find. give examples and counts for each category."</p></div>
   </div>
   <div class="metaphor">
@@ -1544,12 +1545,21 @@
     <h4>The Card Catalog and the Reading Room</h4>
     <p>A library's card catalog finds books whose titles and subjects match what you typed. It can't tell you "which of these 600 letters show the writer was about to change careers," because no catalog card says that. For that you hire twenty readers, give each a stack, and ask them all the same question. Search is the catalog. A swarm is the reading room.</p>
   </div>
-  <div class="setup-note"><strong>mind the cost:</strong> a swarm reading thousands of pages uses a lot of your plan's capacity. Save it for broad questions that need judgment. For a narrow lookup, ordinary search is faster and cheaper.</div>
+  <div class="content-block">
+    <h3>What Swarms Cost, and When Search Still Wins</h3>
+    <ul>
+      <li><strong>Cost grows with how much gets read.</strong> Reading thousands of pages uses a lot of your plan's capacity. Save swarms for questions that need judgment across everything, and ask for a smaller, cheaper model such as Haiku for the reading agents.</li>
+      <li><strong>Each agent's summary drops some detail,</strong> and two runs over the same pile can come back a little different. Ask for examples and counts so you can check the findings.</li>
+      <li><strong>Swarms are too slow for a search box.</strong> If many customers will type questions and expect an answer in a blink, across millions of documents, a search index is still the right tool.</li>
+      <li><strong>Claude Code itself doesn't use a search index on your project.</strong> It searches your files directly, reads what it finds, and searches again until it has the answer. For your own projects, you almost never need to build one.</li>
+    </ul>
+    <p>A pattern that combines them: run a swarm once to discover the categories, tag new material against those categories as it comes in, and re-run the swarm now and then to catch new kinds.</p>
+  </div>
 
   <div class="content-block">
     <h3>3. Loops: You Stop Being the Bottleneck</h3>
-    <p>Before loops, nothing happened between your messages. Claude finished a step and waited for you, so your attention set the pace of every project. With a goal and permission to keep going (Chapter 16), Claude builds, tests, reads the failure, fixes it and tests again, without waiting for you.</p>
-    <p>The bigger change isn't working while your laptop is closed. It's working on six projects while you're only looking at one. Each session keeps moving toward its own goal. You go from one to the next, making the decisions only you can make, and leave each one working when you go.</p>
+    <p>Without a goal, Claude stops when it thinks a turn is done and waits for you, even when the project isn't finished, so your attention sets the pace of every project. With a goal and permission to keep going (Chapter 16), it keeps building, testing and fixing until the finish line is met.</p>
+    <p>Working with the laptop closed matters less than working on six projects while you look at one. Each session keeps moving toward its own goal. You go from one to the next, making the decisions only you can make, and leave each one working when you go.</p>
   </div>
   <div class="metaphor">
     <div class="metaphor-label">mental model</div>
@@ -1559,24 +1569,24 @@
   <div class="story">
     <div class="story-label">from the field</div>
     <p>One builder's first version of a friend get-together app (server, booking page, iPhone app, tested in a simulator, signed and ready for testers) came out of a single 24-minute unattended run. In the same week, other sessions were moving a game through app review, keeping an Android app in step with its iPhone twin, and building a team tool. The builder visited each one for decisions.</p>
-    <p class="lesson">Your attention is the scarcest resource. Loops stop spending it on waiting.</p>
+    <p class="lesson">Loops stop spending your attention on waiting.</p>
   </div>
 
   <div class="content-block">
     <h3>What They Do Together</h3>
-    <p>The big desk lets one agent hold a whole problem. Swarms let many agents split it up and check each other. Loops keep all of it moving without you. Your job moves from typing each next step to three things: setting direction, opening the doors only a human can open, and judging what comes back. The rest of Part 2 teaches each piece of that job.</p>
+    <p>The big desk lets one agent hold a whole problem. Swarms let many agents split it up and check each other. Loops keep all of it moving without you. Your job moves from typing each next step to three things: setting direction, doing the steps only a human can (signing in to accounts, paying, approving releases), and judging what comes back. The rest of Part 2 teaches each piece of that job.</p>
   </div>
 
   <div class="quiz" data-quiz="13a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
-    <div class="quiz-question">You want to know what complaints keep coming up across 800 support emails, without knowing in advance what the complaints are. What's the best approach?</div>
+    <div class="quiz-question">You want to know what complaints keep coming up across six months of support emails, about 40,000 of them, without knowing in advance what the complaints are. What's the best approach?</div>
     <div class="quiz-options">
       <button class="quiz-option" data-correct="false">Search the emails for the word "complaint"</button>
       <button class="quiz-option" data-correct="true">Use a swarm: split the emails across agents, have each read its share and report themes in the same format, then merge</button>
       <button class="quiz-option" data-correct="false">Read a random ten and guess</button>
-      <button class="quiz-option" data-correct="false">Paste all 800 into one message and hope</button>
+      <button class="quiz-option" data-correct="false">Have one agent read all 800 in a single pass</button>
     </div>
-    <div class="quiz-explanation">You don't know the words to search for, because the themes are what you're trying to find. Reading everything with judgment, split across many agents, finds patterns that search has nothing to match on.</div>
+    <div class="quiz-explanation">Search can only find what you can describe, and the themes are what you're trying to discover. 40,000 emails won't fit on one desk, and one reader across that many loses track. Many readers on small stacks keep their attention on every email and work at the same time.</div>
   </div>
 
   <div class="quiz" data-quiz="13b">
@@ -1586,7 +1596,7 @@
       <button class="quiz-option" data-correct="false">Reply faster</button>
       <button class="quiz-option" data-correct="false">Drop to one project</button>
       <button class="quiz-option" data-correct="true">Give each session a goal, permission to keep going, and a default for decisions, then visit each for the calls only you can make</button>
-      <button class="quiz-option" data-correct="false">Turn off all permissions everywhere</button>
+      <button class="quiz-option" data-correct="false">Let Claude skip every permission check on everything</button>
     </div>
     <div class="quiz-explanation">Loops plus a clear kickoff let each project move without you. You do rounds instead of being the step every project waits on.</div>
   </div>
