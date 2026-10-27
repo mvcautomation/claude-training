@@ -51,7 +51,7 @@ A self-contained single HTML file with no dependencies or build process. Open it
 - `.setup-note` — blue info callout box
 - `.setup-legend` — color-coded legend for step types
 
-### Chapter Structure (hero + Part 1: ch1-12 + Part 2: ch13-21)
+### Chapter Structure (hero + Part 1: ch1-12 + Part 2: ch13-22)
 
 | ID | Chapter | Content |
 |----|---------|---------|
@@ -68,30 +68,31 @@ A self-contained single HTML file with no dependencies or build process. Open it
 | 10 | The Investment That Compounds | Why scaffolding matters more than code |
 | 11 | GitHub Essentials | Commits, push/pull, repos, solo vs team workflows |
 | 12 | Environment Setup (end of Part 1; next button goes to 13) | Desktop-app-first 5-step flow: install Claude desktop app (claude.com/download), make a Projects folder, download+unzip the starter template (`app/starter-template.zip`), open a session via Code tab → local → folder, then the first-repo assignment. Manual/let-claude step types only (no terminal "command" steps). |
-| 13 | The Kickoff Brief | Goal, convictions, look and feel, standing permissions, stop condition, blocked-decision default. Kickoff is a starting point; touch, play, adjust is expected |
-| 14 | Artifacts: Review by Looking | Decision cards, one republished page per session, screenshots over descriptions |
-| 15 | Unattended Work and Loops | /loop vs desktop scheduled vs cloud scheduled tasks (what survives a closed laptop), stop conditions, cost |
-| 16 | Adversarial Agents | Code reviewer, persona testers, rule checker; /code-review, /adversarial-review; make review a gate |
-| 17 | Adversarial Prompting | Questions that make Claude argue against itself ("what did you not prove?") |
-| 18 | Parallel Sessions | Only once the app's shape is settled; worktrees, shared checklists, direct session messages |
-| 19 | Watching Production | Scheduled checks of the critical path, alerts on failure only, vendor credit alerts |
-| 20 | Where Your App Lives | Vercel vs home server + Cloudflare Tunnel vs droplet vs short-lived container |
-| 21 | Capstone: Ship Something | Six-step build using the kit; holds the final score card |
+| 13 | Why This Changed Everything | 1M-token context (hold the whole problem), swarms (parallel building, fresh-eyed review, and reading huge messy data to answer broad judgment questions where search/RAG has nothing to match), loops (you stop being the bottleneck across many projects; hospital rounds) |
+| 14 | The Kickoff Brief | Goal, convictions, look and feel, standing permissions, stop condition, blocked-decision default. Kickoff is a starting point; touch, play, adjust is expected |
+| 15 | Artifacts: Review by Looking | Decision cards, one republished page per session, screenshots over descriptions |
+| 16 | Unattended Work and Loops | /loop vs desktop scheduled vs cloud scheduled tasks (what survives a closed laptop), stop conditions, cost |
+| 17 | Adversarial Agents | Code reviewer, persona testers, rule checker; /code-review, /adversarial-review; make review a gate |
+| 18 | Adversarial Prompting | Questions that make Claude argue against itself ("what did you not prove?") |
+| 19 | Parallel Sessions | Only once the app's shape is settled; worktrees, shared checklists, direct session messages |
+| 20 | Watching Production | Scheduled checks of the critical path, alerts on failure only, vendor credit alerts |
+| 21 | Where Your App Lives | Vercel vs home server + Cloudflare Tunnel vs droplet vs short-lived container |
+| 22 | Capstone: Ship Something | Six-step build using the kit; holds the final score card |
 
 Writing style: standard English capitalization (Title Case for headers/subtitles-as-titles/TOC/chapter labels, sentence case for body, quizzes, and callouts; proper nouns capitalized) and NO em dashes anywhere. The earlier dtcmvp-style all-lowercase + em-dash voice was fully removed (Peter: "the lowercase thing is dtcmvp brand only"). Keep new content in this same standard-English, em-dash-free style. Literal text inside `<code>`, `.cmd-block`, and `.setup-prompt-block` (commands, filenames, example prompts) is intentionally left in casual lowercase.
 
 ### JavaScript Architecture
-- `TOTAL_CHAPTERS = 21`, `TOTAL_QUIZZES = 63`
+- `TOTAL_CHAPTERS = 22`, `TOTAL_QUIZZES = 66`. Progress key is `cc101-progress-v4`; v3 saves are migrated on load (Part 2 chapter numbers and quiz IDs shifted up one when ch13 was inserted)
 - `goTo(n)` — navigates to chapter n, updates progress, saves to localStorage
 - `updateNav()` — updates progress bar and chapter dot navigation (right sidebar)
 - Quiz handling via event listeners on `.quiz-option` buttons, answers stored in `quizAnswers` object
 - `copyCmd(btn)` — copies terminal command/prompt text to clipboard
 - `switchPlatform(group, platform, tab)` — toggles Mac/Windows content sections
-- Score card (`#final-score`) renders on the last chapter (21) showing quiz accuracy; `updateFinalScore()` gates on `currentChapter === TOTAL_CHAPTERS`
+- Score card (`#final-score`) renders on the last chapter (22) showing quiz accuracy; `updateFinalScore()` gates on `currentChapter === TOTAL_CHAPTERS`
 
 ### Quiz ID Convention
 - Format: `{chapter}{letter}` — e.g., `9a`, `9b`, `9c`
-- 3 quizzes per chapter, 63 total (chapters 1-21, letters a-c)
+- 3 quizzes per chapter, 66 total (chapters 1-22, letters a-c)
 - Quiz state persists in localStorage across sessions
 
 ### Navigation

@@ -233,7 +233,7 @@
   <div class="content-block" style="margin-top: 40px;">
     <h3>What You'll Learn</h3>
     <p>This is not a tool tutorial. It's a framework for a new kind of working relationship, one where you bring judgment, context, and direction while AI handles implementation at superhuman speed.</p>
-    <p>Two parts. Part 1 (12 chapters, about 45 minutes) gets you working with Claude and set up. Part 2 (9 chapters, about 35 minutes) teaches you to hand Claude whole pieces of work: kickoffs, unattended builds, reviewer agents, and keeping a live app healthy. 63 quizzes to make it stick.</p>
+    <p>Two parts. Part 1 (12 chapters, about 45 minutes) gets you working with Claude and set up. Part 2 (10 chapters, about 45 minutes) teaches you to hand Claude whole pieces of work: why big context, swarms and loops changed what one person can do, then kickoffs, unattended builds, reviewer agents, and keeping a live app healthy. 66 quizzes to make it stick.</p>
   </div>
   <div class="key-points">
     <h4>Part 1: Working with Claude</h4>
@@ -255,6 +255,7 @@
   <div class="key-points">
     <h4>Part 2: Shipping with a Crew</h4>
     <ul>
+      <li>Why this changed everything: a huge working memory, swarms of agents, and loops</li>
       <li>The kickoff brief: start a build so Claude can keep going without you</li>
       <li>Artifacts: review by looking, decide with a tap</li>
       <li>Unattended work and loops: what keeps running when you close the laptop</li>
@@ -1496,15 +1497,127 @@
 
 
 <!-- ==================== PART 2 ==================== -->
-<!-- ==================== CH 13: KICKOFF ==================== -->
+<!-- ==================== CH 13: WHY THIS CHANGED EVERYTHING ==================== -->
 <div class="chapter" id="chapter-13">
   <div class="chapter-header">
     <div class="chapter-number">Part 2 · Chapter 13</div>
+    <div class="chapter-title">Why This Changed Everything</div>
+    <div class="chapter-subtitle">A huge working memory, swarms of agents, and loops, and what they do together</div>
+  </div>
+  <div class="content-block">
+    <p>Part 1 taught you to work with Claude one request at a time. Three capabilities changed what one person can do with it. Each removes a limit that used to keep you involved in every step. Together, they turn "you're running a team" from a metaphor into a plain description of your day.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>1. The Desk Got Huge</h3>
+    <p>Chapter 7 compared Claude's working memory to a desk. Current models have a desk of about 1 million tokens, roughly 750,000 words. That's enough to hold an entire app's code across several platforms, plus hours of conversation about it, at the same time.</p>
+    <p>This matters because a model that can see the whole problem stops guessing about the parts it can't see. Change a game rule, and the server, the iPhone app, the Android app and the website all get the same change, because all four are in view.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>A builder rebuilt a multiplayer game across four codebases (server, web, iPhone, Android) in one session. It never had to compact. When the iPhone version needed a physics fix, Claude wrote shared test data that all three apps had to pass, so players moved identically on every device.</p>
+    <p class="lesson">A bigger desk means fewer guesses about the parts that are out of sight.</p>
+  </div>
+  <div class="setup-note"><strong>still not a filing cabinet:</strong> a huge desk makes it tempting to keep one session going for weeks. It still compacts eventually, and summaries of summaries blur decisions. Use the big window to hold a whole problem at once, and start a fresh session for each release, with your docs carrying what was decided.</div>
+
+  <div class="content-block">
+    <h3>2. Swarms: One Request, Many Workers</h3>
+    <p>Chapter 7 introduced subagents as a way to keep your main conversation tidy. That's the smallest thing they do. A <strong>swarm</strong> is many subagents working at once, each starting fresh with its own full-size desk. That makes them a force multiplier in three ways:</p>
+    <ul>
+      <li><strong>Building in parallel.</strong> Ten agents build ten parts of an app at the same time, each in its own copy of the code, and a lead agent fits the parts together.</li>
+      <li><strong>Checking with fresh eyes.</strong> Reviewers that didn't write the code look for what's wrong (Chapter 17).</li>
+      <li><strong>Reading everything to answer a broad question.</strong> This is the one most people miss.</li>
+    </ul>
+  </div>
+  <div class="content-block">
+    <h3>Why Swarms Beat Search for Broad Questions</h3>
+    <p>The common way to point AI at a large pile of documents is a search system (often called RAG, short for retrieval-augmented generation). It finds the passages whose meaning is closest to the words of your question and hands the AI only those. That works well for narrow questions: "what did we promise Acme about delivery dates?" The passages about Acme and delivery dates exist, and search finds them.</p>
+    <p>It fails on broad questions that need judgment, because the answer isn't written anywhere as such. No sentence in a sales call says "sales opportunity." A customer mentions they're opening a second warehouse. A prospect asks whether you integrate with a tool they're switching to. Someone complains about a competitor's pricing. Spotting those takes reading the whole conversation and understanding it, and search has nothing to match on.</p>
+    <p>A swarm reads instead of searching. Split six months of meeting transcripts across dozens of agents. Each reads its share in full and reports what it found in the same format. A final agent merges the reports into categories with examples and counts.</p>
+  </div>
+  <div class="comparison">
+    <div class="comparison-bad"><div class="comparison-label">search can't do this</div><p>"find passages about sales opportunities"</p></div>
+    <div class="comparison-good"><div class="comparison-label">a swarm can</div><p>"use a swarm to read every meeting transcript from the past 6 months and identify categories of sales signals from prospects and existing customers: chances to follow up, cross-sell, upsell, handle objections, and anything else you find. give examples and counts for each category."</p></div>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>The Card Catalog and the Reading Room</h4>
+    <p>A library's card catalog finds books whose titles and subjects match what you typed. It can't tell you "which of these 600 letters show the writer was about to change careers," because no catalog card says that. For that you hire twenty readers, give each a stack, and ask them all the same question. Search is the catalog. A swarm is the reading room.</p>
+  </div>
+  <div class="setup-note"><strong>mind the cost:</strong> a swarm reading thousands of pages uses a lot of your plan's capacity. Save it for broad questions that need judgment. For a narrow lookup, ordinary search is faster and cheaper.</div>
+
+  <div class="content-block">
+    <h3>3. Loops: You Stop Being the Bottleneck</h3>
+    <p>Before loops, nothing happened between your messages. Claude finished a step and waited for you, so your attention set the pace of every project. With a goal and permission to keep going (Chapter 16), Claude builds, tests, reads the failure, fixes it and tests again, without waiting for you.</p>
+    <p>The bigger change isn't working while your laptop is closed. It's working on six projects while you're only looking at one. Each session keeps moving toward its own goal. You go from one to the next, making the decisions only you can make, and leave each one working when you go.</p>
+  </div>
+  <div class="metaphor">
+    <div class="metaphor-label">mental model</div>
+    <h4>Hospital Rounds</h4>
+    <p>A doctor doesn't sit by one bed all day. Nurses carry on each patient's care, and the doctor does rounds: visits each bed, makes the calls that need a doctor, and moves on. Each loop is a nurse. You do rounds.</p>
+  </div>
+  <div class="story">
+    <div class="story-label">from the field</div>
+    <p>One builder's first version of a friend get-together app (server, booking page, iPhone app, tested in a simulator, signed and ready for testers) came out of a single 24-minute unattended run. In the same week, other sessions were moving a game through app review, keeping an Android app in step with its iPhone twin, and building a team tool. The builder visited each one for decisions.</p>
+    <p class="lesson">Your attention is the scarcest resource. Loops stop spending it on waiting.</p>
+  </div>
+
+  <div class="content-block">
+    <h3>What They Do Together</h3>
+    <p>The big desk lets one agent hold a whole problem. Swarms let many agents split it up and check each other. Loops keep all of it moving without you. Your job moves from typing each next step to three things: setting direction, opening the doors only a human can open, and judging what comes back. The rest of Part 2 teaches each piece of that job.</p>
+  </div>
+
+  <div class="quiz" data-quiz="13a">
+    <div class="quiz-label">check your understanding, 1 of 3</div>
+    <div class="quiz-question">You want to know what complaints keep coming up across 800 support emails, without knowing in advance what the complaints are. What's the best approach?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Search the emails for the word "complaint"</button>
+      <button class="quiz-option" data-correct="true">Use a swarm: split the emails across agents, have each read its share and report themes in the same format, then merge</button>
+      <button class="quiz-option" data-correct="false">Read a random ten and guess</button>
+      <button class="quiz-option" data-correct="false">Paste all 800 into one message and hope</button>
+    </div>
+    <div class="quiz-explanation">You don't know the words to search for, because the themes are what you're trying to find. Reading everything with judgment, split across many agents, finds patterns that search has nothing to match on.</div>
+  </div>
+
+  <div class="quiz" data-quiz="13b">
+    <div class="quiz-label">check your understanding, 2 of 3</div>
+    <div class="quiz-question">You're running five projects at once and every one stalls until you reply. What changes that?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Reply faster</button>
+      <button class="quiz-option" data-correct="false">Drop to one project</button>
+      <button class="quiz-option" data-correct="true">Give each session a goal, permission to keep going, and a default for decisions, then visit each for the calls only you can make</button>
+      <button class="quiz-option" data-correct="false">Turn off all permissions everywhere</button>
+    </div>
+    <div class="quiz-explanation">Loops plus a clear kickoff let each project move without you. You do rounds instead of being the step every project waits on.</div>
+  </div>
+
+  <div class="quiz" data-quiz="13c">
+    <div class="quiz-label">check your understanding, 3 of 3</div>
+    <div class="quiz-question">Claude's working memory now holds about 750,000 words. Should you keep one session open for your project's whole life?</div>
+    <div class="quiz-options">
+      <button class="quiz-option" data-correct="false">Yes, it can hold everything now</button>
+      <button class="quiz-option" data-correct="true">No. Use the big window to hold a whole problem at once, but start fresh each release and keep decisions in docs</button>
+      <button class="quiz-option" data-correct="false">No, sessions can only last an hour</button>
+      <button class="quiz-option" data-correct="false">Yes, as long as you never close the app</button>
+    </div>
+    <div class="quiz-explanation">Even a huge window compacts eventually, and compacted summaries blur what was decided. Docs keep decisions exact; fresh sessions read them.</div>
+  </div>
+
+  <div class="chapter-nav">
+    <button class="btn-prev" onclick="goTo(12)">← back</button>
+    <button class="btn-next" onclick="goTo(14)">next chapter →</button>
+  </div>
+</div>
+
+<!-- ==================== CH 14: KICKOFF ==================== -->
+<div class="chapter" id="chapter-14">
+  <div class="chapter-header">
+    <div class="chapter-number">Part 2 · Chapter 14</div>
     <div class="chapter-title">The Kickoff Brief</div>
     <div class="chapter-subtitle">Start a build so Claude can keep working without stopping to ask</div>
   </div>
   <div class="content-block">
-    <p>Part 1 taught you to work with Claude one request at a time. Part 2 is about handing over bigger pieces: a whole first version built while you're at dinner, a review run by agents you never talk to, a check that runs every morning on its own. All of it starts with how you hand the work over.</p>
+    <p>The last chapter showed what one person can now hand off: a whole first version built while you're at dinner, a review run by agents you never talk to, a check that runs every morning on its own. All of it starts with how you hand the work over.</p>
     <p>When Claude stalls in the middle of a long build, the cause is usually small. It needs permission it wasn't given ("can I deploy?"), a choice nobody made ("which name?"), or something only a human can provide ("I need the account ID"). A two-minute kickoff removes most of those stops before they happen.</p>
   </div>
   <div class="content-block">
@@ -1535,7 +1648,7 @@
     <p class="lesson">Permission you give once, in writing, is permission you never have to give again at midnight.</p>
   </div>
 
-  <div class="quiz" data-quiz="13a">
+  <div class="quiz" data-quiz="14a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">You start an overnight build and come back to find Claude stopped at 11pm asking "should the app be called Hangout or Get-Together?" What kickoff line would have prevented the stall?</div>
     <div class="quiz-options">
@@ -1547,7 +1660,7 @@
     <div class="quiz-explanation">A default for blocked decisions lets Claude keep moving while leaving you a record of what it chose, so you can reverse it in the morning. "Don't ask questions" removes the record too.</div>
   </div>
 
-  <div class="quiz" data-quiz="13b">
+  <div class="quiz" data-quiz="14b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">After using your app for a day, you realize you want a completely different sign-in method. What does that say about your kickoff?</div>
     <div class="quiz-options">
@@ -1559,7 +1672,7 @@
     <div class="quiz-explanation">Touch, play, adjust is part of building. A kickoff exists to get a real version into your hands fast so those discoveries happen early.</div>
   </div>
 
-  <div class="quiz" data-quiz="13c">
+  <div class="quiz" data-quiz="14c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">Which of these belongs in a kickoff as a standing permission?</div>
     <div class="quiz-options">
@@ -1572,15 +1685,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(12)">← back</button>
-    <button class="btn-next" onclick="goTo(14)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(13)">← back</button>
+    <button class="btn-next" onclick="goTo(15)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 14: ARTIFACTS ==================== -->
-<div class="chapter" id="chapter-14">
+<!-- ==================== CH 15: ARTIFACTS ==================== -->
+<div class="chapter" id="chapter-15">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 14</div>
+    <div class="chapter-number">Part 2 · Chapter 15</div>
     <div class="chapter-title">Artifacts: Review by Looking</div>
     <div class="chapter-subtitle">Make decisions from pictures and buttons, not walls of text</div>
   </div>
@@ -1610,7 +1723,7 @@
   </div>
   <div class="setup-note">Artifacts need a paid Claude plan and a claude.ai sign-in. Checked October 2026; features in this part change often, so confirm in Claude's docs.</div>
 
-  <div class="quiz" data-quiz="14a">
+  <div class="quiz" data-quiz="15a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">Claude describes three layouts for your home screen in four paragraphs. What's the better request?</div>
     <div class="quiz-options">
@@ -1622,7 +1735,7 @@
     <div class="quiz-explanation">A visual decision deserves a visual comparison. Mockups take Claude seconds and let you decide in one glance.</div>
   </div>
 
-  <div class="quiz" data-quiz="14b">
+  <div class="quiz" data-quiz="15b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">Why ask Claude to republish to the same artifact rather than make a new one each time?</div>
     <div class="quiz-options">
@@ -1634,7 +1747,7 @@
     <div class="quiz-explanation">One stable link per session means you always know where to look, from any device.</div>
   </div>
 
-  <div class="quiz" data-quiz="14c">
+  <div class="quiz" data-quiz="15c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">Claude says "the login screen now matches the design." What should you ask for?</div>
     <div class="quiz-options">
@@ -1647,15 +1760,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(13)">← back</button>
-    <button class="btn-next" onclick="goTo(15)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(14)">← back</button>
+    <button class="btn-next" onclick="goTo(16)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 15: UNATTENDED ==================== -->
-<div class="chapter" id="chapter-15">
+<!-- ==================== CH 16: UNATTENDED ==================== -->
+<div class="chapter" id="chapter-16">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 15</div>
+    <div class="chapter-number">Part 2 · Chapter 16</div>
     <div class="chapter-title">Unattended Work and Loops</div>
     <div class="chapter-subtitle">Let Claude keep going while you're away, and know what stops it</div>
   </div>
@@ -1701,7 +1814,7 @@
     <p>Long unattended runs and many agents at once use a lot of your plan's capacity. Start with one run on something small, see what it costs, then scale up.</p>
   </div>
 
-  <div class="quiz" data-quiz="15a">
+  <div class="quiz" data-quiz="16a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">You want a check to run every morning even when your laptop is closed. Which should you use?</div>
     <div class="quiz-options">
@@ -1713,7 +1826,7 @@
     <div class="quiz-explanation">Only the cloud version runs without your computer. /loop and /goal stop with the session, and desktop tasks need the app open and the computer awake.</div>
   </div>
 
-  <div class="quiz" data-quiz="15b">
+  <div class="quiz" data-quiz="16b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">You set a goal at 10pm and come back at 7am to find Claude stopped at 10:40pm asking which of two names to use. What was missing?</div>
     <div class="quiz-options">
@@ -1725,7 +1838,7 @@
     <div class="quiz-explanation">A long run ends on a question unless you've told it what to do with questions. "Take your recommendation and keep going" would have bought you eight hours of work.</div>
   </div>
 
-  <div class="quiz" data-quiz="15c">
+  <div class="quiz" data-quiz="16c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">Which is the best stop condition for an unattended build?</div>
     <div class="quiz-options">
@@ -1738,15 +1851,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(14)">← back</button>
-    <button class="btn-next" onclick="goTo(16)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(15)">← back</button>
+    <button class="btn-next" onclick="goTo(17)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 16: ADVERSARIAL AGENTS ==================== -->
-<div class="chapter" id="chapter-16">
+<!-- ==================== CH 17: ADVERSARIAL AGENTS ==================== -->
+<div class="chapter" id="chapter-17">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 16</div>
+    <div class="chapter-number">Part 2 · Chapter 17</div>
     <div class="chapter-title">Adversarial Agents</div>
     <div class="chapter-subtitle">Have a second Claude, one that didn't build it, try to break it</div>
   </div>
@@ -1783,7 +1896,7 @@
     <p>Put review where you can't skip it: a line in your release skill ("run /adversarial-review before uploading"), or a hook that blocks a submit command until a review has run. A gate you have to remember is a gate you'll forget.</p>
   </div>
 
-  <div class="quiz" data-quiz="16a">
+  <div class="quiz" data-quiz="17a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">Why is a separate agent better at reviewing than asking the same session "please double-check your work"?</div>
     <div class="quiz-options">
@@ -1795,7 +1908,7 @@
     <div class="quiz-explanation">The building session already believes its work is right. A fresh reviewer has no story to defend.</div>
   </div>
 
-  <div class="quiz" data-quiz="16b">
+  <div class="quiz" data-quiz="17b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">You're about to submit a social app to the App Store. Which reviewer persona would most likely catch a rejection?</div>
     <div class="quiz-options">
@@ -1807,7 +1920,7 @@
     <div class="quiz-explanation">Apple's reviewers check guidelines, like requiring a way to block abusive users. An agent playing that role catches the same things days earlier.</div>
   </div>
 
-  <div class="quiz" data-quiz="16c">
+  <div class="quiz" data-quiz="17c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">What should you give a reviewer agent?</div>
     <div class="quiz-options">
@@ -1820,15 +1933,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(15)">← back</button>
-    <button class="btn-next" onclick="goTo(17)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(16)">← back</button>
+    <button class="btn-next" onclick="goTo(18)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 17: ADVERSARIAL PROMPTING ==================== -->
-<div class="chapter" id="chapter-17">
+<!-- ==================== CH 18: ADVERSARIAL PROMPTING ==================== -->
+<div class="chapter" id="chapter-18">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 17</div>
+    <div class="chapter-number">Part 2 · Chapter 18</div>
     <div class="chapter-title">Adversarial Prompting</div>
     <div class="chapter-subtitle">Questions that make Claude argue against itself</div>
   </div>
@@ -1858,7 +1971,7 @@
     <p class="lesson">When a constraint feels odd, ask where it came from.</p>
   </div>
 
-  <div class="quiz" data-quiz="17a">
+  <div class="quiz" data-quiz="18a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">A friend sends you ten suggestions for your app. What's the best way to bring them to Claude?</div>
     <div class="quiz-options">
@@ -1870,7 +1983,7 @@
     <div class="quiz-explanation">Asking for agreement and pushback item by item gets a judgment, not a to-do list. "Are these good?" invites a yes.</div>
   </div>
 
-  <div class="quiz" data-quiz="17b">
+  <div class="quiz" data-quiz="18b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">Claude says you must wait for a company developer account before anyone else can install your app. What's the best next question?</div>
     <div class="quiz-options">
@@ -1882,7 +1995,7 @@
     <div class="quiz-explanation">That question once turned a twelve-day wait into a same-evening release using an account the builder already had.</div>
   </div>
 
-  <div class="quiz" data-quiz="17c">
+  <div class="quiz" data-quiz="18c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">Claude reports "sign-in verified end to end." Which question is most likely to reveal a hidden gap?</div>
     <div class="quiz-options">
@@ -1895,15 +2008,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(16)">← back</button>
-    <button class="btn-next" onclick="goTo(18)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(17)">← back</button>
+    <button class="btn-next" onclick="goTo(19)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 18: PARALLEL ==================== -->
-<div class="chapter" id="chapter-18">
+<!-- ==================== CH 19: PARALLEL ==================== -->
+<div class="chapter" id="chapter-19">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 18</div>
+    <div class="chapter-number">Part 2 · Chapter 19</div>
     <div class="chapter-title">Parallel Sessions</div>
     <div class="chapter-subtitle">More than one Claude at a time, and when that's a mistake</div>
   </div>
@@ -1937,7 +2050,7 @@
     <p class="lesson">Parallel sessions work best after release, when the target is fixed.</p>
   </div>
 
-  <div class="quiz" data-quiz="18a">
+  <div class="quiz" data-quiz="19a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">Your app's first version is an hour old and you're still trying it out. Should you start the Android port in a parallel session?</div>
     <div class="quiz-options">
@@ -1949,7 +2062,7 @@
     <div class="quiz-explanation">Parallel work pays off once the thing being copied is settled. Until then, each change you make means redoing work in the other session.</div>
   </div>
 
-  <div class="quiz" data-quiz="18b">
+  <div class="quiz" data-quiz="19b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">Two sessions are working in the same project folder and keep overwriting each other's changes. What's the fix?</div>
     <div class="quiz-options">
@@ -1961,7 +2074,7 @@
     <div class="quiz-explanation">A worktree gives each session its own copy and branch, linked to one repo, so they never edit the same files at the same moment. And never force push.</div>
   </div>
 
-  <div class="quiz" data-quiz="18c">
+  <div class="quiz" data-quiz="19c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">Which pair of tasks is the best fit for two parallel sessions?</div>
     <div class="quiz-options">
@@ -1974,15 +2087,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(17)">← back</button>
-    <button class="btn-next" onclick="goTo(19)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(18)">← back</button>
+    <button class="btn-next" onclick="goTo(20)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 19: PRODUCTION ==================== -->
-<div class="chapter" id="chapter-19">
+<!-- ==================== CH 20: PRODUCTION ==================== -->
+<div class="chapter" id="chapter-20">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 19</div>
+    <div class="chapter-number">Part 2 · Chapter 20</div>
     <div class="chapter-title">Watching Production</div>
     <div class="chapter-subtitle">Find out it's broken before your users tell you</div>
   </div>
@@ -1994,7 +2107,7 @@
     <h3>What to Decide</h3>
     <ul>
       <li><strong>The critical path</strong>: the two or three things that must always work. Sign in. Book. Pay.</li>
-      <li><strong>Where it runs</strong>: a cloud scheduled task (Chapter 15), so it keeps running with your laptop closed. Cloud tasks work from a GitHub repo and can only reach websites you allow, so add your app's address to the task's allowed sites.</li>
+      <li><strong>Where it runs</strong>: a cloud scheduled task (Chapter 16), so it keeps running with your laptop closed. Cloud tasks work from a GitHub repo and can only reach websites you allow, so add your app's address to the task's allowed sites.</li>
       <li><strong>Test accounts</strong> it can use without touching real users or sending real messages to real people.</li>
       <li><strong>Where alerts go</strong>: email, Slack or a text, and only on failure.</li>
       <li><strong>Vendor limits</strong>: credits and quotas that run out silently. Alert before they hit zero.</li>
@@ -2012,7 +2125,7 @@
     <p class="lesson">Test the path a user takes, on a schedule, and alert on failure.</p>
   </div>
 
-  <div class="quiz" data-quiz="19a">
+  <div class="quiz" data-quiz="20a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">What should a daily production check actually do?</div>
     <div class="quiz-options">
@@ -2024,7 +2137,7 @@
     <div class="quiz-explanation">A server can answer "OK" while sign-in is broken. Only a check that does what users do will catch what users would hit.</div>
   </div>
 
-  <div class="quiz" data-quiz="19b">
+  <div class="quiz" data-quiz="20b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">Why should alerts go out only on failure?</div>
     <div class="quiz-options">
@@ -2036,7 +2149,7 @@
     <div class="quiz-explanation">If every message is noise, you'll stop reading them, and the real failure gets swiped away with the rest.</div>
   </div>
 
-  <div class="quiz" data-quiz="19c">
+  <div class="quiz" data-quiz="20c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">Your app depends on an AI service with prepaid credits. What should the check also watch?</div>
     <div class="quiz-options">
@@ -2049,15 +2162,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(18)">← back</button>
-    <button class="btn-next" onclick="goTo(20)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(19)">← back</button>
+    <button class="btn-next" onclick="goTo(21)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 20: HOSTING ==================== -->
-<div class="chapter" id="chapter-20">
+<!-- ==================== CH 21: HOSTING ==================== -->
+<div class="chapter" id="chapter-21">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 20</div>
+    <div class="chapter-number">Part 2 · Chapter 21</div>
     <div class="chapter-title">Where Your App Lives</div>
     <div class="chapter-subtitle">Vercel, a home server, a rented server, or a container, and how to choose</div>
   </div>
@@ -2094,7 +2207,7 @@
     <p class="lesson">Cheap hosting is a real option. Choose it knowing what happens when the lights go out.</p>
   </div>
 
-  <div class="quiz" data-quiz="20a">
+  <div class="quiz" data-quiz="21a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">Your app is a live multiplayer game: every player's phone stays connected to the server for the whole round. Which option fits worst?</div>
     <div class="quiz-options">
@@ -2106,7 +2219,7 @@
     <div class="quiz-explanation">Vercel's request handlers have a time limit, and its new always-on workers can't accept connections from phones. A droplet or home server can hold those connections.</div>
   </div>
 
-  <div class="quiz" data-quiz="20b">
+  <div class="quiz" data-quiz="21b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">What's the main risk of hosting on a Mac Mini at home?</div>
     <div class="quiz-options">
@@ -2118,7 +2231,7 @@
     <div class="quiz-explanation">A home server is cheap and flexible, but it shares your house's power and internet. Decide whether your users can live with that.</div>
   </div>
 
-  <div class="quiz" data-quiz="20c">
+  <div class="quiz" data-quiz="21c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">You're launching a paid app. Why might Vercel's free plan be the wrong pick?</div>
     <div class="quiz-options">
@@ -2131,15 +2244,15 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(19)">← back</button>
-    <button class="btn-next" onclick="goTo(21)">next chapter →</button>
+    <button class="btn-prev" onclick="goTo(20)">← back</button>
+    <button class="btn-next" onclick="goTo(22)">next chapter →</button>
   </div>
 </div>
 
-<!-- ==================== CH 21: CAPSTONE ==================== -->
-<div class="chapter" id="chapter-21">
+<!-- ==================== CH 22: CAPSTONE ==================== -->
+<div class="chapter" id="chapter-22">
   <div class="chapter-header">
-    <div class="chapter-number">Part 2 · Chapter 21</div>
+    <div class="chapter-number">Part 2 · Chapter 22</div>
     <div class="chapter-title">Capstone: Ship Something</div>
     <div class="chapter-subtitle">One small project, start to finish, using everything from Part 2</div>
   </div>
@@ -2171,7 +2284,7 @@
     <p>Put it live with <code>/hosting</code>, send the link to one person who will use it, set up <code>/watch-production</code>, and run <code>/update-docs</code>. Note the time you finish.</p>
   </div>
 
-  <div class="quiz" data-quiz="21a">
+  <div class="quiz" data-quiz="22a">
     <div class="quiz-label">check your understanding, 1 of 3</div>
     <div class="quiz-question">In the capstone, who uses the app on a real phone?</div>
     <div class="quiz-options">
@@ -2183,7 +2296,7 @@
     <div class="quiz-explanation">Claude tests a lot, but real texts, push notifications and how it feels in the hand are yours to check.</div>
   </div>
 
-  <div class="quiz" data-quiz="21b">
+  <div class="quiz" data-quiz="22b">
     <div class="quiz-label">check your understanding, 2 of 3</div>
     <div class="quiz-question">Halfway through, you realize you want a different layout. What do you do?</div>
     <div class="quiz-options">
@@ -2195,7 +2308,7 @@
     <div class="quiz-explanation">Adjusting after hands-on use is a planned step in the loop.</div>
   </div>
 
-  <div class="quiz" data-quiz="21c">
+  <div class="quiz" data-quiz="22c">
     <div class="quiz-label">check your understanding, 3 of 3</div>
     <div class="quiz-question">The review finds a problem, and Claude offers to force push the fix to save time. What do you say?</div>
     <div class="quiz-options">
@@ -2217,7 +2330,7 @@
         <div class="score-stat-label">correct</div>
       </div>
       <div class="score-stat">
-        <div class="score-stat-num" id="score-total">63</div>
+        <div class="score-stat-num" id="score-total">66</div>
         <div class="score-stat-label">questions</div>
       </div>
     </div>
@@ -2228,7 +2341,7 @@
   </div>
 
   <div class="chapter-nav">
-    <button class="btn-prev" onclick="goTo(20)">← back</button>
+    <button class="btn-prev" onclick="goTo(21)">← back</button>
     <button class="btn-next" onclick="goTo(0)">start over →</button>
   </div>
 </div>
@@ -2236,24 +2349,36 @@
 </div><!-- /main -->
 
 <script>
-const TOTAL_CHAPTERS = 21;
-const TOTAL_QUIZZES = 63;
+const TOTAL_CHAPTERS = 22;
+const TOTAL_QUIZZES = 66;
 let currentChapter = 0;
 let quizAnswers = {};
 let visitedChapters = new Set([0]);
 
 try {
-  const saved = localStorage.getItem('cc101-progress-v3');
+  let saved = localStorage.getItem('cc101-progress-v4');
+  let migrate = false;
+  if (!saved) { saved = localStorage.getItem('cc101-progress-v3'); migrate = !!saved; }
   if (saved) {
     const data = JSON.parse(saved);
     quizAnswers = data.quizAnswers || {};
     visitedChapters = new Set(data.visited || [0]);
+    if (migrate) {
+      // v3 had Part 2 at chapters 13-21; v4 inserts a new chapter 13, so shift them up one
+      const shifted = {};
+      for (const [id, a] of Object.entries(quizAnswers)) {
+        const m = id.match(/^(\d+)([abc])$/);
+        shifted[m && +m[1] >= 13 ? `${+m[1] + 1}${m[2]}` : id] = a;
+      }
+      quizAnswers = shifted;
+      visitedChapters = new Set([...visitedChapters].map(n => n >= 13 ? n + 1 : n));
+    }
   }
 } catch(e) {}
 
 function saveProgress() {
   try {
-    localStorage.setItem('cc101-progress-v3', JSON.stringify({
+    localStorage.setItem('cc101-progress-v4', JSON.stringify({
       quizAnswers,
       visited: [...visitedChapters]
     }));
@@ -2280,7 +2405,7 @@ function updateNav() {
 
   const dotsContainer = document.getElementById('chapter-dots');
   dotsContainer.innerHTML = '';
-  const labels = ['Home','Mindset','What You Bring','How Claude Works','Specificity','Memory Layers','Workflow','Managing Context','Debugging','Common Traps','Compounding','Git Essentials','Setup','Kickoff Brief','Artifacts','Unattended Work','Adversarial Agents','Adversarial Prompting','Parallel Sessions','Watching Production','Hosting','Capstone'];
+  const labels = ['Home','Mindset','What You Bring','How Claude Works','Specificity','Memory Layers','Workflow','Managing Context','Debugging','Common Traps','Compounding','Git Essentials','Setup','Why It Changed','Kickoff Brief','Artifacts','Unattended Work','Adversarial Agents','Adversarial Prompting','Parallel Sessions','Watching Production','Hosting','Capstone'];
   for (let i = 0; i <= TOTAL_CHAPTERS; i++) {
     const dot = document.createElement('button');
     dot.className = 'chapter-dot';
@@ -2296,7 +2421,7 @@ function updateNav() {
 }
 
 // Table of contents (jump-to-any-chapter menu)
-const chapterTitles = ['Introduction','The Mindset Shift','What You Bring','How Claude Actually Works','Talking to AI','The Three Layers of Memory','The Workflow','Managing Context','Debugging with AI','Common Mistakes','The Investment That Compounds','GitHub Essentials','Environment Setup','The Kickoff Brief','Artifacts: Review by Looking','Unattended Work and Loops','Adversarial Agents','Adversarial Prompting','Parallel Sessions','Watching Production','Where Your App Lives','Capstone: Ship Something'];
+const chapterTitles = ['Introduction','The Mindset Shift','What You Bring','How Claude Actually Works','Talking to AI','The Three Layers of Memory','The Workflow','Managing Context','Debugging with AI','Common Mistakes','The Investment That Compounds','GitHub Essentials','Environment Setup','Why This Changed Everything','The Kickoff Brief','Artifacts: Review by Looking','Unattended Work and Loops','Adversarial Agents','Adversarial Prompting','Parallel Sessions','Watching Production','Where Your App Lives','Capstone: Ship Something'];
 
 function buildTOC() {
   const list = document.getElementById('toc-list');
